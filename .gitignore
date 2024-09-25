@@ -30,3 +30,5 @@ yarn-error.log*
 
 deploy.sh
 
+
+src/components/firebase-config.js
