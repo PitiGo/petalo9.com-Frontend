@@ -1,6 +1,15 @@
-# Getting Started with Create React App
+# petalo9.com-Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is the source code for my personal website, **petalo9.com**, which features a blog, a selection of games, and more. The frontend is built using **React**, **CSS**, and other modern web technologies. The website is designed to showcase my projects, share insights through the blog, and provide interactive games.
+
+![Website Preview](./image.png)
+
+## Features
+
+- **Blog**: A dynamic blog where I share articles on various topics related to technology and programming.
+- **Games**: Several games embedded into the site, developed using **React** and custom shaders.
+- **Responsive Design**: The site is fully responsive and optimized for both desktop and mobile devices.
+- **Tech Stack**: Built with **React**, **JavaScript**, **CSS**, and **Node.js**.
 
 ## Available Scripts
 
@@ -35,37 +44,16 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
 ## Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
+## Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+The project is deployed using standard methods outlined in the [Create React App deployment guide](https://facebook.github.io/create-react-app/docs/deployment).
 
-### Analyzing the Bundle Size
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-# petalo9.com-Frontend
+**Check out the repository on GitHub**: [petalo9.com-Frontend](https://github.com/PitiGo/petalo9.com-Frontend)

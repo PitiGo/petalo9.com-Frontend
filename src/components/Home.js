@@ -28,7 +28,7 @@ function Home() {
   }, []);
 
   const createMarkup = (html) => {
-    return {__html: DOMPurify.sanitize(html)};
+    return { __html: DOMPurify.sanitize(html) };
   }
 
   return (
@@ -50,13 +50,13 @@ function Home() {
           <div className="about-content">
             <div className="about-text">
               <p>
-                Hello! I'm Dante, a passionate developer with a knack for creating elegant solutions 
-                to complex problems. With a strong foundation in Java and Python, I'm constantly 
+                Hello! I'm Dante, a passionate developer with a knack for creating elegant solutions
+                to complex problems. With a strong foundation in Java and Python, I'm constantly
                 expanding my skillset to stay at the forefront of technology.
               </p>
               <p>
-                My journey in tech is driven by curiosity and a desire to make a positive impact. 
-                Whether it's building robust backend systems or crafting intuitive user interfaces, 
+                My journey in tech is driven by curiosity and a desire to make a positive impact.
+                Whether it's building robust backend systems or crafting intuitive user interfaces,
                 I approach each project with enthusiasm and attention to detail.
               </p>
             </div>
@@ -82,15 +82,15 @@ function Home() {
           ) : latestPost ? (
             <div className="latest-post-card">
               {latestPost.imageUrl && (
-                <img 
-                  src={latestPost.imageUrl} 
-                  alt={latestPost.title} 
+                <img
+                  src={latestPost.imageUrl}
+                  alt={latestPost.title}
                   className="latest-post-image"
                 />
               )}
               <div className="post-content">
                 <h3>{latestPost.title}</h3>
-                <div 
+                <div
                   className="latest-post-excerpt"
                   dangerouslySetInnerHTML={createMarkup(latestPost.content.substring(0, 150) + '...')}
                 />
@@ -107,17 +107,30 @@ function Home() {
         <div className="container">
           <h2 className="section-title">Featured Projects</h2>
           <div className="projects-grid">
-            {/* Add your project cards here */}
+            {/* Project 1 - Código fuente de tu página personal */}
             <div className="project-card">
-              <h3>Project 1</h3>
-              <p>Short description of the project.</p>
-              <a href="#" className="project-link">View Project</a>
+              <h3>Personal Website</h3>
+              <p>
+                This is the source code of my personal website, featuring a blog and
+                embedded games, built with React, CSS, and other modern technologies.
+              </p>
+              <a
+                href="https://github.com/PitiGo/petalo9.com-Frontend"
+                className="project-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View on GitHub
+              </a>
             </div>
+
+            {/* Project 2 - Otro proyecto */}
             <div className="project-card">
               <h3>Project 2</h3>
               <p>Short description of the project.</p>
               <a href="#" className="project-link">View Project</a>
             </div>
+
             {/* Add more project cards as needed */}
           </div>
         </div>
