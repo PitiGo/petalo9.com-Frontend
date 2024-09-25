@@ -1,0 +1,149 @@
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Arial', sans-serif;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  .background-name {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-30deg);
+    font-size: 150px;
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.03);
+    z-index: -1;
+    user-select: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 10px;
+  }
+  
+  canvas {
+    border: 3px solid #333;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 1;
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .score-board {
+    font-size: 24px;
+    margin: 20px 0;
+    position: relative;
+    z-index: 2;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .game-over-overlay,
+  .instructions-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 24px;
+    z-index: 3;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .instructions-overlay {
+    background: rgba(0, 0, 0, 0.9);
+  }
+  
+  .instructions-overlay h2 {
+    margin-bottom: 20px;
+  }
+  
+  .instructions-overlay ul {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 20px;
+  }
+  
+  .instructions-overlay li {
+    margin: 10px 0;
+  }
+  
+  .game-over-overlay div,
+  .instructions-overlay p {
+    margin: 10px 0;
+  }
+  
+  .restart-button,
+  .start-button {
+    margin-top: 20px;
+    padding: 12px 24px;
+    font-size: 18px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .restart-button:hover,
+  .start-button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .restart-button:active,
+  .start-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  @media (max-width: 600px) {
+    .background-name {
+      font-size: 100px;
+    }
+  
+    .score-board {
+      font-size: 18px;
+    }
+  
+    .game-over-overlay,
+    .instructions-overlay {
+      font-size: 20px;
+    }
+  
+    .restart-button,
+    .start-button {
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .game-container {
+    animation: fadeIn 0.5s ease-in;
+  }

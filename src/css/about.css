@@ -1,0 +1,60 @@
+/* About Section Styles */
+.about-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    color: #333;
+  }
+  
+  .about-title {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    text-align: center;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+  }
+  
+  .about-paragraph {
+    margin-bottom: 20px;
+    text-align: justify;
+  }
+  
+  .about-paragraph:last-child {
+    margin-bottom: 0;
+  }
+  
+  .highlight {
+    color: #3498db;
+    font-weight: bold;
+  }
+  
+  .skills-list {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 30px;
+  }
+  
+  .skill-item {
+    background-color: #ecf0f1;
+    color: #2c3e50;
+    padding: 8px 16px;
+    margin: 5px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+  }
+  
+  @media (max-width: 600px) {
+    .about-title {
+      font-size: 2rem;
+    }
+  
+    .about-paragraph {
+      font-size: 0.9rem;
+    }
+  }
