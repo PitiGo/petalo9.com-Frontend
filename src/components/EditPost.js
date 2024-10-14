@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Editor } from '@tinymce/tinymce-react';
 
@@ -9,6 +9,7 @@ function EditPost() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [image, setImage] = useState(null);
+  const editorRef = useRef(null);
   const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
@@ -20,7 +21,7 @@ function EditPost() {
         setContent(data.content);
       })
       .catch(error => console.error('Error fetching post:', error));
-  }, [id]);
+  }, [id, apiUrl]);
 
   const handleImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
@@ -28,12 +29,40 @@ function EditPost() {
     }
   };
 
+  const handleYouTubeEmbed = () => {
+    const youtubeUrl = prompt("Por favor, ingresa la URL completa del video de YouTube:");
+    if (youtubeUrl) {
+      const videoId = extractYouTubeId(youtubeUrl);
+      if (videoId) {
+        const embedCode = `<div class="video-container"><iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+        editorRef.current.insertContent(embedCode);
+      } else {
+        alert("URL de YouTube no válida. Por favor, intenta de nuevo.");
+      }
+    }
+  };
+
+  const handleLinkInsert = () => {
+    const linkUrl = prompt("Por favor, ingresa la URL del enlace:");
+    const linkText = prompt("Por favor, ingresa el texto para mostrar:");
+    if (linkUrl && linkText) {
+      const linkHtml = `<a href="${linkUrl}" target="_blank" rel="noopener noreferrer">${linkText}</a>`;
+      editorRef.current.insertContent(linkHtml);
+    }
+  };
+
+  const extractYouTubeId = (url) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     const formData = new FormData();
     formData.append('title', title);
-    formData.append('content', content);
+    formData.append('content', editorRef.current.getContent());
     if (image) {
       formData.append('image', image, image.name);
     }
@@ -77,6 +106,7 @@ function EditPost() {
         onChange={handleImageChange}
       />
       <Editor
+        onInit={(evt, editor) => editorRef.current = editor}
         apiKey='d2cmewtag6kjp2p8p17tsmvvvqjqxaqifks441d9txizwi3g'
         initialValue={content}
         init={{
@@ -90,10 +120,17 @@ function EditPost() {
           toolbar: 'undo redo | formatselect | ' +
           'bold italic backcolor | alignleft aligncenter ' +
           'alignright alignjustify | bullist numlist outdent indent | ' +
-          'removeformat | help'
-        }}
-        onEditorChange={(content, editor) => {
-          setContent(content);
+          'removeformat | help | youtube customlink',
+          setup: (editor) => {
+            editor.ui.registry.addButton('youtube', {
+              text: 'YouTube',
+              onAction: handleYouTubeEmbed
+            });
+            editor.ui.registry.addButton('customlink', {
+              text: 'Insertar Enlace',
+              onAction: handleLinkInsert
+            });
+          }
         }}
       />
       <button type="submit">Actualizar Post</button>

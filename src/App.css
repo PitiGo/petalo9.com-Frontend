@@ -1,0 +1,33 @@
+/* App.css */
+.main-content {
+    padding-top: 80px; /* Ajusta esto para que coincida con la altura de tu header */
+    padding-right: 120px; /* 100px del ancho del sidebar + 20px de padding extra */
+    padding-left: 120px;
+  }
+  
+  /* Ajustes para páginas específicas */
+  .blog-container,
+  .about-container,
+  .games-page {
+    padding-top: 20px;
+  }
+  
+  /* Ajuste para pantallas pequeñas */
+  @media (max-width: 768px) {
+    .main-content {
+      padding-right: 20px;
+    }
+    
+    .sidebar-menu {
+      width: 100%;
+      height: auto;
+      position: static;
+      margin-top: 80px;
+    }
+  }
+
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }

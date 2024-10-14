@@ -36,6 +36,15 @@ function TextEditor() {
     setContent(content);
   };
 
+  const handleLinkInsert = () => {
+    const linkUrl = prompt("Por favor, ingresa la URL del enlace:");
+    const linkText = prompt("Por favor, ingresa el texto para mostrar:");
+    if (linkUrl && linkText) {
+      const linkHtml = `<a href="${linkUrl}" target="_blank" rel="noopener noreferrer">${linkText}</a>`;
+      editorRef.current.insertContent(linkHtml);
+    }
+  };
+
   const handleYouTubeEmbed = () => {
     const youtubeUrl = prompt("Por favor, ingresa la URL completa del video de YouTube:");
     if (youtubeUrl) {
@@ -148,12 +157,16 @@ function TextEditor() {
           toolbar: 'undo redo | blocks | ' +
             'bold italic forecolor | alignleft aligncenter ' +
             'alignright alignjustify | bullist numlist outdent indent | ' +
-            'removeformat | help | youtube',
+            'removeformat | help | youtube customlink',
           content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
           setup: (editor) => {
             editor.ui.registry.addButton('youtube', {
               text: 'YouTube',
               onAction: handleYouTubeEmbed
+            });
+            editor.ui.registry.addButton('customlink', {
+              text: 'Insertar Enlace',
+              onAction: handleLinkInsert
             });
           }
         }}

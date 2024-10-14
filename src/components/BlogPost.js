@@ -1,6 +1,8 @@
+
 import React, { useState, useEffect, Suspense } from 'react';
 import { useParams } from 'react-router-dom';
 import gameRegistry from './GameRegistry';
+import '../css/blogpost.css';
 
 function BlogPost() {
     const { id } = useParams();
@@ -17,7 +19,7 @@ function BlogPost() {
             })
             .then(data => setPost(data))
             .catch(error => console.error('Error fetching data:', error));
-    }, [id]);
+    }, [id, apiUrl]);
 
     const renderPostContent = (content) => {
         const contentParts = content.split(/\{\{\{Juego:(\w+)\}\}\}/g);
@@ -27,11 +29,19 @@ function BlogPost() {
                 const GameComponent = React.lazy(gameRegistry[part].path);
                 return (
                     <Suspense key={index} fallback={<div>Loading...</div>}>
-                        <GameComponent />
+                        <div className="game-container my-4">
+                            <GameComponent />
+                        </div>
                     </Suspense>
                 );
             } else {
-                return <div key={index} dangerouslySetInnerHTML={{ __html: part }} />;
+                return (
+                    <div 
+                        key={index} 
+                        className="content-part"
+                        dangerouslySetInnerHTML={{ __html: part.replace(/<img /g, '<img class="img-fluid" ') }} 
+                    />
+                );
             }
         });
     };
@@ -41,24 +51,27 @@ function BlogPost() {
     }
 
     return (
-        <div className="container py-5">
-            <div className="row">
-                <div className="col-lg-8 offset-lg-2">
-                    <h1 className="mb-4">{post.title}</h1>
-                    {post.imageUrl && (
-                        <img
-                            src={post.imageUrl}
-                            alt={post.title}
-                            className="img-fluid rounded mb-4"
-                        />
-                    )}
-                    <p className="text-muted">
-                        Autor: {post.author} | 
-                        Publicado: {post.fechaCreacion && new Date(post.fechaCreacion).toLocaleString()}
-                    </p>
-                    <div className="post-content">
-                        {renderPostContent(post.content)}
-                    </div>
+        <div className="container-fluid py-3 py-md-5 blog-post-container">
+            <div className="row justify-content-center">
+                <div className="col-12 col-md-10 col-lg-8">
+                    <article className="blog-post">
+                        <h1 className="mb-3 mb-md-4">{post.title}</h1>
+                        {post.imageUrl && (
+                            <img
+                                src={post.imageUrl}
+                                alt={post.title}
+                                className="img-fluid rounded mb-3 mb-md-4"
+                            />
+                        )}
+                        <p className="text-muted small">
+                            <span className="d-block d-md-inline">Autor: {post.author}</span>
+                            <span className="d-none d-md-inline"> | </span>
+                            <span className="d-block d-md-inline">Publicado: {post.fechaCreacion && new Date(post.fechaCreacion).toLocaleString()}</span>
+                        </p>
+                        <div className="post-content">
+                            {renderPostContent(post.content)}
+                        </div>
+                    </article>
                 </div>
             </div>
         </div>

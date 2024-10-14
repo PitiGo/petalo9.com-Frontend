@@ -1,0 +1,35 @@
+.blog-post {
+    max-width: 100%;
+    word-wrap: break-word;
+}
+
+.blog-post img {
+    max-width: 100%;
+    height: auto;
+}
+
+.blog-post h1 {
+    font-size: 2rem;
+}
+
+@media (max-width: 768px) {
+    .blog-post h1 {
+        font-size: 1.5rem;
+    }
+}
+
+.content-part {
+    margin-bottom: 1rem;
+}
+
+.game-container {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+@media (max-width: 576px) {
+    .container-fluid {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}

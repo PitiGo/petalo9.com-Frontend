@@ -1,21 +1,26 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';  // Import useNavigate
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from './firebase-config'; // Ensure this import is correct
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { auth } from './firebase-config';
 
 function LoginForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const navigate = useNavigate(); // Initialize useNavigate here
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        // Check if user is logged in
+        const token = localStorage.getItem('auth-token');
+        setIsLoggedIn(!!token);
+    }, []);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const token = await userCredential.user.getIdToken();
-            console.log('Login successful:', userCredential.user);
-      
-            // Store the token in localStorage
+            
             localStorage.setItem('auth-token', token);
             localStorage.setItem('user', email);
             localStorage.setItem('userRole', "admin");
@@ -23,7 +28,7 @@ function LoginForm() {
             console.log('Login successful:', email);
             console.log('userRole:', "admin");
 
-            // Navigate to the main route
+            setIsLoggedIn(true);
             navigate('/edit');
            
         } catch (error) {
@@ -31,6 +36,29 @@ function LoginForm() {
             // Display error message to user
         }
     };
+
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            localStorage.removeItem('auth-token');
+            localStorage.removeItem('user');
+            localStorage.removeItem('userRole');
+            setIsLoggedIn(false);
+            navigate('/');
+            console.log('Logout successful');
+        } catch (error) {
+            console.error('Error during logout:', error);
+        }
+    };
+
+    if (isLoggedIn) {
+        return (
+            <div>
+                <p>You are logged in.</p>
+                <button onClick={handleLogout}>Deslogearse</button>
+            </div>
+        );
+    }
 
     return (
         <form onSubmit={handleSubmit}>

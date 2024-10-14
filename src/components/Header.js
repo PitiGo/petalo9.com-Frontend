@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import '../css/header.css';
+import logoImage from '../images/logo.png'; // Asegúrate de que la ruta sea correcta
 
 const Header = () => {
   const [username, setUsername] = useState('');
   const [scrollPosition, setScrollPosition] = useState(0);
+  const location = useLocation();
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('user');
@@ -21,33 +25,43 @@ const Header = () => {
     top: 0,
     left: 0,
     right: 0,
-    backgroundColor: `rgba(243, 243, 243, ${Math.min(scrollPosition / 300, 0.9)})`,
-    padding: '20px 0',
-    textAlign: 'center',
+    height: '80px',
+    backgroundColor: `rgba(243, 243, 243, ${Math.max(0.8, Math.min(scrollPosition / 300, 0.95))})`,
     transition: 'all 0.3s ease',
     zIndex: 1000,
     boxShadow: scrollPosition > 50 ? '0 2px 10px rgba(0, 0, 0, 0.1)' : 'none',
+    display: 'flex',
+    alignItems: 'center',
+    padding: '0 20px',
   };
 
-  const titleStyle = {
-    fontSize: `${Math.max(2.5 - scrollPosition / 400, 1.8)}rem`,
-    margin: 0,
-    color: '#2c3e50',
-    transition: 'all 0.3s ease',
-  };
-
-  const usernameStyle = {
-    fontSize: '1rem',
-    color: '#7f8c8d',
-    margin: '5px 0 0 0',
-    opacity: Math.max(1 - scrollPosition / 200, 0),
-    transition: 'all 0.3s ease',
+  const containerStyle = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    maxWidth: '1200px',
+    margin: '0 auto',
   };
 
   return (
     <header style={headerStyle}>
-      <h1 style={titleStyle}>Pétalo 9</h1>
-      {username && <p style={usernameStyle}>Bienvenido, {username}</p>}
+      <div style={containerStyle}>
+        <Link to="/" className="logo-link">
+          <div className="logo-container">
+            <img src={logoImage} alt="Logo" className="circular-logo" />
+          </div>
+        </Link>
+        <div className="nav-welcome-container">
+          <nav>
+            <Link to="/" className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}>Home</Link>
+            <Link to="/blog" className={`nav-link ${location.pathname === '/blog' ? 'active' : ''}`}>Blog</Link>
+            <Link to="/about" className={`nav-link ${location.pathname === '/about' ? 'active' : ''}`}>About</Link>
+            <Link to="/contact" className={`nav-link ${location.pathname === '/contact' ? 'active' : ''}`}>Contact</Link>
+          </nav>
+          {username && <span className="welcome-message">Bienvenido, {username}</span>}
+        </div>
+      </div>
     </header>
   );
 };

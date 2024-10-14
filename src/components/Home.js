@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import DOMPurify from 'dompurify';
-import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
+import { FaGithub, FaTwitter } from 'react-icons/fa';
 import '../css/home.css';
+import ThreeJSCSS3DSprites from './juegos/ThreeJSCSS3DSprites';
 
 function Home() {
-  const technologies = ['Java', 'Python', 'React', 'Node.js', 'SQL', 'Git'];
+  const technologies = ['Java', 'Python', 'React', 'Node.js', 'SQL', 'Git', 'AI-assisted development', 'Flutter'];
   const [latestPost, setLatestPost] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -25,22 +26,23 @@ function Home() {
         console.error('Error fetching latest blog post:', error);
         setIsLoading(false);
       });
-  }, []);
+  }, [apiUrl]);
 
   const createMarkup = (html) => {
     return { __html: DOMPurify.sanitize(html) };
-  }
+  };
 
   return (
     <div className="home-container">
       <header className="hero">
         <div className="hero-content">
           <h1 className="main-title">Dante Collazzi</h1>
-          <p className="subtitle">Passionate Developer & Problem Solver</p>
+          <p className="subtitle">Experienced Developer, Educator & Tech Enthusiast</p>
           <div className="cta-buttons">
             <a href="#about" className="cta-button primary">Learn More</a>
             <a href="#latest-post" className="cta-button secondary">Read Blog</a>
           </div>
+          <ThreeJSCSS3DSprites />
         </div>
       </header>
 
@@ -50,14 +52,21 @@ function Home() {
           <div className="about-content">
             <div className="about-text">
               <p>
-                Hello! I'm Dante, a passionate developer with a knack for creating elegant solutions
-                to complex problems. With a strong foundation in Java and Python, I'm constantly
-                expanding my skillset to stay at the forefront of technology.
+                Hello! I'm Dante, a passionate developer with years of experience in creating elegant solutions
+                to complex problems. My journey in tech has been driven by curiosity and a desire to make a positive impact.
               </p>
               <p>
-                My journey in tech is driven by curiosity and a desire to make a positive impact.
-                Whether it's building robust backend systems or crafting intuitive user interfaces,
-                I approach each project with enthusiasm and attention to detail.
+                With a strong foundation in Java and Python, I've honed my skills across various aspects of software development.
+                From building robust backend systems to crafting intuitive user interfaces, I approach each project with 
+                enthusiasm and attention to detail.
+              </p>
+              <p>
+                My experience includes a rewarding period as a programming instructor, which broadened my perspective
+                and enhanced my ability to communicate complex concepts effectively.
+              </p>
+              <p>
+                Recently, I've been exploring AI-assisted development tools, integrating them into my workflow
+                to enhance productivity and push the boundaries of what's possible in software development.
               </p>
             </div>
             <div className="skills-container">
@@ -107,12 +116,11 @@ function Home() {
         <div className="container">
           <h2 className="section-title">Featured Projects</h2>
           <div className="projects-grid">
-            {/* Project 1 - Código fuente de tu página personal */}
             <div className="project-card">
               <h3>Personal Website</h3>
               <p>
-                This is the source code of my personal website, featuring a blog and
-                embedded games, built with React, CSS, and other modern technologies.
+                This website showcases my journey as a developer, featuring a blog and
+                embedded games, built with React and modern web technologies.
               </p>
               <a
                 href="https://github.com/PitiGo/petalo9.com-Frontend"
@@ -124,14 +132,16 @@ function Home() {
               </a>
             </div>
 
-            {/* Project 2 - Otro proyecto */}
             <div className="project-card">
-              <h3>Project 2</h3>
-              <p>Short description of the project.</p>
-              <a href="#" className="project-link">View Project</a>
+              <h3>AI-Assisted Development</h3>
+              <p>
+                Exploring the integration of AI tools in software development to
+                enhance productivity and innovation.
+              </p>
+              <a href="#" className="project-link">
+                Learn More
+              </a>
             </div>
-
-            {/* Add more project cards as needed */}
           </div>
         </div>
       </section>
@@ -142,14 +152,10 @@ function Home() {
             <a href="https://github.com/PitiGo" target="_blank" rel="noopener noreferrer">
               <FaGithub />
             </a>
-            <a href="#" target="_blank" rel="noopener noreferrer">
-              <FaLinkedin />
-            </a>
-            <a href="#" target="_blank" rel="noopener noreferrer">
+            <a href="https://x.com/DAcerbus" target="_blank" rel="noopener noreferrer">
               <FaTwitter />
             </a>
           </div>
-          <p>&copy; 2023 Dante Collazzi. All rights reserved.</p>
         </div>
       </footer>
     </div>

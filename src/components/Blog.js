@@ -64,35 +64,29 @@ function Blog() {
         <div className="blog-grid">
           {blogPosts.map(post => (
             <div key={post.id} className="blog-card">
-              {post.imageUrl && (
-                <img
-                  src={post.imageUrl}
-                  alt={post.title}
-                  className="blog-image"
-                />
-              )}
+              <div className="blog-image-container">
+                {post.imageUrl && (
+                  <img
+                    src={post.imageUrl}
+                    alt={post.title}
+                    className="blog-image"
+                  />
+                )}
+              </div>
               <div className="blog-card-content">
-                <h3>{post.title}</h3>
-                <div dangerouslySetInnerHTML={{ __html: post.content.substring(0, 100) + '...' }}></div>
+                <h3 className="blog-card-title">{post.title}</h3>
+                <div className="blog-excerpt" dangerouslySetInnerHTML={{ __html: post.content.substring(0, 100) + '...' }}></div>
                 <p className="blog-meta">Author: {post.author}</p>
                 <p className="blog-meta">Published: {new Date(post.fechaCreacion).toLocaleString()}</p>
-                <Link to={`/blog/${post.id}`} className="read-more">Read More</Link>
-                {isAdmin && (
-                  <>
-                    <button
-                      onClick={() => handleEdit(post.id)}
-                      className="edit-button"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(post.id)}
-                      className="delete-button"
-                    >
-                      Delete
-                    </button>
-                  </>
-                )}
+                <div className="blog-card-actions">
+                  <Link to={`/blog/${post.id}`} className="read-more">Read More</Link>
+                  {isAdmin && (
+                    <div className="admin-buttons">
+                      <button onClick={() => handleEdit(post.id)} className="edit-button">Edit</button>
+                      <button onClick={() => handleDelete(post.id)} className="delete-button">Delete</button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           ))}
