@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/Header'; 
+import Header from './components/Header';
 import Footer from './components/Footer';
 import SidebarMenu from './components/SideBarMenu';
 import Home from './components/Home';
@@ -14,6 +14,8 @@ import ErrorComponent from './components/ErrorComponent';
 import TextEditor from './components/TextEditor';
 import EditPost from './components/EditPost';
 import Contact from './components/Contact';
+
+import GamePlayer from './components/GamePlayer';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
@@ -31,6 +33,7 @@ function App() {
               <Route path="/blog/:id" element={<BlogPost />} />
               <Route path="/login" element={<Login />} />
               <Route path="/games" element={<GamePage />} />
+              <Route path="/games/:gameId" element={<GamePlayer />} />
               <Route path="/error" element={<ErrorComponent />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/edit" element={
@@ -46,7 +49,7 @@ function App() {
               {/* Aquí puedes añadir rutas para tus juegos individuales */}
             </Routes>
           </main>
-         {/*  <SidebarMenu /> */}
+          {/*  <SidebarMenu /> */}
         </div>
         <Footer />
       </div>

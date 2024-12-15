@@ -1,0 +1,137 @@
+.games-page {
+    padding: 80px 20px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+ }
+ 
+ .games-section {
+    margin-bottom: 40px;
+ }
+ 
+ .games-section h1 {
+    font-size: 2.5em;
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+ }
+ 
+ .games-section h2 {
+    color: #333;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eee;
+    font-size: 1.8em;
+ }
+ 
+ .games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+ }
+ 
+ .game-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    height: 350px;
+    overflow: hidden;
+ }
+ 
+ .game-card-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    flex-shrink: 0;
+ }
+ 
+ .game-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.3s ease;
+ }
+ 
+ .placeholder-image {
+    width: 100%;
+    height: 100%;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+    color: #999;
+ }
+ 
+ .game-card-content {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+ }
+ 
+ .game-card h3 {
+    margin: 0 0 10px;
+    color: #333;
+    font-size: 1.4em;
+ }
+ 
+ .game-card p {
+    margin: 0;
+    font-size: 0.9em;
+    color: #666;
+    line-height: 1.5;
+ }
+ 
+ .game-card .external-link-indicator {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 1.2em;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.5);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+ }
+ 
+ .game-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+ }
+ 
+ .game-card:hover .game-card-image img {
+    transform: scale(1.05);
+ }
+ 
+ .game-card:hover .external-link-indicator {
+    background: rgba(0, 0, 0, 0.7);
+ }
+ 
+ @media (max-width: 768px) {
+    .games-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+ 
+    .game-card {
+        height: 300px;
+    }
+ 
+    .game-card-image {
+        height: 150px;
+    }
+ }

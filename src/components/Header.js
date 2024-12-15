@@ -56,6 +56,7 @@ const Header = () => {
           <nav>
             <Link to="/" className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}>Home</Link>
             <Link to="/blog" className={`nav-link ${location.pathname === '/blog' ? 'active' : ''}`}>Blog</Link>
+            <Link to="/games" className={`nav-link ${location.pathname === '/games' ? 'active' : ''}`}>Games</Link>
             <Link to="/about" className={`nav-link ${location.pathname === '/about' ? 'active' : ''}`}>About</Link>
             <Link to="/contact" className={`nav-link ${location.pathname === '/contact' ? 'active' : ''}`}>Contact</Link>
           </nav>
