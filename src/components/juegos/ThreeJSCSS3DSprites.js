@@ -14,9 +14,9 @@ const ThreeJSCSS3DSprites = () => {
 
     let width = mountRef.current.clientWidth;
     let height = mountRef.current.clientHeight;
-    
-    const renderer = new THREE.WebGLRenderer({ 
-      antialias: true, 
+
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
       alpha: true,
       premultipliedAlpha: false
     });
@@ -78,7 +78,7 @@ const ThreeJSCSS3DSprites = () => {
 
     function animate(time) {
       frameIdRef.current = requestAnimationFrame(animate);
-      
+
       const deltaTime = time - lastTime;
       lastTime = time;
 

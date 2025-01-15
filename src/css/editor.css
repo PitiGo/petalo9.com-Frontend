@@ -1,17 +1,22 @@
+/* Tokens del editor */
 .game-token {
-  background-color: #e0e0e0; /* Fondo gris claro */
-  color: #333; /* Texto oscuro */
-  padding: 2px 5px; /* Espaciado interno */
-  border-radius: 5px; /* Bordes redondeados */
-  font-weight: bold; /* Texto en negrita */
-  margin: 0 2px; /* Margen a los lados para separarlo del texto */
+  background-color: #e0e0e0;
+  color: #333;
+  padding: 2px 5px;
+  border-radius: 5px;
+  font-weight: bold;
+  margin: 0 2px;
 }
 
+/* Contenedor de video */
 .video-container {
   position: relative;
-  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+  padding-bottom: 56.25%;
   height: 0;
   overflow: hidden;
+  margin: 1.5em 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .video-container iframe {
@@ -20,5 +25,473 @@
   left: 0;
   width: 100%;
   height: 100%;
+  border-radius: 8px;
 }
 
+/* Contenedor principal del editor */
+.editor-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.editor-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  background-color: #fff;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-control.error {
+  border-color: #ef4444;
+  background-color: #fff5f5;
+}
+
+/* Sistema de alertas */
+.alert {
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  animation: slideIn 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.alert-success {
+  background-color: #dcfce7;
+  color: #166534;
+  border: 1px solid #16a34a;
+}
+
+.alert-error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #ef4444;
+}
+
+.alert-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0 5px;
+  color: inherit;
+  transition: opacity 0.2s ease;
+}
+
+.alert-close:hover {
+  opacity: 0.7;
+}
+
+/* Subida de imágenes */
+.image-upload-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 10px;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.image-upload-container:hover {
+  border-color: #3b82f6;
+  background-color: rgba(59, 130, 246, 0.05);
+}
+
+.image-preview {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Mensajes de error */
+.error-message {
+  color: #ef4444;
+  font-size: 14px;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.error-message::before {
+  content: '⚠️';
+}
+
+/* Botón de envío */
+.submit-button {
+  padding: 12px 24px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+}
+
+.submit-button:hover:not(:disabled) {
+  background-color: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(59, 130, 246, 0.4);
+}
+
+.submit-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submit-button:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.submit-button.submitting {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Bloques de código */
+.code-block {
+  margin: 1.5em 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: #282c34;
+}
+
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #21252b;
+  border-bottom: 1px solid #373b41;
+}
+
+.code-language {
+  font-weight: 600;
+  color: #abb2bf;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+}
+
+.copy-button {
+  padding: 6px 12px;
+  background: #323842;
+  color: #abb2bf;
+  border: 1px solid #373b41;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.copy-button:hover {
+  background: #3e4451;
+  color: #ffffff;
+}
+
+.copy-button:active {
+  transform: scale(0.95);
+}
+
+/* Modal para ingresar código */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content h3 {
+  margin: 0;
+  color: #1f2937;
+}
+
+.language-select {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+.code-input {
+  width: 100%;
+  height: 200px;
+  font-family: 'Fira Code', monospace;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+  background: #282c34;
+  color: #abb2bf;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.modal-buttons button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.modal-buttons .submit-btn {
+  background: #3b82f6;
+  color: white;
+}
+
+.modal-buttons .submit-btn:hover {
+  background: #2563eb;
+}
+
+.modal-buttons .cancel-btn {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.modal-buttons .cancel-btn:hover {
+  background: #d1d5db;
+}
+
+/* Estilos de código y sintaxis */
+pre {
+  margin: 0;
+  padding: 16px;
+  overflow-x: auto;
+  background: #282c34;
+}
+
+code {
+  font-family: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', Consolas, monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: #abb2bf;
+}
+
+/* Colores de sintaxis */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #7f848e;
+  font-style: italic;
+}
+
+.token.function {
+  color: #61afef;
+}
+
+.token.keyword {
+  color: #c678dd;
+}
+
+.token.string {
+  color: #98c379;
+}
+
+.token.number {
+  color: #d19a66;
+}
+
+.token.operator {
+  color: #56b6c2;
+}
+
+.token.class-name {
+  color: #e5c07b;
+}
+
+/* Personalizaciones del editor TinyMCE */
+.tox-tinymce {
+  border-radius: 8px !important;
+  border-color: #ddd !important;
+}
+
+.tox .tox-toolbar__primary {
+  background: #f8fafc !important;
+  border-bottom: 1px solid #ddd !important;
+}
+
+.tox .tox-tbtn {
+  border-radius: 4px !important;
+}
+
+.tox .tox-tbtn:hover {
+  background: #f1f5f9 !important;
+}
+
+/* Diseño responsivo */
+@media (max-width: 768px) {
+  .editor-container {
+    margin: 20px auto;
+    padding: 15px;
+  }
+  
+  .image-upload-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .form-control,
+  .submit-button {
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+
+  .code-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .code-language {
+    font-size: 0.75rem;
+  }
+  
+  .copy-button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .modal-content {
+    width: 95%;
+    padding: 16px;
+  }
+
+  .code-input {
+    height: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .editor-container {
+    margin: 10px;
+    padding: 10px;
+  }
+  
+  pre {
+    padding: 12px;
+    font-size: 12px;
+  }
+}
+
+.code-block pre {
+  position: relative;
+  margin-top: 0;
+}
+
+.toolbar-item {
+  position: absolute;
+  top: -40px;
+  right: 10px;
+}
+
+.code-block {
+  padding-top: 40px;
+  position: relative;
+}
+
+/* Contenedor de audio */
+.audio-container {
+  margin: 1.5em 0;
+  padding: 1em;
+  background: #f3f4f6;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.audio-title {
+  margin-bottom: 0.5em;
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.9em;
+}
+
+.audio-container audio {
+  width: 100%;
+  border-radius: 4px;
+}
+
+/* Personalización del reproductor de audio */
+.audio-container audio::-webkit-media-controls-panel {
+  background-color: #ffffff;
+}
+
+.audio-container audio::-webkit-media-controls-play-button {
+  background-color: #3b82f6;
+  border-radius: 50%;
+}
+
+.audio-container audio::-webkit-media-controls-timeline {
+  background-color: #e5e7eb;
+  border-radius: 2px;
+  height: 4px;
+}

@@ -35,127 +35,159 @@ function Home() {
   return (
     <div className="home-container">
       <header className="hero">
+        <div className="hero-overlay"></div>
         <div className="hero-content">
-          <h1 className="main-title">Dante Collazzi</h1>
-          <p className="subtitle">Experienced Developer, Educator & Tech Enthusiast</p>
-          <div className="cta-buttons">
-            <a href="#about" className="cta-button primary">Learn More</a>
-            <a href="#latest-post" className="cta-button secondary">Read Blog</a>
+          <div className="hero-text">
+            <h1 className="main-title">
+              <span className="greeting">Hello, I'm</span>
+              <span className="name">Dante Collazzi</span>
+            </h1>
+            <p className="subtitle">Creating digital experiences through code</p>
+            <div className="role-tags">
+              <span>Software Developer</span>
+              <span>Educator</span>
+              <span>Tech Enthusiast</span>
+            </div>
+            <div className="cta-buttons">
+              <a href="#projects" className="cta-button primary">View Projects</a>
+              <Link to="/blog" className="cta-button secondary">Read Blog</Link>
+            </div>
           </div>
-          <ThreeJSCSS3DSprites />
+          <div className="hero-visual">
+            <ThreeJSCSS3DSprites />
+          </div>
+        </div>
+        <div className="scroll-indicator">
+          <div className="mouse"></div>
+          <span>Scroll to explore</span>
         </div>
       </header>
 
       <section id="about" className="about-section">
-        <div className="container">
-          <h2 className="section-title">About Me</h2>
-          <div className="about-content">
-            <div className="about-text">
-              <p>
-                Hello! I'm Dante, a passionate developer with years of experience in creating elegant solutions
-                to complex problems. My journey in tech has been driven by curiosity and a desire to make a positive impact.
-              </p>
-              <p>
-                With a strong foundation in Java and Python, I've honed my skills across various aspects of software development.
-                From building robust backend systems to crafting intuitive user interfaces, I approach each project with 
-                enthusiasm and attention to detail.
-              </p>
-              <p>
-                My experience includes a rewarding period as a programming instructor, which broadened my perspective
-                and enhanced my ability to communicate complex concepts effectively.
-              </p>
-              <p>
-                Recently, I've been exploring AI-assisted development tools, integrating them into my workflow
-                to enhance productivity and push the boundaries of what's possible in software development.
-              </p>
-            </div>
-            <div className="skills-container">
-              <h3>Tech Stack</h3>
-              <div className="technologies">
-                {technologies.map((tech, index) => (
-                  <span key={index} className="tech-item">
-                    {tech}
-                  </span>
-                ))}
-              </div>
+        <h2 className="section-title">About Me</h2>
+        <div className="about-content">
+          <div className="about-text">
+            <p>
+              Hello! I'm Dante, a passionate developer with years of experience in creating elegant solutions
+              to complex problems. My journey in tech has been driven by curiosity and a desire to make a positive impact.
+            </p>
+            <p>
+              With a strong foundation in Java and Python, I've honed my skills across various aspects of software development.
+              From building robust backend systems to crafting intuitive user interfaces, I approach each project with
+              enthusiasm and attention to detail.
+            </p>
+            <p>
+              My experience includes a rewarding period as a programming instructor, which broadened my perspective
+              and enhanced my ability to communicate complex concepts effectively.
+            </p>
+            <p>
+              Recently, I've been exploring AI-assisted development tools, integrating them into my workflow
+              to enhance productivity and push the boundaries of what's possible in software development.
+            </p>
+          </div>
+          <div className="skills-container">
+            <h3>Tech Stack</h3>
+            <div className="technologies">
+              {technologies.map((tech, index) => (
+                <span key={index} className="tech-item">
+                  {tech}
+                </span>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
       <section id="latest-post" className="latest-post-section">
-        <div className="container">
-          <h2 className="section-title">Latest from the Blog</h2>
-          {isLoading ? (
-            <div className="loading">Loading latest post...</div>
-          ) : latestPost ? (
-            <div className="latest-post-card">
-              {latestPost.imageUrl && (
-                <img
-                  src={latestPost.imageUrl}
-                  alt={latestPost.title}
-                  className="latest-post-image"
-                />
-              )}
-              <div className="post-content">
-                <h3>{latestPost.title}</h3>
-                <div
-                  className="latest-post-excerpt"
-                  dangerouslySetInnerHTML={createMarkup(latestPost.content.substring(0, 150) + '...')}
-                />
-                <Link to={`/blog/${latestPost.id}`} className="read-more-link">Read More</Link>
-              </div>
+        <h2 className="section-title">Latest from the Blog</h2>
+        {isLoading ? (
+          <div className="loading">Loading latest post...</div>
+        ) : latestPost ? (
+          <div className="latest-post-card">
+            {latestPost.imageUrl && (
+              <img
+                src={latestPost.imageUrl}
+                alt={latestPost.title}
+                className="latest-post-image"
+              />
+            )}
+            <div className="post-content">
+              <h3>{latestPost.title}</h3>
+              <div
+                className="latest-post-excerpt"
+                dangerouslySetInnerHTML={createMarkup(latestPost.content.substring(0, 150) + '...')}
+              />
+              <Link to={`/blog/${latestPost.id}`} className="read-more-link">Read More</Link>
             </div>
-          ) : (
-            <p>No posts available at the moment.</p>
-          )}
-        </div>
+          </div>
+        ) : (
+          <p>No posts available at the moment.</p>
+        )}
       </section>
 
-      <section className="projects-section">
-        <div className="container">
-          <h2 className="section-title">Featured Projects</h2>
-          <div className="projects-grid">
-            <div className="project-card">
-              <h3>Personal Website</h3>
-              <p>
-                This website showcases my journey as a developer, featuring a blog and
-                embedded games, built with React and modern web technologies.
-              </p>
-              <a
-                href="https://github.com/PitiGo/petalo9.com-Frontend"
-                className="project-link"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                View on GitHub
-              </a>
-            </div>
+      <section id="projects" className="projects-section">
+        <h2 className="section-title">Featured Projects</h2>
+        <div className="projects-grid">
+          <div className="project-card">
+            <h3>3D Online Football Game</h3>
+            <p>
+              A multiplayer 3D football game built with Three.js and Socket.IO. Features real-time
+              multiplayer gameplay, team selection system, and interactive 3D graphics. Players can
+              join different rooms and compete in dynamic football matches.
+            </p>
+            <a
+              href="https://github.com/PitiGo/frontend_futball_3d_online"
+              className="project-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View on GitHub
+            </a>
+          </div>
 
-            <div className="project-card">
-              <h3>AI-Assisted Development</h3>
-              <p>
-                Exploring the integration of AI tools in software development to
-                enhance productivity and innovation.
-              </p>
-              <a href="#" className="project-link">
-                Learn More
-              </a>
-            </div>
+          <div className="project-card">
+            <h3>Personal Website</h3>
+            <p>
+              This website showcases my journey as a developer, featuring a blog and
+              embedded games, built with React and modern web technologies.
+            </p>
+            <a
+              href="https://github.com/PitiGo/petalo9.com-Frontend"
+              className="project-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View on GitHub
+            </a>
+          </div>
+
+          <div className="project-card">
+            <h3>Easy Budget</h3>
+            <p>
+              A modern web application for personal budget management with real-time banking integration.
+              Inspired by YNAB (You Need A Budget), it allows users to connect their bank accounts
+              and effectively manage their budget through an intuitive interface.
+            </p>
+            <a
+              href="https://github.com/PitiGo/Presupuesto_facil"
+              className="project-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View on GitHub
+            </a>
           </div>
         </div>
       </section>
 
       <footer className="footer">
-        <div className="container">
-          <div className="social-links">
-            <a href="https://github.com/PitiGo" target="_blank" rel="noopener noreferrer">
-              <FaGithub />
-            </a>
-            <a href="https://x.com/DAcerbus" target="_blank" rel="noopener noreferrer">
-              <FaTwitter />
-            </a>
-          </div>
+        <div className="social-links">
+          <a href="https://github.com/PitiGo" target="_blank" rel="noopener noreferrer">
+            <FaGithub />
+          </a>
+          <a href="https://x.com/DAcerbus" target="_blank" rel="noopener noreferrer">
+            <FaTwitter />
+          </a>
         </div>
       </footer>
     </div>

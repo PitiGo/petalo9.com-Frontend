@@ -1,0 +1,9 @@
+services:
+  petalo9-frontend:
+    build: .
+    ports:
+      - "3003:3000"
+    volumes:
+      - /opt/petalo9-frontend/build:/usr/src/app/build
+    environment:
+      - REACT_APP_API_URL=https://api.dantecollazzi.com

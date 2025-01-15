@@ -1,26 +1,30 @@
 .sidebar-menu {
-    width: 100px;
+    width: 60px; /* Reducido de 100px */
     height: 100vh;
     position: fixed;
-    top: 80px; /* Ajusta esto para que coincida con la altura de tu header */
+    top: 80px;
     right: 0;
     background-color: #f8f9fa;
-    padding: 20px;
+    padding: 10px;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: center;
     align-items: flex-start;
-  }
+    z-index: 100;
+}
   
-  .games-button {
-    padding: 10px 20px;
+.games-button {
+    padding: 10px;
     background-color: #007bff;
     color: white;
     text-decoration: none;
     border-radius: 5px;
     transition: background-color 0.3s ease;
-  }
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+}
   
-  .games-button:hover {
+.games-button:hover {
     background-color: #0056b3;
-  }
+}

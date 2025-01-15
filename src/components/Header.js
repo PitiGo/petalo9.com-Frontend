@@ -20,6 +20,14 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const containerStyle = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    // Eliminamos maxWidth y margin
+  };
+
   const headerStyle = {
     position: 'fixed',
     top: 0,
@@ -32,16 +40,7 @@ const Header = () => {
     boxShadow: scrollPosition > 50 ? '0 2px 10px rgba(0, 0, 0, 0.1)' : 'none',
     display: 'flex',
     alignItems: 'center',
-    padding: '0 20px',
-  };
-
-  const containerStyle = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    maxWidth: '1200px',
-    margin: '0 auto',
+    padding: '0', // Eliminamos el padding
   };
 
   return (

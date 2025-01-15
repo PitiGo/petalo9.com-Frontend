@@ -41,6 +41,11 @@ const gameRegistry = {
       path: () => import('./juegos/SnakeGame3D'),
       name: 'SnakeGame3D',
       description: 'SnakeGame3D.'
+    },
+    Terminal: {
+      path: () => import('./juegos/Terminal'),
+      name: 'Terminal',
+      description: 'Terminal.'
     }
     // Añade más juegos aquí
   };

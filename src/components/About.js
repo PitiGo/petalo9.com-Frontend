@@ -28,7 +28,7 @@ function About() {
         <li className="skill-item">JavaScript</li>
         <li className="skill-item">Python</li>
         <li className="skill-item">Flutter</li>
-        <li className="skill-item">AI-assisted development</li>
+       
       </ul>
       <p className="about-paragraph">
         I'm always eager to learn new skills and take on challenging projects that push the boundaries of what I can do, especially at the intersection of traditional software development and emerging AI technologies.
