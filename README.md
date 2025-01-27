@@ -2,6 +2,8 @@
 
 This is the source code for my personal website, **petalo9.com**, which features a blog, a selection of games, and more. The frontend is built using **React**, **CSS**, and other modern web technologies. The website is designed to showcase my projects, share insights through the blog, and provide interactive games.
 
+
+hola
 ![Website Preview](./image.png)
 
 ## Features
