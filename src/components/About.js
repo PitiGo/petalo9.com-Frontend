@@ -1,9 +1,13 @@
 import React from 'react';
 import '../css/about.css';
+import profileImage from '../images/yo.png';
 
 function About() {
   return (
     <div className="about-container">
+      <div className="profile-section">
+        <img src={profileImage} alt="Dante Collazzi" className="profile-image" />
+      </div>
       <h2 className="about-title">About Me</h2>
       <p className="about-paragraph">
         Hello! I'm a <span className="highlight">software engineer</span> with a degree in Computer Engineering from the University of Alicante, where I graduated in 2016. Since then, I have been continuously developing my skills and working in various roles within the tech industry.
@@ -28,7 +32,6 @@ function About() {
         <li className="skill-item">JavaScript</li>
         <li className="skill-item">Python</li>
         <li className="skill-item">Flutter</li>
-       
       </ul>
       <p className="about-paragraph">
         I'm always eager to learn new skills and take on challenging projects that push the boundaries of what I can do, especially at the intersection of traditional software development and emerging AI technologies.
