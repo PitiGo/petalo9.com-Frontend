@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../css/GamePage.css';
 import snakeImage from '../images/snake-game.png';
 import snake3dImage from '../images/snake-3d.png';
@@ -8,6 +8,7 @@ import footballImage from '../images/mamvsreptiles.webp';
 import io from 'socket.io-client';
 
 const GamesPage = () => {
+    const navigate = useNavigate();
     const [selectedGame, setSelectedGame] = useState(null);
     const [roomStates, setRoomStates] = useState({
         sala1: {
@@ -21,59 +22,117 @@ const GamesPage = () => {
             gameInProgress: false
         }
     });
-    const [sockets, setSockets] = useState({ sala1: null, sala2: null });
+    const [sockets, setSockets] = useState({});
+
+    // Generic function to fetch room status
+    const fetchRoomStatus = async (roomId) => {
+        try {
+            const response = await fetch(`https://football-online-3d.dantecollazzi.com/${roomId}/status`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                return await response.json();
+            } else {
+                console.warn(`${roomId} status response not OK:`, response.status);
+                return null;
+            }
+        } catch (error) {
+            console.log(`Error fetching ${roomId} status:`, error.message);
+            return null;
+        }
+    };
 
     useEffect(() => {
-        const socketSala1 = io('https://football-online-3d.dantecollazzi.com', {
-            transports: ['websocket'],
-            path: '/sala1/socket.io',
-        });
+        let socketConnections = {};
+        const availableRooms = ['sala1', 'sala2']; // Easily expandable room list
 
-        const socketSala2 = io('https://football-online-3d.dantecollazzi.com', {
-            transports: ['websocket'],
-            path: '/sala2/socket.io',
-        });
+        if (!window.location.pathname.includes('/games/mammals-vs-reptiles')) {
+            // Initialize sockets for each room
+            availableRooms.forEach(roomId => {
+                socketConnections[roomId] = io('https://football-online-3d.dantecollazzi.com', {
+                    transports: ['websocket'],
+                    path: `/${roomId}/socket.io`,
+                    reconnection: false
+                });
 
-        setSockets({ sala1: socketSala1, sala2: socketSala2 });
+                // Configure event handlers for each socket
+                socketConnections[roomId].on('gameStateUpdate', (gameState) => {
+                    if (gameState?.connectedPlayers) {
+                        const connectedPlayers = gameState.connectedPlayers.filter(player =>
+                            player.team === 'left' || player.team === 'right'
+                        );
 
-        const handleGameStateUpdate = (sala) => (gameState) => {
-            if (gameState?.connectedPlayers) {
-                const connectedPlayers = gameState.connectedPlayers.filter(player => 
-                    player.team === 'left' || player.team === 'right'
-                );
-
-                setRoomStates(prev => ({
-                    ...prev,
-                    [sala]: {
-                        ...prev[sala],
-                        playerCount: connectedPlayers.length,
-                        players: connectedPlayers
+                        setRoomStates(prev => ({
+                            ...prev,
+                            [roomId]: {
+                                ...prev[roomId],
+                                playerCount: connectedPlayers.length,
+                                players: connectedPlayers
+                            }
+                        }));
                     }
-                }));
-            }
-        };
+                });
 
-        const handleGameStateInfo = (sala) => (info) => {
-            setRoomStates(prev => ({
-                ...prev,
-                [sala]: {
-                    ...prev[sala],
-                    gameInProgress: info.currentState === 'playing'
+                socketConnections[roomId].on('gameStateInfo', (info) => {
+                    setRoomStates(prev => ({
+                        ...prev,
+                        [roomId]: {
+                            ...prev[roomId],
+                            gameInProgress: info.currentState === 'playing'
+                        }
+                    }));
+                });
+            });
+
+            setSockets(socketConnections);
+
+            // Function to update all rooms status
+            const updateAllRoomsStatus = async () => {
+                for (const roomId of availableRooms) {
+                    const data = await fetchRoomStatus(roomId);
+                    if (data) {
+                        setRoomStates(prev => ({
+                            ...prev,
+                            [roomId]: {
+                                playerCount: data.playerCount || 0,
+                                players: data.players || [],
+                                gameInProgress: data.gameInProgress || false
+                            }
+                        }));
+                    }
                 }
-            }));
-        };
+            };
 
-        socketSala1.on('gameStateUpdate', handleGameStateUpdate('sala1'));
-        socketSala2.on('gameStateUpdate', handleGameStateUpdate('sala2'));
-        
-        socketSala1.on('gameStateInfo', handleGameStateInfo('sala1'));
-        socketSala2.on('gameStateInfo', handleGameStateInfo('sala2'));
+            // Initial update
+            updateAllRoomsStatus();
 
-        return () => {
-            socketSala1.disconnect();
-            socketSala2.disconnect();
-        };
+            // Set up periodic updates
+            const statusInterval = setInterval(updateAllRoomsStatus, 10000);
+
+            // Cleanup function
+            return () => {
+                clearInterval(statusInterval);
+                Object.values(socketConnections).forEach(socket => {
+                    if (socket) socket.disconnect();
+                });
+            };
+        }
     }, []);
+
+    // Improved room join handler
+    const handleJoinRoom = (roomId) => {
+        // Disconnect all monitoring sockets before navigating
+        Object.values(sockets).forEach(socket => {
+            if (socket) socket.disconnect();
+        });
+
+        // Navigate to specific room
+        navigate(`/games/mammals-vs-reptiles?room=${roomId}`);
+    };
 
     const games = {
         singlePlayer: [
@@ -118,10 +177,6 @@ const GamesPage = () => {
         ]
     };
 
-    const handleJoinRoom = (roomId) => {
-        window.open(`https://football-online-3d.dantecollazzi.com/${roomId}`, '_blank');
-    };
-
     const SinglePlayerGameCard = ({ game }) => (
         <Link to={`/games/${game.id}`} className="game-card">
             <div className="game-card-image-container">
@@ -162,24 +217,24 @@ const GamesPage = () => {
 
     const RoomCard = ({ room }) => {
         const roomState = roomStates[room.id];
-        
+
         return (
             <div key={room.id} className="room-card">
                 <h3>{room.name}</h3>
                 <p>{room.description}</p>
-                
+
                 <div className="room-status">
                     <div className="game-status">
                         <span className={`status-indicator ${roomState.gameInProgress ? 'in-progress' : 'waiting'}`}>
                             {roomState.gameInProgress ? 'Game in Progress' : 'Waiting for Players'}
                         </span>
                     </div>
-                    
+
                     <div className="players-info">
                         <span className="player-count">
                             {roomState.playerCount} {roomState.playerCount === 1 ? 'player' : 'players'} online
                         </span>
-                        
+
                         {roomState.players.length > 0 && (
                             <div className="players-list">
                                 <div className="team">
@@ -208,9 +263,9 @@ const GamesPage = () => {
                         )}
                     </div>
                 </div>
-                
-                <button 
-                    onClick={() => handleJoinRoom(room.id)} 
+
+                <button
+                    onClick={() => handleJoinRoom(room.id)}
                     className="join-button"
                 >
                     Join Room

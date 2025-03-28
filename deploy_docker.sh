@@ -1,20 +1,20 @@
 #!/bin/bash
 
 # Configuración
-LOCAL_DIR="/Users/dantecollazzi/Desktop/petalo9/petalo9.com-Frontend-main"
+LOCAL_DIR="/Users/dantecollazzi/Desktop/petalo9.com-Frontend"
 REMOTE_USER="root"
 REMOTE_HOST="147.79.118.190"
 REMOTE_PATH="/opt/petalo9-frontend"
 
 # Función para mostrar mensajes de error y salir
 error_exit() {
-    echo "❌ Error: $1" 1>&2
-    exit 1
+  echo "❌ Error: $1" 1>&2
+  exit 1
 }
 
 # Función para mostrar mensajes de progreso
 log_message() {
-    echo "🔄 $1"
+  echo "🔄 $1"
 }
 
 # Verificar que estamos en el directorio correcto
@@ -41,11 +41,11 @@ ssh $REMOTE_USER@$REMOTE_HOST "mkdir -p $REMOTE_PATH" || error_exit "No se pudo 
 # Transferir archivos necesarios para Docker
 log_message "Transfiriendo archivos al servidor..."
 rsync -avz --progress \
-    --exclude 'node_modules' \
-    --exclude '.git' \
-    --exclude '.env' \
-    ./ \
-    $REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH/ || error_exit "Falló la transferencia de archivos"
+  --exclude 'node_modules' \
+  --exclude '.git' \
+  --exclude '.env' \
+  ./ \
+  $REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH/ || error_exit "Falló la transferencia de archivos"
 
 # Configurar Docker en el servidor
 log_message "Configurando Docker en el servidor..."

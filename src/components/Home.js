@@ -4,6 +4,7 @@ import DOMPurify from 'dompurify';
 import { FaGithub, FaTwitter } from 'react-icons/fa';
 import '../css/home.css';
 import ThreeJSCSS3DSprites from './juegos/ThreeJSCSS3DSprites';
+import HandInvadersGame from './juegos/HandInvadersGame';
 
 function Home() {
   const technologies = ['Java', 'Python', 'React', 'Node.js', 'SQL', 'Git', 'AI-assisted development', 'Flutter'];
@@ -53,10 +54,16 @@ function Home() {
               <Link to="/blog" className="cta-button secondary">Read Blog</Link>
             </div>
           </div>
+
           <div className="hero-visual">
             <ThreeJSCSS3DSprites />
           </div>
         </div>
+
+        <div className="hero-game-container">
+          <HandInvadersGame />
+        </div>
+
         <div className="scroll-indicator">
           <div className="mouse"></div>
           <span>Scroll to explore</span>

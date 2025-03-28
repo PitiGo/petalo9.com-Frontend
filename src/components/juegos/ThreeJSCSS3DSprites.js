@@ -8,6 +8,7 @@ const ThreeJSCSS3DSprites = () => {
   const sceneRef = useRef(null);
   const frameIdRef = useRef(null);
   const controlsRef = useRef(null);
+  const textureRef = useRef(null);
 
   useEffect(() => {
     if (!mountRef.current) return;
@@ -41,14 +42,34 @@ const ThreeJSCSS3DSprites = () => {
     controls.enabled = false;
     controlsRef.current = controls;
 
+    // Create Canvas Texture with Name
+    const canvasSize = 256;
+    const textCanvas = document.createElement('canvas');
+    textCanvas.width = canvasSize;
+    textCanvas.height = canvasSize;
+    const ctx = textCanvas.getContext('2d');
+
+    // Style the text
+    ctx.fillStyle = '#0A192F';
+    ctx.fillRect(0, 0, canvasSize, canvasSize);
+    ctx.font = 'bold 48px Arial';
+    ctx.fillStyle = '#64FFDA';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Dante', canvasSize / 2, canvasSize / 2);
+
+    // Create texture from canvas
+    const texture = new THREE.CanvasTexture(textCanvas);
+    textureRef.current = texture;
+
     // Increase detail for smoother sphere
     const geo = new THREE.IcosahedronGeometry(1.0, 4);
     const mat = new THREE.MeshPhongMaterial({
-      color: 0x8000ff,  // Purple color
-      shininess: 10,
+      map: texture,
+      shininess: 20,
       flatShading: false,
-      transparent: true,
-      opacity: 0.9 // Slight transparency
+      transparent: false,
+      opacity: 1.0
     });
     const mesh = new THREE.Mesh(geo, mat);
     scene.add(mesh);
