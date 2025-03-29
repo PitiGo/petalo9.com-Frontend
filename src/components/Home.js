@@ -42,7 +42,7 @@ function Home() {
               <span className="greeting">Hello, I'm</span>
               <span className="name">Dante Collazzi</span>
             </h1>
-            <p className="subtitle">Creating digital experiences through code</p>
+            <p className="subtitle">Let's build together</p>
             <div className="role-tags">
               <span>Software Developer</span>
               <span>Educator</span>
