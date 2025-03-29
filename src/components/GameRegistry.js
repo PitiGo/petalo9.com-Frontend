@@ -53,6 +53,11 @@ const gameRegistry = {
   "mammals-vs-reptiles": {
     path: () => import('./juegos/MammalsVsReptilesRedirect'),  // o la ruta correcta a tu componente
     title: "Mammals vs Reptiles"
+  },
+  'hand-invaders': {
+    path: () => import('./juegos/HandInvadersGame'),
+    name: 'Hand Invaders',
+    description: 'Defend against invaders using your hand gestures!'
   }
 
   // Añade más juegos aquí

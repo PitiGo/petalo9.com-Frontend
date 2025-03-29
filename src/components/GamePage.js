@@ -5,6 +5,7 @@ import snakeImage from '../images/snake-game.png';
 import snake3dImage from '../images/snake-3d.png';
 import pongImage from '../images/pong-game.png';
 import footballImage from '../images/mamvsreptiles.webp';
+import handInvadersImage from '../images/hand-invaders-preview.png';
 import io from 'socket.io-client';
 
 const GamesPage = () => {
@@ -153,6 +154,12 @@ const GamesPage = () => {
                 name: 'Pong',
                 description: 'Classic arcade game. Challenge yourself against the AI in this timeless tennis-style game.',
                 image: pongImage
+            },
+            {
+                id: 'hand-invaders',
+                name: 'Hand Invaders',
+                description: 'Defend against invaders using your hand gestures!',
+                image: handInvadersImage
             }
         ],
         multiplayer: [

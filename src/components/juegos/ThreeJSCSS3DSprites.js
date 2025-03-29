@@ -9,6 +9,9 @@ const ThreeJSCSS3DSprites = () => {
   const frameIdRef = useRef(null);
   const controlsRef = useRef(null);
   const textureRef = useRef(null);
+  const emissiveTextureRef = useRef(null);
+  const geoRef = useRef(null);
+  const matRef = useRef(null);
 
   useEffect(() => {
     if (!mountRef.current) return;
@@ -23,7 +26,7 @@ const ThreeJSCSS3DSprites = () => {
     });
     renderer.setClearColor(0x000000, 0); // Set clear color to transparent
     renderer.setSize(width, height);
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     mountRef.current.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
@@ -42,14 +45,14 @@ const ThreeJSCSS3DSprites = () => {
     controls.enabled = false;
     controlsRef.current = controls;
 
-    // Create Canvas Texture with Name
+    // Texture: Restore size and fixed font
     const canvasSize = 256;
+
+    // Base texture
     const textCanvas = document.createElement('canvas');
     textCanvas.width = canvasSize;
     textCanvas.height = canvasSize;
     const ctx = textCanvas.getContext('2d');
-
-    // Style the text
     ctx.fillStyle = '#0A192F';
     ctx.fillRect(0, 0, canvasSize, canvasSize);
     ctx.font = 'bold 48px Arial';
@@ -57,33 +60,43 @@ const ThreeJSCSS3DSprites = () => {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('Dante', canvasSize / 2, canvasSize / 2);
-
-    // Create texture from canvas
     const texture = new THREE.CanvasTexture(textCanvas);
+    texture.needsUpdate = true;
     textureRef.current = texture;
 
-    // Increase detail for smoother sphere
-    const geo = new THREE.IcosahedronGeometry(1.0, 4);
+    // Emissive texture
+    const emissiveCanvas = document.createElement('canvas');
+    emissiveCanvas.width = canvasSize;
+    emissiveCanvas.height = canvasSize;
+    const emissiveCtx = emissiveCanvas.getContext('2d');
+    emissiveCtx.fillStyle = '#000000';
+    emissiveCtx.fillRect(0, 0, canvasSize, canvasSize);
+    emissiveCtx.font = 'bold 48px Arial';
+    emissiveCtx.fillStyle = '#FFFFFF';
+    emissiveCtx.textAlign = 'center';
+    emissiveCtx.textBaseline = 'middle';
+    emissiveCtx.fillText('Dante', canvasSize / 2, canvasSize / 2);
+    const emissiveTexture = new THREE.CanvasTexture(emissiveCanvas);
+    emissiveTexture.needsUpdate = true;
+    emissiveTextureRef.current = emissiveTexture;
+
+    const geo = new THREE.IcosahedronGeometry(1.0, 3);
+    geoRef.current = geo;
+
     const mat = new THREE.MeshPhongMaterial({
       map: texture,
-      shininess: 20,
+      emissive: new THREE.Color(0x64ffda),
+      emissiveMap: emissiveTexture,
+      emissiveIntensity: 0.6,
+      shininess: 15,
       flatShading: false,
       transparent: false,
       opacity: 1.0
     });
+    matRef.current = mat;
+
     const mesh = new THREE.Mesh(geo, mat);
     scene.add(mesh);
-
-    const wireMat = new THREE.LineBasicMaterial({
-      color: 0xffffff,  // White color for wireframe
-      transparent: true,
-      opacity: 0.5
-    });
-    const wireframe = new THREE.LineSegments(
-      new THREE.WireframeGeometry(geo),
-      wireMat
-    );
-    mesh.add(wireframe);
 
     // Add ambient light for overall illumination
     const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
@@ -97,15 +110,29 @@ const ThreeJSCSS3DSprites = () => {
     let lastTime = 0;
     const rotationSpeed = 0.05;
 
+    let isVisible = true;
+    const handleVisibilityChange = () => {
+      isVisible = !document.hidden;
+      if (!isVisible && frameIdRef.current) {
+        cancelAnimationFrame(frameIdRef.current);
+        frameIdRef.current = null;
+      } else if (isVisible && !frameIdRef.current) {
+        lastTime = performance.now();
+        animate(lastTime);
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     function animate(time) {
       frameIdRef.current = requestAnimationFrame(animate);
 
-      const deltaTime = time - lastTime;
+      if (!isVisible) return;
+
+      const deltaTime = (time - lastTime) * 0.001;
       lastTime = time;
 
       if (sceneRef.current && rendererRef.current && controlsRef.current) {
-        mesh.rotation.y += rotationSpeed * (deltaTime / 1000);
-        wireframe.rotation.y -= rotationSpeed * 0.5 * (deltaTime / 1000);
+        mesh.rotation.y += rotationSpeed * deltaTime;
         controlsRef.current.update();
         rendererRef.current.render(sceneRef.current, camera);
       }
@@ -156,9 +183,15 @@ const ThreeJSCSS3DSprites = () => {
       if (controlsRef.current) {
         controlsRef.current.dispose();
       }
-      if (geo) geo.dispose();
-      if (mat) mat.dispose();
-      if (wireMat) wireMat.dispose();
+      if (textureRef.current) textureRef.current.dispose();
+      if (emissiveTextureRef.current) emissiveTextureRef.current.dispose();
+      if (geoRef.current) geoRef.current.dispose();
+      if (matRef.current) matRef.current.dispose();
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      [rendererRef, sceneRef, controlsRef, textureRef,
+        emissiveTextureRef, geoRef, matRef, frameIdRef].forEach(ref => {
+          ref.current = null;
+        });
     };
   }, []);
 
