@@ -50,11 +50,11 @@ const gameRegistry = {
     name: 'Runner3D',
     description: 'Runner3D.'
   },
-  "mammals-vs-reptiles": {
+  "mammalsvsreptiles": {
     path: () => import('./juegos/MammalsVsReptilesRedirect'),  // o la ruta correcta a tu componente
     title: "Mammals vs Reptiles"
   },
-  'hand-invaders': {
+  handinvaders: {
     path: () => import('./juegos/HandInvadersGame'),
     name: 'Hand Invaders',
     description: 'Defend against invaders using your hand gestures!'

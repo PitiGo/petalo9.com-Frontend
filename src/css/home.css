@@ -41,24 +41,38 @@ html {
   max-width: 1200px;
   margin: 0 auto 5rem auto;
   padding: 0 2rem;
-  gap: 2rem;
+  gap: 3rem;
   z-index: 2;
 }
 
 .hero-text {
-  flex: 1 1 50%;
-  max-width: 600px;
+  flex: 1 1 55%;
+  max-width: 650px;
   text-align: left;
-  padding-right: 1rem;
 }
 
 .hero-visual {
-  flex: 1 1 40%;
+  flex: 1 1 45%;
   max-width: 500px;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 300px;
+}
+
+.hero-illustration {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px -15px rgba(2, 12, 27, 0.7);
+}
+
+/* Three.js Section Wrapper */
+.threejs-section-wrapper {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 1rem;
 }
 
 .hero-game-container {
@@ -475,25 +489,26 @@ html {
   .hero-content {
     flex-direction: column;
     text-align: center;
-    gap: 1.5rem;
+    gap: 2rem;
     margin-bottom: 3rem;
   }
 
   .hero-text {
-    flex-basis: auto;
-    max-width: 600px;
     order: 1;
-    padding-right: 0;
-    margin-bottom: 1rem;
+    max-width: 600px;
     text-align: center;
+    padding-right: 0;
   }
 
   .hero-visual {
-    flex-basis: auto;
+    order: 0;
     width: 80%;
     max-width: 400px;
-    min-height: 250px;
-    order: 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-illustration {
+    /* Puedes añadir aquí estilos específicos para móvil si es necesario */
   }
 
   .hero-game-container {

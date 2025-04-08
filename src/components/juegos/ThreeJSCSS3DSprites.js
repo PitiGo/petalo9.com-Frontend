@@ -80,15 +80,17 @@ const ThreeJSCSS3DSprites = () => {
     emissiveTexture.needsUpdate = true;
     emissiveTextureRef.current = emissiveTexture;
 
-    const geo = new THREE.IcosahedronGeometry(1.0, 3);
+    // Geometría más detallada
+    const geo = new THREE.IcosahedronGeometry(1.0, 4); // Aumentado de 3 a 4 para más detalle
     geoRef.current = geo;
 
     const mat = new THREE.MeshPhongMaterial({
       map: texture,
-      emissive: new THREE.Color(0x64ffda),
+      emissive: new THREE.Color(0x64ffda), // Verde azulado para el brillo
       emissiveMap: emissiveTexture,
-      emissiveIntensity: 0.6,
-      shininess: 15,
+      emissiveIntensity: 0.7, // Aumentado de 0.6 a 0.7 para más brillo
+      shininess: 80, // Aumentado de 15 a 80 para reflejos más nítidos
+      specular: new THREE.Color(0xeeeeee), // Color del reflejo (gris claro)
       flatShading: false,
       transparent: false,
       opacity: 1.0
@@ -98,14 +100,23 @@ const ThreeJSCSS3DSprites = () => {
     const mesh = new THREE.Mesh(geo, mat);
     scene.add(mesh);
 
-    // Add ambient light for overall illumination
-    const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
-    scene.add(ambientLight);
+    // --- ILUMINACIÓN MEJORADA ---
 
-    // Add directional light for better shading
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-    directionalLight.position.set(5, 3, 5);
+    // Luz Hemisférica (color cielo, color suelo, intensidad)
+    const hemisphereLight = new THREE.HemisphereLight(0xadc4ff, 0x4a4d4e, 0.8); // Tonos azulados/grisáceos
+    scene.add(hemisphereLight);
+
+    // Luz Direccional Principal (más intensa)
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8); // Aumentada intensidad
+    directionalLight.position.set(5, 5, 5); // Posición ajustada
     scene.add(directionalLight);
+
+    // Luz Direccional Secundaria (de relleno o contra, color sutil)
+    const directionalLight2 = new THREE.DirectionalLight(0x88aaff, 0.3); // Luz azulada suave
+    directionalLight2.position.set(-5, 3, -5); // Desde dirección opuesta/lateral
+    scene.add(directionalLight2);
+
+    // --- FIN ILUMINACIÓN ---
 
     let lastTime = 0;
     const rotationSpeed = 0.05;

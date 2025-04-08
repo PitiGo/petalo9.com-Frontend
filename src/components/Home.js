@@ -3,7 +3,10 @@ import { Link } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import { FaGithub, FaTwitter } from 'react-icons/fa';
 import '../css/home.css';
-import ThreeJSCSS3DSprites from './juegos/ThreeJSCSS3DSprites';
+// Remove the ThreeJS import if you're not using it elsewhere
+// import ThreeJSCSS3DSprites from './juegos/ThreeJSCSS3DSprites';
+import ThreeJSCSS3DSprites from './juegos/ThreeJSCSS3DSprites'; // <--- Importa el componente 3D
+import developerIllustration from '../images/developer-illustration.png'; // <-- Import the image
 
 function Home() {
   const technologies = ['Java', 'Python', 'React', 'Node.js', 'SQL', 'Git', 'AI-assisted development', 'Flutter'];
@@ -55,7 +58,12 @@ function Home() {
           </div>
 
           <div className="hero-visual">
-            <ThreeJSCSS3DSprites />
+            {/* Replace ThreeJS component with the image */}
+            <img
+              src={developerIllustration}
+              alt="Developer coding at night"
+              className="hero-illustration" // Add a class for styling
+            />
           </div>
         </div>
 
@@ -64,6 +72,12 @@ function Home() {
           <span>Scroll to explore</span>
         </div>
       </header>
+
+      {/* === Coloca el componente Three.js aquí === */}
+      <div className="threejs-section-wrapper"> {/* Opcional: para centrar o limitar ancho */}
+        <ThreeJSCSS3DSprites />
+      </div>
+      {/* ========================================== */}
 
       <section id="about" className="about-section">
         <h2 className="section-title">About Me</h2>
