@@ -6,24 +6,22 @@ import snake3dImage from '../images/snake-3d.png';
 import pongImage from '../images/pong-game.png';
 import footballImage from '../images/mamvsreptiles.webp';
 import handInvadersImage from '../images/hand-invaders-preview.png';
-import io from 'socket.io-client';
 
 const GamesPage = () => {
     const navigate = useNavigate();
     const [selectedGame, setSelectedGame] = useState(null);
     const [roomStates, setRoomStates] = useState({
-        sala1: {
+        room1: {
             playerCount: 0,
             players: [],
             gameInProgress: false
         },
-        sala2: {
+        room2: {
             playerCount: 0,
             players: [],
             gameInProgress: false
         }
     });
-    const [sockets, setSockets] = useState({});
 
     // Generic function to fetch room status
     const fetchRoomStatus = async (roomId) => {
@@ -48,91 +46,42 @@ const GamesPage = () => {
     };
 
     useEffect(() => {
-        let socketConnections = {};
-        const availableRooms = ['sala1', 'sala2']; // Easily expandable room list
+        const availableRooms = ['room1', 'room2']; // Cambiado a room1/room2 como en la API
 
-        if (!window.location.pathname.includes('/games/mammals-vs-reptiles')) {
-            // Initialize sockets for each room
-            availableRooms.forEach(roomId => {
-                socketConnections[roomId] = io('https://football-online-3d.dantecollazzi.com', {
-                    transports: ['websocket'],
-                    path: `/${roomId}/socket.io`,
-                    reconnection: false
-                });
+        // Función para actualizar todos los estados de las salas vía API REST
+        const updateAllRoomsStatus = async () => {
+            let newRoomStates = {};
+            for (const roomId of availableRooms) {
+                const data = await fetchRoomStatus(roomId);
+                newRoomStates[roomId] = {
+                    playerCount: data?.playerCount || 0,
+                    players: data?.players || [],
+                    gameInProgress: data?.gameInProgress || false,
+                    // Mantenemos un estado por defecto si la petición falla
+                    ...(data === null && { playerCount: 0, players: [], gameInProgress: false }) // Estado por defecto si falla
+                };
+            }
+            setRoomStates(prev => ({ ...prev, ...newRoomStates })); // Actualizar estado
+        };
 
-                // Configure event handlers for each socket
-                socketConnections[roomId].on('gameStateUpdate', (gameState) => {
-                    if (gameState?.connectedPlayers) {
-                        const connectedPlayers = gameState.connectedPlayers.filter(player =>
-                            player.team === 'left' || player.team === 'right'
-                        );
+        // Actualización inicial
+        updateAllRoomsStatus();
 
-                        setRoomStates(prev => ({
-                            ...prev,
-                            [roomId]: {
-                                ...prev[roomId],
-                                playerCount: connectedPlayers.length,
-                                players: connectedPlayers
-                            }
-                        }));
-                    }
-                });
+        // Configurar actualizaciones periódicas
+        const statusInterval = setInterval(updateAllRoomsStatus, 10000); // Cada 10 segundos
 
-                socketConnections[roomId].on('gameStateInfo', (info) => {
-                    setRoomStates(prev => ({
-                        ...prev,
-                        [roomId]: {
-                            ...prev[roomId],
-                            gameInProgress: info.currentState === 'playing'
-                        }
-                    }));
-                });
-            });
+        // Función de limpieza
+        return () => {
+            clearInterval(statusInterval);
+            // Ya no hay sockets que desconectar aquí
+        };
+    }, []); // No need for fetchRoomStatus as dependency since it's defined in the component
 
-            setSockets(socketConnections);
-
-            // Function to update all rooms status
-            const updateAllRoomsStatus = async () => {
-                for (const roomId of availableRooms) {
-                    const data = await fetchRoomStatus(roomId);
-                    if (data) {
-                        setRoomStates(prev => ({
-                            ...prev,
-                            [roomId]: {
-                                playerCount: data.playerCount || 0,
-                                players: data.players || [],
-                                gameInProgress: data.gameInProgress || false
-                            }
-                        }));
-                    }
-                }
-            };
-
-            // Initial update
-            updateAllRoomsStatus();
-
-            // Set up periodic updates
-            const statusInterval = setInterval(updateAllRoomsStatus, 10000);
-
-            // Cleanup function
-            return () => {
-                clearInterval(statusInterval);
-                Object.values(socketConnections).forEach(socket => {
-                    if (socket) socket.disconnect();
-                });
-            };
-        }
-    }, []);
-
-    // Improved room join handler
-    const handleJoinRoom = (roomId) => {
-        // Disconnect all monitoring sockets before navigating
-        Object.values(sockets).forEach(socket => {
-            if (socket) socket.disconnect();
-        });
-
-        // Navigate to specific room
-        navigate(`/games/mammals-vs-reptiles?room=${roomId}`);
+    // Modifica handleJoinRoom para abrir en una nueva pestaña
+    const handleJoinRoom = (roomIdNumber) => {
+        const gameUrl = `https://football-online-3d.dantecollazzi.com?room=${roomIdNumber}`;
+        // Abre la URL directamente en una nueva pestaña
+        window.open(gameUrl, '_blank', 'noopener,noreferrer'); // Añadir rel por seguridad
     };
 
     const games = {
@@ -170,14 +119,16 @@ const GamesPage = () => {
                 image: footballImage,
                 rooms: [
                     {
-                        id: 'sala1',
+                        id: 'room1', // <--- USA 'room1'
                         name: 'Room 1',
-                        description: 'Main game room'
+                        description: 'Main game room',
+                        roomIdNumber: 1 // Añadir número para la navegación
                     },
                     {
-                        id: 'sala2',
+                        id: 'room2', // <--- USA 'room2'
                         name: 'Room 2',
-                        description: 'Secondary game room'
+                        description: 'Secondary game room',
+                        roomIdNumber: 2 // Añadir número para la navegación
                     }
                 ]
             }
@@ -223,7 +174,7 @@ const GamesPage = () => {
     );
 
     const RoomCard = ({ room }) => {
-        const roomState = roomStates[room.id];
+        const roomState = roomStates[room.id] || { playerCount: 0, players: [], gameInProgress: false }; // Estado por defecto
 
         return (
             <div key={room.id} className="room-card">
@@ -272,7 +223,7 @@ const GamesPage = () => {
                 </div>
 
                 <button
-                    onClick={() => handleJoinRoom(room.id)}
+                    onClick={() => handleJoinRoom(room.roomIdNumber)} // Usa el número
                     className="join-button"
                 >
                     Join Room
