@@ -50,7 +50,7 @@ const gameRegistry = {
     name: 'Runner3D',
     description: 'Runner3D.'
   },
-  handinvaders: {
+  "hand-invaders": {
     path: () => import('./juegos/HandInvadersGame'),
     name: 'Hand Invaders',
     description: 'Defend against invaders using your hand gestures!'
