@@ -111,7 +111,7 @@ function Contact() {
             <a href="https://x.com/DAcerbus" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
               <FaTwitter /> <span>Twitter</span>
             </a>
-            <a href="https://www.linkedin.com/in/tu_perfil/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+            <a href="https://www.linkedin.com/in/dantecollazzi/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
               <FaLinkedin /> <span>LinkedIn</span>
             </a>
 

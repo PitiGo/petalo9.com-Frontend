@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import DOMPurify from 'dompurify';
-import { FaGithub, FaTwitter } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
 import '../css/home.css';
 // Remove the ThreeJS import if you're not using it elsewhere
 // import ThreeJSCSS3DSprites from './juegos/ThreeJSCSS3DSprites';
@@ -200,6 +200,9 @@ function Home() {
         <div className="social-links">
           <a href="https://github.com/PitiGo" target="_blank" rel="noopener noreferrer">
             <FaGithub />
+          </a>
+          <a href="https://www.linkedin.com/in/dantecollazzi/" target="_blank" rel="noopener noreferrer">
+            <FaLinkedin />
           </a>
           <a href="https://x.com/DAcerbus" target="_blank" rel="noopener noreferrer">
             <FaTwitter />

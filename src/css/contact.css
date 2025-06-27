@@ -1,7 +1,8 @@
-/* src/css/contact.css - Versión mejorada con mejor contraste */
+/* src/css/contact.css - Versión optimizada para escritorio y móvil */
 
 .contact-page-container {
-  max-width: 800px;
+  /* Aumentamos el ancho máximo para que se vea mejor en escritorio */
+  max-width: 1100px;
   margin: 40px auto;
   padding: 30px;
   background-color: #0a192f;
@@ -65,6 +66,7 @@
 
 .contact-content-wrapper {
   display: flex;
+  /* Por defecto (móvil), los elementos estarán en columna */
   flex-direction: column;
   gap: 40px;
   background-color: #112240;
@@ -74,19 +76,25 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Estilos responsivos para pantallas más grandes */
+/* Media Query para pantallas de escritorio (a partir de 768px de ancho) */
 @media (min-width: 768px) {
   .contact-content-wrapper {
+    /* Cambiamos la dirección a fila para poner los elementos lado a lado */
     flex-direction: row;
   }
 
   .contact-form-container {
+    /* El formulario ocupará 2/3 del espacio */
     flex: 2;
     margin-right: 30px;
   }
 
   .contact-alternatives {
+    /* Los enlaces sociales ocuparán 1/3 del espacio */
     flex: 1;
+    /* Eliminamos el borde superior y añadimos uno izquierdo como separador vertical */
+    border-top: none;
+    padding-top: 0;
     border-left: 1px solid rgba(100, 255, 218, 0.3);
     padding-left: 30px;
   }
@@ -94,6 +102,7 @@
 
 .contact-form-container {
   width: 100%;
+  /* Ocupa todo el ancho disponible en su contenedor flex */
 }
 
 .contact-form .form-group {
@@ -200,6 +209,8 @@
 /* Contact Alternatives */
 .contact-alternatives {
   text-align: center;
+  border-top: 1px solid rgba(100, 255, 218, 0.3);
+  padding-top: 30px;
 }
 
 .contact-alternatives h3 {
