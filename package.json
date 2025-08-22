@@ -68,6 +68,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "axios": "^1.11.0",
+    "puppeteer": "^24.17.0",
     "sitemap": "^8.0.0"
   }
 }
