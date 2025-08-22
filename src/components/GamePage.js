@@ -6,6 +6,8 @@ import snake3dImage from '../images/snake-3d.png';
 import pongImage from '../images/pong-game.png';
 import footballImage from '../images/mamvsreptiles.webp';
 import handInvadersImage from '../images/hand-invaders-preview.png';
+import supermarcosImage from '../images/supermarcos.png';
+import guessCountryImage from '../images/guess-country.png';
 
 const GamesPage = () => {
     const navigate = useNavigate();
@@ -109,6 +111,18 @@ const GamesPage = () => {
                 name: 'Hand Invaders',
                 description: 'Defend against invaders using your hand gestures!',
                 image: handInvadersImage
+            },
+            {
+                id: 'supermarcos',
+                name: 'SuperMarcos',
+                description: 'An awesome new adventure game starring Marcos!',
+                image: supermarcosImage
+            },
+            {
+                id: 'guess-the-country',
+                name: 'Guess The Country',
+                description: 'Test your geography knowledge! Click on the map to guess the 15 most populous countries.',
+                image: guessCountryImage
             }
         ],
         multiplayer: [

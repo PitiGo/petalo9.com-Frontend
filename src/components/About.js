@@ -16,7 +16,7 @@ function About() {
           </p>
 
           <p className="about-paragraph">
-            Currently, I'm working as a <span className="highlight">Backend Developer</span> at <span className="highlight">Adstella.ai</span>, where I utilize Python and PostgreSQL to build robust backend solutions. Previously, I split my time between developing personal projects and taking on freelance work for various clients, providing technical solutions ranging from web applications to automation systems.
+            After concluding my role as a <span className="highlight">Backend Developer</span> at <span className="highlight">Adstella.ai</span> in July, where I specialized in Python and PostgreSQL, I have now returned to full-time <span className="highlight">freelancing</span>. I am currently focused on developing personal projects and taking on new client work, providing technical solutions that range from web applications to automation systems.
           </p>
 
           <p className="about-paragraph">
@@ -31,19 +31,19 @@ function About() {
           <div className="experience-section">
             <h3>Professional Journey</h3>
             <div className="timeline-item">
-              <div className="timeline-date">February 2025 - Present</div>
-              <div className="timeline-role">Backend Developer</div>
-              <div className="timeline-company">Adstella.ai</div>
-              <p>Working with Python and PostgreSQL to develop robust backend solutions, focusing on scalable API development and database optimization.</p>
-            </div>
-            <div className="timeline-item">
-              <div className="timeline-date">August 2024 - February 2025</div>
+              <div className="timeline-date">July 2024 - Present</div>
               <div className="timeline-role">Independent Developer & Freelancer</div>
               <div className="timeline-company">Personal Projects & Client Work</div>
-              <p>Developed multiple personal projects showcased on this website while taking on freelance assignments for various clients. Freelance work included web application development, automation solutions, and technical consulting services.</p>
+              <p>Developing personal projects showcased on this website while taking on freelance assignments for various clients, focusing on web application development, automation solutions, and technical consulting.</p>
             </div>
             <div className="timeline-item">
-              <div className="timeline-date">2020 - August 2024</div>
+              <div className="timeline-date">February 2024 - July 2024</div>
+              <div className="timeline-role">Backend Developer</div>
+              <div className="timeline-company">Adstella.ai</div>
+              <p>Worked with Python and PostgreSQL to develop robust backend solutions, focusing on scalable API development and database optimization.</p>
+            </div>
+            <div className="timeline-item">
+              <div className="timeline-date">2020 - February 2024</div>
               <div className="timeline-role">Programming & Mobile App Development Instructor</div>
               <div className="timeline-company">Vocational Training Institute</div>
               <p>Taught and inspired future developers while keeping up to date with the latest industry trends and technologies.</p>

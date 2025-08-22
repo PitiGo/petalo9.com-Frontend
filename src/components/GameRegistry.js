@@ -54,6 +54,17 @@ const gameRegistry = {
     path: () => import('./juegos/HandInvadersGame'),
     name: 'Hand Invaders',
     description: 'Defend against invaders using your hand gestures!'
+  },
+  'supermarcos': {
+    path: () => import('./juegos/SuperMarcos'),
+    name: 'SuperMarcos',
+    description: 'An awesome new adventure game starring Marcos!'
+  },
+
+  'guess-the-country': {
+    path: () => import('./juegos/GuessTheCountry'),
+    name: 'Guess The Country',
+    description: 'Guess the 15 most populous countries on an interactive map.'
   }
 
   // Añade más juegos aquí

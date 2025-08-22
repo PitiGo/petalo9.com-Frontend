@@ -1,0 +1,40 @@
+# Archivo de configuración de Repomix
+.repomixignore
+
+# Archivos de configuración y de entorno
+.env*
+*.env
+
+# Archivos generados por el build
+/build
+
+# Dependencias de Node.js
+/node_modules
+
+# Archivos de caché y logs
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Archivos de configuración de herramientas
+docker-compose.yml
+Dockerfile
+deploy*.sh
+
+# Imágenes y recursos multimedia que no son código fuente
+/src/images
+
+# Documentación que no necesitas en el contexto de la IA
+README.md
+
+# Archivos de políticas de privacidad (a menos que quieras analizarlas)
+politicas-privacidad/
+
+# Fuentes y archivos JSON de fuentes (muy grandes y no son código)
+/public/helvetiker_regular.typeface.json
+/public/mi_fuente.json
+/src/components/shaders/mi_fuente.json
+
+# Copias de seguridad y otros archivos que no son parte del código activo
+/src/components/LoginBackup.js 

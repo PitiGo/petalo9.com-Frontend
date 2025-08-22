@@ -1,0 +1,150 @@
+/* Estilos específicos para el juego, encapsulados en un contenedor principal */
+.guess-the-country-container {
+    margin: 0 auto;
+    padding: 20px;
+    max-width: 1200px;
+    background: linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #2d3748 100%);
+    font-family: "Inter", "Segoe UI", "Arial", sans-serif;
+    color: #e2e8f0;
+    border-radius: 12px;
+}
+
+.guess-the-country-container h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.2em;
+    font-weight: 800;
+    background: linear-gradient(135deg, #60a5fa 0%, #a855f7 50%, #f59e0b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.guess-the-country-container .game-ui {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 15px 25px;
+    margin-bottom: 25px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.guess-the-country-container .game-stat {
+    text-align: center;
+}
+
+.guess-the-country-container .game-stat-label {
+    font-size: 0.9em;
+    color: #cbd5e1;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+.guess-the-country-container .game-stat-value {
+    font-size: 2em;
+    font-weight: 700;
+    color: #f8fafc;
+    line-height: 1;
+}
+
+.guess-the-country-container .btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s;
+    color: white;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);
+}
+
+.guess-the-country-container .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+
+.guess-the-country-container .map-container {
+    background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 25px;
+}
+
+.guess-the-country-container .country {
+    cursor: pointer;
+    stroke: rgba(255, 255, 255, 0.3);
+    stroke-width: 0.8;
+    transition: fill 0.3s ease;
+}
+
+.guess-the-country-container .country:hover {
+    stroke: #fbbf24;
+    stroke-width: 2.5;
+    filter: brightness(1.15);
+}
+
+.guess-the-country-container .country-correct {
+    fill: #2ecc71 !important;
+}
+
+.guess-the-country-container .country-incorrect {
+    fill: #e74c3c !important;
+}
+
+.guess-the-country-container .info-panel {
+    padding: 25px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+}
+
+.guess-the-country-container .info-panel h3 {
+    margin: 0 0 15px 0;
+    font-size: 1.8em;
+    font-weight: 700;
+    color: #f8fafc;
+}
+
+.guess-the-country-container .info-panel p {
+    margin: 10px 0;
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: #cbd5e1;
+}
+
+.guess-the-country-container .info-panel strong {
+    color: #e2e8f0;
+}
+
+.guess-the-country-container .loading {
+    text-align: center;
+    padding: 80px 20px;
+    font-size: 1.5em;
+}
+
+.guess-the-country-container #worldMap {
+    width: 100%;
+    height: auto;
+}
+
+.guess-the-country-container .tooltip {
+    position: absolute;
+    background: rgba(15, 20, 25, 0.95);
+    color: #e2e8f0;
+    padding: 10px 14px;
+    border-radius: 12px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+    font-size: 14px;
+    z-index: 1000;
+}

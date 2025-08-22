@@ -1,0 +1,43 @@
+/* src/components/juegos/SuperMarcos.css */
+
+.super-marcos-body {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #87CEEB; /* Sky blue background */
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+.game-container {
+    position: relative;
+    text-align: center;
+}
+
+.game-title {
+    color: #FF6B35;
+    font-size: 48px;
+    margin-bottom: 20px;
+    text-shadow: 3px 3px 0px #000;
+    font-weight: bold;
+}
+
+.gameCanvas {
+    border: 2px solid #000;
+    background-color: #FFFFFF;
+    max-width: 100%; /* Para hacerlo responsivo */
+    height: auto;
+}
+
+.instructions {
+    margin-top: 15px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #333;
+    border: 1px solid #ccc;
+    display: inline-block;
+    text-align: left;
+} 
