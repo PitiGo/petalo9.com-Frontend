@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import SEO from './SEO';
 import '../css/GamePage.css';
 import snakeImage from '../images/snake-game.png';
 import snake3dImage from '../images/snake-3d.png';
@@ -266,26 +267,34 @@ const GamesPage = () => {
     }
 
     return (
-        <div className="games-page">
-            <h1>Games Collection</h1>
-            <section className="games-section">
-                <h2>Single Player Games</h2>
-                <div className="games-grid">
-                    {games.singlePlayer.map((game) => (
-                        <SinglePlayerGameCard key={game.id} game={game} />
-                    ))}
-                </div>
-            </section>
+        <>
+            <SEO
+                title="Games - Dante Collazzi | Interactive Web Games"
+                description="Interactive web games and demos created by Dante Collazzi as coding experiments. Built with modern web technologies including JavaScript, React, and Three.js."
+                name="Dante Collazzi"
+                type="website"
+            />
+            <div className="games-page">
+                <h1>Games Collection</h1>
+                <section className="games-section">
+                    <h2>Single Player Games</h2>
+                    <div className="games-grid">
+                        {games.singlePlayer.map((game) => (
+                            <SinglePlayerGameCard key={game.id} game={game} />
+                        ))}
+                    </div>
+                </section>
 
-            <section className="games-section">
-                <h2>Multiplayer Games</h2>
-                <div className="games-grid">
-                    {games.multiplayer.map((game) => (
-                        <MultiplayerGameCard key={game.id} game={game} />
-                    ))}
-                </div>
-            </section>
-        </div>
+                <section className="games-section">
+                    <h2>Multiplayer Games</h2>
+                    <div className="games-grid">
+                        {games.multiplayer.map((game) => (
+                            <MultiplayerGameCard key={game.id} game={game} />
+                        ))}
+                    </div>
+                </section>
+            </div>
+        </>
     );
 };
 

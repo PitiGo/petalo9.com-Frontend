@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import SEO from './SEO';
 import '../css/blog-new.css';
 
 function Blog() {
@@ -53,7 +54,14 @@ function Blog() {
  };
 
  return (
-   <div className="blog-main">
+   <>
+           <SEO 
+        title="Blog - Dante Collazzi | Software Development Articles"
+        description="Articles about fullstack development, backend programming with Python and Java, frontend with React, web applications, and professional experiences in the tech industry."
+        name="Dante Collazzi"
+        type="website"
+      />
+     <div className="blog-main">
      <div className="blog-header">
        <h1>Latest Posts</h1>
        {isAdmin && (
@@ -68,7 +76,7 @@ function Blog() {
          <article key={post.id} className="post-card">
            <div className="post-image">
              {post.imageUrl && (
-               <img src={post.imageUrl} alt={post.title} />
+               <img src={post.imageUrl} alt={`Featured image for article: ${post.title}`} />
              )}
            </div>
            <div className="post-content">
@@ -112,6 +120,7 @@ function Blog() {
        ))}
      </div>
    </div>
+   </>
  );
 }
 

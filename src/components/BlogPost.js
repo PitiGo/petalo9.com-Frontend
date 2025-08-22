@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useParams } from 'react-router-dom';
+import SEO from './SEO';
 import gameRegistry from './GameRegistry';
 import Prism from 'prismjs';
 import 'prismjs/themes/prism-okaidia.css';
@@ -51,22 +52,22 @@ function BlogPost() {
         window.copyCode = (elementId) => {
             const pre = document.getElementById(elementId);
             if (!pre) return;
-            
+
             const code = pre.querySelector('code');
             const text = code ? code.textContent : pre.textContent;
-            
+
             navigator.clipboard.writeText(text)
-              .then(() => {
-                const button = pre.parentElement.querySelector('.copy-button');
-                if (button) {
-                  button.textContent = 'Copied!';
-                  setTimeout(() => {
-                    button.textContent = 'Copy';
-                  }, 2000);
-                }
-              });
-          };
-      }, []);
+                .then(() => {
+                    const button = pre.parentElement.querySelector('.copy-button');
+                    if (button) {
+                        button.textContent = 'Copied!';
+                        setTimeout(() => {
+                            button.textContent = 'Copy';
+                        }, 2000);
+                    }
+                });
+        };
+    }, []);
 
     const renderPostContent = (content) => {
         const contentParts = content.split(/\{\{\{Juego:(\w+)\}\}\}/g);
@@ -99,33 +100,47 @@ function BlogPost() {
         return <div className="text-center py-5">Cargando...</div>;
     }
 
+    // Extrae un resumen para la descripción
+    const plainTextContent = post.content.replace(/<[^>]+>/g, '');
+    const description = plainTextContent.substring(0, 155) + '...';
+
     return (
-        <div className="container-fluid py-3 py-md-5 blog-post-container">
-            <div className="row justify-content-center">
-                <div className="col-12 col-md-10 col-lg-8">
-                    <article className="blog-post">
-                        <h1 className="mb-3 mb-md-4">{post.title}</h1>
-                        {post.imageUrl && (
-                            <img
-                                src={post.imageUrl}
-                                alt={post.title}
-                                className="img-fluid rounded mb-3 mb-md-4"
-                            />
-                        )}
-                        <p className="text-muted small">
-                            <span className="d-block d-md-inline">Autor: {post.author}</span>
-                            <span className="d-none d-md-inline"> | </span>
-                            <span className="d-block d-md-inline">
-                                Publicado: {post.fechaCreacion && new Date(post.fechaCreacion).toLocaleString()}
-                            </span>
-                        </p>
-                        <div className="post-content">
-                            {renderPostContent(post.content)}
-                        </div>
-                    </article>
+        <>
+            <SEO
+                title={`${post.title} | Dante Collazzi's Blog`}
+                description={description}
+                name={post.author}
+                type="article"
+                imageUrl={post.imageUrl}
+                url={`${window.location.origin}/blog/${post.id}`}
+            />
+            <div className="container-fluid py-3 py-md-5 blog-post-container">
+                <div className="row justify-content-center">
+                    <div className="col-12 col-md-10 col-lg-8">
+                        <article className="blog-post">
+                            <h1 className="mb-3 mb-md-4">{post.title}</h1>
+                            {post.imageUrl && (
+                                <img
+                                    src={post.imageUrl}
+                                    alt={`Featured image for article: ${post.title}`}
+                                    className="img-fluid rounded mb-3 mb-md-4"
+                                />
+                            )}
+                            <p className="text-muted small">
+                                <span className="d-block d-md-inline">Autor: {post.author}</span>
+                                <span className="d-none d-md-inline"> | </span>
+                                <span className="d-block d-md-inline">
+                                    Publicado: {post.fechaCreacion && new Date(post.fechaCreacion).toLocaleString()}
+                                </span>
+                            </p>
+                            <div className="post-content">
+                                {renderPostContent(post.content)}
+                            </div>
+                        </article>
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
 

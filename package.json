@@ -11,7 +11,6 @@
     "@tinymce/tinymce-react": "^4.3.2",
     "@tweenjs/tween.js": "^25.0.0",
     "autoprefixer": "^10.4.17",
-    "axios": "^1.8.4",
     "babylonjs": "^7.29.0",
     "babylonjs-loaders": "^7.29.0",
     "bootstrap": "^5.3.2",
@@ -25,6 +24,7 @@
     "prismjs": "^1.29.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-helmet-async": "^2.0.5",
     "react-icon": "^1.0.0",
     "react-icons": "^5.3.0",
     "react-router-dom": "^6.21.3",
@@ -43,6 +43,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "postbuild": "node ./sitemap-generator.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -65,6 +66,8 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "axios": "^1.11.0",
+    "sitemap": "^8.0.0"
   }
 }
