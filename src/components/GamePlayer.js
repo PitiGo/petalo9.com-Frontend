@@ -14,21 +14,25 @@ const GamePlayer = () => {
     setRoomId(room);
   }, [location]);
 
-  // Redireccionar si el juego no existe
-  if (!gameRegistry[gameId]) {
-    return <Navigate to="/games" replace />;
-  }
+  // Solo maneja juegos
+const gameInfo = gameRegistry.games[gameId];
 
-  // Cargar el componente del juego de forma dinámica
-  const Game = lazy(gameRegistry[gameId].path);
+  // Redireccionar si el juego no existe
+if (!gameInfo) {
+  return <Navigate to="/games" replace />;
+}
+
+// Cargar el componente del juego de forma dinámica
+const GameComponent = lazy(gameInfo.path);
 
   // Mostrar un estado de carga mientras se determina el roomId
   if (!roomId) return <div>Loading...</div>;
 
   return (
-    <div className="game-player">
-      <Suspense fallback={<div>Loading game...</div>}>
-        <Game roomId={roomId} />
+    <div className="game-player" style={{ padding: '20px' }}>
+      <h1 style={{ marginBottom: '20px' }}>{gameInfo.name}</h1>
+      <Suspense fallback={<div>Loading...</div>}>
+        <GameComponent roomId={roomId} />
       </Suspense>
     </div>
   );

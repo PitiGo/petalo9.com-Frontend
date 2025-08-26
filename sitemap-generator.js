@@ -10,6 +10,7 @@ async function generateSitemap() {
         { url: '/', changefreq: 'daily', priority: 1.0 },
         { url: '/blog', changefreq: 'weekly', priority: 0.8 },
         { url: '/games', changefreq: 'monthly', priority: 0.7 },
+        { url: '/tools', changefreq: 'monthly', priority: 0.7 },
         { url: '/about', changefreq: 'monthly', priority: 0.7 },
         { url: '/contact', changefreq: 'monthly', priority: 0.6 },
     ];
