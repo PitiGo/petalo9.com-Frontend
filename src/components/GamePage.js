@@ -4,12 +4,12 @@ import SEO from './SEO';
 
 import '../css/GamePage.css';
 import footballImage from '../images/mamvsreptiles.webp';
-import snakeImage from '../images/snake-game.png';
-import snake3dImage from '../images/snake-3d.png';
-import pongImage from '../images/pong-game.png';
-import handInvadersImage from '../images/hand-invaders-preview.png';
-import supermarcosImage from '../images/supermarcos.png';
-import guessCountryImage from '../images/guess-country.png';
+import snakeImage from '../images/snake-game.webp';
+import snake3dImage from '../images/snake-3d.webp';
+import pongImage from '../images/pong-game.webp';
+import handInvadersImage from '../images/hand-invaders-preview.webp';
+import supermarcosImage from '../images/supermarcos.webp';
+import guessCountryImage from '../images/guess-country.webp';
 
 const GamesPage = () => {
     const [selectedGame, setSelectedGame] = useState(null);

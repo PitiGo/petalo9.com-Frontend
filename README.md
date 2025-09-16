@@ -4,7 +4,7 @@ This is the source code for my personal website, **petalo9.com**, which features
 
 
 hola
-![Website Preview](./image.png)
+
 
 ## Features
 

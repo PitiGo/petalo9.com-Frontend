@@ -1,7 +1,7 @@
 import React from 'react';
 import SEO from './SEO';
 import '../css/about.css';
-import profileImage from '../images/yo.png';
+import profileImage from '../images/yo.webp';
 
 function About() {
   return (

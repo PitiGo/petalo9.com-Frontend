@@ -18,6 +18,7 @@ import Contact from './components/Contact';
 import GamePlayer from './components/GamePlayer';
 import Tools from './components/Tools';
 import ToolPlayer from './components/ToolPlayer';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
@@ -38,6 +39,7 @@ function App() {
               <Route path="/games/:gameId" element={<GamePlayer />} />
               <Route path="/tools" element={<Tools />} />
               <Route path="/tools/:toolId" element={<ToolPlayer />} />
+
               <Route path="/error" element={<ErrorComponent />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/edit" element={

@@ -7,7 +7,7 @@ import '../css/home.css';
 // Remove the ThreeJS import if you're not using it elsewhere
 // import ThreeJSCSS3DSprites from './juegos/ThreeJSCSS3DSprites';
 import ThreeJSCSS3DSprites from './juegos/ThreeJSCSS3DSprites'; // <--- Importa el componente 3D
-import developerIllustration from '../images/developer-illustration.png'; // <-- Import the image
+import developerIllustration from '../images/developer-illustration.webp'; // <-- Import the image
 
 function Home() {
   const technologies = ['Java', 'Python', 'React', 'Node.js', 'SQL', 'Git', 'AI-assisted development', 'Flutter'];

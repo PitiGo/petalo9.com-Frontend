@@ -72,28 +72,66 @@ function BlogPost() {
     const renderPostContent = (content) => {
         const contentParts = content.split(/\{\{\{Juego:(\w+)\}\}\}/g);
 
-        return contentParts.map((part, index) => {
-            if (gameRegistry[part] && gameRegistry[part].path) {
-                const GameComponent = React.lazy(gameRegistry[part].path);
-                return (
-                    <Suspense key={index} fallback={<div>Loading...</div>}>
-                        <div className="game-container my-4">
-                            <GameComponent />
-                        </div>
-                    </Suspense>
-                );
+        const result = [];
+        for (let i = 0; i < contentParts.length; i++) {
+            const part = contentParts[i];
+
+            // Si es un índice par, es contenido normal
+            if (i % 2 === 0) {
+                if (part) { // Solo renderizar si no está vacío
+                    result.push(
+                        <div
+                            key={i}
+                            className="content-part"
+                            dangerouslySetInnerHTML={{
+                                __html: part.replace(/<img /g, '<img class="img-fluid" ')
+                            }}
+                        />
+                    );
+                }
             } else {
-                return (
-                    <div
-                        key={index}
-                        className="content-part"
-                        dangerouslySetInnerHTML={{
-                            __html: part.replace(/<img /g, '<img class="img-fluid" ')
-                        }}
-                    />
-                );
+                // Si es un índice impar, es el nombre del juego/herramienta
+                // Buscar de forma case-insensitive
+                const findGameOrTool = (name) => {
+                    const lowerName = name.toLowerCase();
+
+                    // Buscar en juegos
+                    for (const key in gameRegistry.games) {
+                        if (key.toLowerCase() === lowerName) {
+                            return gameRegistry.games[key];
+                        }
+                    }
+
+                    // Buscar en herramientas
+                    for (const key in gameRegistry.tools) {
+                        if (key.toLowerCase() === lowerName) {
+                            return gameRegistry.tools[key];
+                        }
+                    }
+
+                    return null;
+                };
+
+                const gameInfo = findGameOrTool(part);
+
+
+
+                if (gameInfo && gameInfo.path) {
+                    const GameComponent = React.lazy(gameInfo.path);
+                    result.push(
+                        <Suspense key={i} fallback={<div>Loading...</div>}>
+                            <div className="game-container my-4">
+                                <GameComponent />
+                            </div>
+                        </Suspense>
+                    );
+                } else {
+                    console.warn(`Juego/herramienta no encontrado: ${part}`);
+                }
             }
-        });
+        }
+
+        return result;
     };
 
     if (!post) {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import '../css/header.css';
-import logoImage from '../images/logo.png'; // Asegúrate de que la ruta sea correcta
+import logoImage from '../images/logo.webp'; // Asegúrate de que la ruta sea correcta
 
 const Header = () => {
   const [username, setUsername] = useState('');
