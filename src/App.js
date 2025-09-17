@@ -42,7 +42,7 @@ function App() {
 
               <Route path="/error" element={<ErrorComponent />} />
               <Route path="/contact" element={<Contact />} />
-              <Route path="/edit" element={
+              <Route path="/new-post" element={
                 <ProtectedRoute>
                   <TextEditor />
                 </ProtectedRoute>

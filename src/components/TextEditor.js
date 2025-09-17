@@ -374,9 +374,9 @@ function TextEditor() {
               'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
               'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
               'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons',
-              'visualchars', 'quickbars', 'pagebreak', 'nonbreaking', 'template'
+              'visualchars', 'quickbars', 'pagebreak', 'nonbreaking', 'advtemplate'
             ],
-            toolbar1: 'styles | fontfamily fontsize | forecolor backcolor | template',
+            toolbar1: 'styles | fontfamily fontsize | forecolor backcolor | advtemplate',
             toolbar2: 'bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent',
             toolbar3: 'removeformat | table image media | link customlink youtube | emoticons insertcode audio pagebreak | code fullscreen help',
             style_formats: [
@@ -403,7 +403,7 @@ function TextEditor() {
               }
             ],
 
-            templates: [
+            advtemplate_templates: [
               {
                 id: 'blog-article',
                 title: 'Artículo de Blog',
