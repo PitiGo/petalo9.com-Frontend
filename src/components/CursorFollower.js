@@ -18,7 +18,7 @@ const CursorFollower = () => {
       1000
     );
     camera.position.z = 4
-    ;
+      ;
 
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(mount.clientWidth, mount.clientHeight);
@@ -26,7 +26,7 @@ const CursorFollower = () => {
 
     // Cargar la textura para todas las caras
     const loader = new THREE.TextureLoader();
-    const texture = loader.load('logo.png');
+    const texture = loader.load('logo.webp');
 
     const material = new THREE.MeshBasicMaterial({ map: texture });
 
