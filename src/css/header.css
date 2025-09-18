@@ -674,6 +674,34 @@ header {
     top: 60px;
   }
 
+  /* Compact user area and login on mobile */
+  .user-area .user-details,
+  .user-area .logout-btn {
+    display: none !important;
+  }
+
+  .login-btn .login-text {
+    display: none !important;
+  }
+
+  .user-area {
+    padding: 4px !important;
+    border-radius: 50% !important;
+    border: 2px solid rgba(100, 255, 218, 0.3) !important;
+    background-color: #112240 !important;
+  }
+
+  .user-area .user-info {
+    gap: 0 !important;
+  }
+
+  .login-btn {
+    width: 40px !important;
+    height: 40px !important;
+    padding: 0 !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+  }
 }
 
 /* Overrides for mobile menu button to match site style and center horizontally */
