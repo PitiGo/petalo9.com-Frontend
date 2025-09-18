@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { signOut } from "firebase/auth";
 import { auth } from '../config/firebase-config';
@@ -10,6 +11,7 @@ const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -61,6 +63,7 @@ const Header = () => {
       // Close mobile menu when resizing to larger screens
       if (window.innerWidth > 600) {
         setIsMobileMenuOpen(false);
+        setIsUserMenuOpen(false);
       }
     };
 
@@ -97,33 +100,70 @@ const Header = () => {
     }
   };
 
-  const toggleMobileMenu = () => {
+  const toggleMobileMenu = (e) => {
+    e?.preventDefault?.();
+    e?.stopPropagation?.();
     console.log('Toggle mobile menu clicked, current state:', isMobileMenuOpen);
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+    setIsMobileMenuOpen((prevState) => !prevState);
   };
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
   };
 
+  const toggleUserMenu = (e) => {
+    e?.preventDefault?.();
+    e?.stopPropagation?.();
+    setIsUserMenuOpen((prev) => !prev);
+  };
+
+  const closeUserMenu = () => {
+    setIsUserMenuOpen(false);
+  };
+
   // Close mobile menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (isMobileMenuOpen && !event.target.closest('.mobile-menu-btn') && !event.target.closest('.mobile-dropdown')) {
-        setIsMobileMenuOpen(false);
+      if (!isMobileMenuOpen) return;
+      const dropdown = document.querySelector('.mobile-dropdown');
+      const button = document.querySelector('.mobile-menu-btn');
+      if (dropdown && button) {
+        if (!dropdown.contains(event.target) && !button.contains(event.target)) {
+          setIsMobileMenuOpen(false);
+        }
       }
     };
 
-    if (isMobileMenuOpen) {
-      document.addEventListener('click', handleClickOutside);
-      document.addEventListener('touchstart', handleClickOutside);
-    }
+    document.addEventListener('click', handleClickOutside, true);
+    document.addEventListener('touchstart', handleClickOutside, true);
 
     return () => {
-      document.removeEventListener('click', handleClickOutside);
-      document.removeEventListener('touchstart', handleClickOutside);
+      document.removeEventListener('click', handleClickOutside, true);
+      document.removeEventListener('touchstart', handleClickOutside, true);
     };
   }, [isMobileMenuOpen]);
+
+  // Close user dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!isUserMenuOpen) return;
+      const dropdown = document.querySelector('.user-dropdown');
+      const trigger = document.querySelector('.user-area') || document.querySelector('.login-btn');
+      if (dropdown && trigger) {
+        if (!dropdown.contains(event.target) && !trigger.contains(event.target)) {
+          setIsUserMenuOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside, true);
+    document.addEventListener('touchstart', handleClickOutside, true);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside, true);
+      document.removeEventListener('touchstart', handleClickOutside, true);
+    };
+  }, [isUserMenuOpen]);
 
   const containerStyle = {
     display: 'flex',
@@ -145,7 +185,7 @@ const Header = () => {
     background: '#0a192f',
     backdropFilter: 'none',
     transition: 'all 0.3s ease',
-    zIndex: 1000,
+    zIndex: 10000,
     boxShadow: '0 2px 20px rgba(0, 0, 0, 0.4)',
     display: 'flex',
     alignItems: 'center',
@@ -215,11 +255,9 @@ const Header = () => {
               <Link
                 key={to}
                 to={to}
-                className="nav-link"
+                className={`nav-link ${location.pathname === to ? 'nav-link-active' : ''}`}
                 style={{
-                  color: location.pathname === to ? '#64ffda' : '#e6f1ff',
-                  border: location.pathname === to ? '1px solid rgba(100, 255, 218, 0.3)' : '1px solid transparent',
-                  background: location.pathname === to ? 'rgba(100, 255, 218, 0.08)' : 'transparent'
+                  color: location.pathname === to ? '#64ffda' : '#e6f1ff'
                 }}
               >
                 <span className="nav-label">{label}</span>
@@ -228,11 +266,9 @@ const Header = () => {
             {!isLoggedIn && (
               <Link
                 to="/login"
-                className="nav-link"
+                className={`nav-link ${location.pathname === '/login' ? 'nav-link-active' : ''}`}
                 style={{
-                  color: location.pathname === '/login' ? '#64ffda' : '#e6f1ff',
-                  border: location.pathname === '/login' ? '1px solid rgba(100, 255, 218, 0.3)' : '1px solid transparent',
-                  background: location.pathname === '/login' ? 'rgba(100, 255, 218, 0.08)' : 'transparent'
+                  color: location.pathname === '/login' ? '#64ffda' : '#e6f1ff'
                 }}
               >
                 <span className="nav-label">Login</span>
@@ -251,42 +287,10 @@ const Header = () => {
             Menu
           </button>
 
-          {/* Mobile Dropdown Menu */}
-          <div
-            className={`mobile-dropdown ${isMobileMenuOpen ? 'mobile-dropdown-open' : ''}`}
-            role="menu"
-            aria-hidden={!isMobileMenuOpen}
-          >
-            {[
-              { to: '/', label: 'Home' },
-              { to: '/blog', label: 'Blog' },
-              { to: '/games', label: 'Games' },
-              { to: '/tools', label: 'Tools' },
-              { to: '/about', label: 'About' },
-              { to: '/contact', label: 'Contact' }
-            ].map(({ to, label }) => (
-              <Link
-                key={to}
-                to={to}
-                onClick={closeMobileMenu}
-                className={location.pathname === to ? 'mobile-dropdown-active' : ''}
-              >
-                {label}
-              </Link>
-            ))}
-            {!isLoggedIn && (
-              <Link
-                to="/login"
-                onClick={closeMobileMenu}
-                className={`mobile-dropdown-login ${location.pathname === '/login' ? 'mobile-dropdown-active' : ''}`}
-              >
-                Login
-              </Link>
-            )}
-          </div>
+          {/* Dropdown moved to portal below */}
 
           {isLoggedIn ? (
-            <div className="user-area" style={{
+            <div className="user-area" onClick={toggleUserMenu} style={{
               display: 'flex',
               alignItems: 'center',
               gap: '12px',
@@ -345,7 +349,7 @@ const Header = () => {
               </div>
               <button
                 className="logout-btn"
-                onClick={handleLogout}
+                onClick={(e) => { e.stopPropagation(); handleLogout(); }}
                 style={{
                   background: 'transparent',
                   color: '#64ffda',
@@ -381,6 +385,11 @@ const Header = () => {
             <Link
               className="login-btn"
               to="/login"
+              onClick={(e) => {
+                if (window.innerWidth <= 600) {
+                  toggleUserMenu(e);
+                }
+              }}
               style={{
                 background: 'transparent',
                 color: '#64ffda',
@@ -410,11 +419,80 @@ const Header = () => {
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
               </svg>
-              Iniciar Sesión
+             <span className="login-text">Iniciar Sesión</span>
             </Link>
           )}
         </div>
       </div>
+
+      {createPortal(
+        <>
+          {/* Mobile Dropdown Menu in portal */}
+          <div
+            className={`mobile-dropdown ${isMobileMenuOpen ? 'mobile-dropdown-open' : ''}`}
+            role="menu"
+            aria-hidden={!isMobileMenuOpen}
+          >
+            {[
+              { to: '/', label: 'Home' },
+              { to: '/blog', label: 'Blog' },
+              { to: '/games', label: 'Games' },
+              { to: '/tools', label: 'Tools' },
+              { to: '/about', label: 'About' },
+              { to: '/contact', label: 'Contact' }
+            ].map(({ to, label }) => (
+              <Link
+                key={to}
+                to={to}
+                onClick={closeMobileMenu}
+                className={location.pathname === to ? 'mobile-dropdown-active' : ''}
+              >
+                {label}
+              </Link>
+            ))}
+            {!isLoggedIn && (
+              <Link
+                to="/login"
+                onClick={closeMobileMenu}
+                className={`mobile-dropdown-login ${location.pathname === '/login' ? 'mobile-dropdown-active' : ''}`}
+              >
+                Login
+              </Link>
+            )}
+          </div>
+
+          {/* Mobile overlay to dim background and capture outside clicks */}
+          {isMobileMenuOpen && (
+            <div className="mobile-overlay" onClick={closeMobileMenu} aria-hidden="true" />
+          )}
+
+          {/* User dropdown (mobile) */}
+          <div
+            className={`user-dropdown ${isUserMenuOpen ? 'user-dropdown-open' : ''}`}
+            role="menu"
+            aria-hidden={!isUserMenuOpen}
+          >
+            {isLoggedIn ? (
+              <>
+                <div className="user-dropdown-header">
+                  <span>{username}</span>
+                  {userRole && <span className="role">{userRole}</span>}
+                </div>
+                <button className="user-dropdown-item" onClick={handleLogout}>Logout</button>
+              </>
+            ) : (
+              <>
+                <Link className="user-dropdown-item" to="/login" onClick={closeUserMenu}>Login</Link>
+              </>
+            )}
+          </div>
+
+          {isUserMenuOpen && (
+            <div className="mobile-overlay" onClick={closeUserMenu} aria-hidden="true" />
+          )}
+        </>,
+        document.body
+      )}
     </header>
   );
 };

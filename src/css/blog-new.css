@@ -64,12 +64,15 @@
 }
 
 .post-card {
+  display: flex;
+  flex-direction: column;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease;
   background: #112240;
   border: 1px solid rgba(100, 255, 218, 0.1);
+  text-decoration: none;
 }
 
 .post-card:hover {
@@ -89,6 +92,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.game-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(10, 25, 47, 0.9);
+  color: #64ffda;
+  border: 1px solid rgba(100, 255, 218, 0.5);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 16px;
+  line-height: 1;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  z-index: 2;
 }
 
 .post-image img {
@@ -127,6 +145,20 @@
   color: #ccd6f6;
   margin-bottom: 1.5rem;
   line-height: 1.6;
+}
+
+.inline-game-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 25, 47, 0.9);
+  color: #64ffda;
+  border: 1px solid rgba(100, 255, 218, 0.5);
+  border-radius: 6px;
+  padding: 2px 6px;
+  margin: 0 4px;
+  font-size: 0.95em;
+  line-height: 1;
 }
 
 .post-actions {

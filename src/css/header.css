@@ -8,12 +8,13 @@ header {
   background: #0a192f;
   backdrop-filter: none;
   transition: all 0.3s ease;
-  z-index: 1000;
+  z-index: 10000;
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   padding: 0;
   border-bottom: 1px solid rgba(100, 255, 218, 0.15);
+  transform: translateZ(0);
 }
 
 .container {
@@ -22,7 +23,7 @@ header {
   align-items: center;
   width: 100%;
   min-width: 0;
-  overflow: hidden;
+  overflow: visible;
   padding: 0 20px;
   box-sizing: border-box;
 }
@@ -68,7 +69,7 @@ header {
   gap: 12px;
   flex-shrink: 1;
   min-width: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* Mobile menu button - hidden by default */
@@ -81,20 +82,19 @@ header {
 /* Mobile dropdown - hidden by default */
 .mobile-dropdown {
   display: none;
-  position: absolute;
-  top: 100%;
+  position: fixed;
+  top: 60px;
+  left: 0;
   right: 0;
+  bottom: 0;
   background: #112240;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(100, 255, 218, 0.15);
-  z-index: 1000;
-  min-width: 200px;
-  padding: 8px 0;
-  margin-top: 8px;
+  border-top: 1px solid rgba(100, 255, 218, 0.15);
+  z-index: 10002;
+  padding: 12px 16px 24px 16px;
   opacity: 0;
   transform: translateY(-10px);
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
+  overflow-y: auto;
 }
 
 /* Mobile dropdown when open */
@@ -115,15 +115,18 @@ header {
   font-size: 14px;
   font-weight: 500;
   transition: all 0.2s ease;
-  background: transparent;
-  border: none;
+  background: #0a192f;
+  border: 1px solid rgba(100, 255, 218, 0.1);
   width: 100%;
   text-align: left;
+  border-radius: 10px;
+  margin-bottom: 10px;
 }
 
 .mobile-dropdown a:hover {
   background: rgba(100, 255, 218, 0.08);
   color: #64ffda;
+  border-color: rgba(100, 255, 218, 0.3);
 }
 
 .mobile-dropdown a:active {
@@ -135,12 +138,83 @@ header {
   background: rgba(100, 255, 218, 0.12) !important;
   color: #64ffda !important;
   font-weight: 600 !important;
+  border-color: rgba(100, 255, 218, 0.35) !important;
 }
 
 /* Login link in mobile dropdown */
 .mobile-dropdown-login {
-  border-top: 1px solid rgba(100, 255, 218, 0.15) !important;
+  border-top: none !important;
   margin-top: 4px !important;
+}
+
+/* Fullscreen dim overlay behind the dropdown */
+.mobile-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 12, 27, 0.55);
+  backdrop-filter: blur(2px);
+  z-index: 10001;
+}
+
+/* User dropdown (mobile) */
+.user-dropdown {
+  display: none;
+  position: fixed;
+  top: 60px;
+  right: 0;
+  left: 0;
+  background: #112240;
+  border-top: 1px solid rgba(100, 255, 218, 0.15);
+  z-index: 10002;
+  padding: 12px 16px 24px 16px;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.25s ease;
+}
+
+.user-dropdown-open {
+  display: block !important;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+.user-dropdown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #e6f1ff;
+  margin-bottom: 12px;
+}
+
+.user-dropdown-header .role {
+  background: rgba(100, 255, 218, 0.1);
+  border: 1px solid rgba(100, 255, 218, 0.3);
+  color: #64ffda;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.user-dropdown-item {
+  width: 100%;
+  text-align: left;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  background: #0a192f;
+  color: #e6f1ff;
+  border: 1px solid rgba(100, 255, 218, 0.1);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.user-dropdown-item:hover {
+  background: rgba(100, 255, 218, 0.08);
+  color: #64ffda;
+  border-color: rgba(100, 255, 218, 0.3);
 }
 
 /* Desktop navigation - visible by default */
@@ -155,8 +229,8 @@ header {
   text-decoration: none;
   font-size: 1rem;
   font-weight: 500;
-  padding: 10px 14px;
-  border-radius: 8px;
+  padding: 12px 18px;
+  border-radius: 12px;
   transition: all 0.3s ease;
   background: transparent;
   border: 1px solid transparent;
@@ -174,6 +248,20 @@ header {
   background: rgba(100, 255, 218, 0.1);
   color: #64ffda;
   transform: translateY(-1px);
+}
+
+/* Active state with generous inner spacing and soft outline */
+.nav-link-active {
+  background: rgba(100, 255, 218, 0.18);
+  border: 2px solid #64ffda;
+  color: #64ffda;
+  font-weight: 600;
+  box-shadow: 0 0 0 4px rgba(100, 255, 218, 0.10), 0 6px 16px rgba(100, 255, 218, 0.15);
+}
+
+.nav-link-active:hover {
+  background: rgba(100, 255, 218, 0.2);
+  color: #64ffda;
 }
 
 /* Icon and label handling for better space usage */
@@ -195,7 +283,7 @@ header {
 
   .nav-link {
     gap: 6px;
-    padding: 6px 8px;
+    padding: 10px 14px;
   }
 }
 
@@ -203,7 +291,7 @@ header {
 @media (max-width: 750px) {
   .nav-link {
     gap: 4px;
-    padding: 4px 6px;
+    padding: 9px 12px;
   }
 }
 
@@ -211,13 +299,16 @@ header {
 .user-area {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   font-size: 14px;
-  background: #112240;
-  padding: 8px 16px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(100, 255, 218, 0.15);
+  background: transparent;
+  padding: 4px 6px;
+  border-radius: 999px;
+  box-shadow: none;
+  border: 1px solid rgba(100, 255, 218, 0.4);
+  max-width: 50vw;
+  min-width: 0;
+  cursor: pointer;
 }
 
 .user-info {
@@ -228,14 +319,14 @@ header {
 }
 
 .user-avatar {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: linear-gradient(135deg, #64ffda, #00bfa5);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: bold;
   color: #0a192f;
   text-shadow: none;
@@ -245,13 +336,19 @@ header {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  min-width: 0;
+  /* allow ellipsis on children in flex context */
 }
 
 .user-name {
   color: #e6f1ff;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.2;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .user-role {
@@ -325,15 +422,6 @@ header {
     font-size: 13px;
   }
 
-  .logo-container {
-    width: 55px;
-    height: 55px;
-  }
-
-  .logo-container>div {
-    width: 49px !important;
-    height: 49px !important;
-  }
 }
 
 /* Medium screens - More shrinking */
@@ -357,15 +445,6 @@ header {
     flex-shrink: 0 !important;
   }
 
-  .logo-container {
-    width: 50px;
-    height: 50px;
-  }
-
-  .logo-container>div {
-    width: 44px !important;
-    height: 44px !important;
-  }
 }
 
 /* Medium screens - Keep all links visible; balance spacing */
@@ -380,7 +459,7 @@ header {
     flex: 1 1 auto;
     text-align: center;
     min-width: 0;
-    padding: 8px 10px;
+    padding: 9px 12px;
   }
 
   .user-area {
@@ -481,15 +560,6 @@ header {
     min-width: fit-content !important;
   }
 
-  .logo-container {
-    width: 45px;
-    height: 45px;
-  }
-
-  .logo-container>div {
-    width: 39px !important;
-    height: 39px !important;
-  }
 
   /* User area compact */
   .user-area {
@@ -518,8 +588,9 @@ header {
   }
 
   .login-btn {
-    padding: 8px 12px !important;
-    font-size: 12px !important;
+    padding: 6px 8px !important;
+    font-size: 10px !important;
+    border-radius: 8px !important;
   }
 }
 
@@ -574,28 +645,61 @@ header {
     flex-shrink: 0 !important;
     margin-left: 8px !important;
     order: 2;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    background: transparent !important;
+    gap: 0 !important;
   }
 
   .login-btn {
     flex-shrink: 0 !important;
     margin-left: 8px !important;
     order: 2;
+    padding: 0 !important;
+    width: 32px !important;
+    height: 32px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    background: #233554 !important;
+    border: 2px solid rgba(100, 255, 218, 0.35) !important;
+    color: #e6f1ff !important;
+    font-size: 0 !important;
   }
 
   /* Adjust dropdown for very small screens */
   .mobile-dropdown {
-    min-width: 180px !important;
-    right: 0 !important;
+    top: 60px;
   }
 
-  .logo-container {
-    width: 40px;
-    height: 40px;
+}
+
+/* Overrides for mobile menu button to match site style and center horizontally */
+@media (max-width: 600px) {
+  .nav-welcome-container {
+    position: relative;
   }
 
-  .logo-container>div {
-    width: 34px !important;
-    height: 34px !important;
+  .mobile-menu-btn {
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    background: transparent !important;
+    color: #64ffda !important;
+    border: 2px solid #64ffda !important;
+    border-radius: 10px !important;
+    padding: 8px 14px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 8px rgba(100, 255, 218, 0.2) !important;
+    z-index: 10003 !important;
+  }
+
+  .mobile-menu-btn:hover {
+    background: rgba(100, 255, 218, 0.1) !important;
+    box-shadow: 0 6px 16px rgba(100, 255, 218, 0.3) !important;
+    transform: translateX(-50%) translateY(-1px) !important;
   }
 }
 
@@ -629,14 +733,27 @@ header {
     font-size: 13px !important;
   }
 
-  .logo-container {
-    width: 35px;
-    height: 35px;
+  /* Show only circular avatar or circular login trigger on very small screens */
+  .user-name,
+  .user-role,
+  .login-text {
+    display: none !important;
   }
 
-  .logo-container>div {
-    width: 29px !important;
-    height: 29px !important;
+  .user-avatar {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 12px !important;
+  }
+
+  .login-btn {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  .login-btn svg {
+    width: 16px !important;
+    height: 16px !important;
   }
 }
 
@@ -654,15 +771,6 @@ header {
     margin-left: 5px;
   }
 
-  .logo-container {
-    width: 30px;
-    height: 30px;
-  }
-
-  .logo-container>div {
-    width: 24px !important;
-    height: 24px !important;
-  }
 
   .nav-welcome-container {
     gap: 2px;
@@ -711,8 +819,9 @@ header {
   }
 
   .login-btn {
-    padding: 4px 8px !important;
-    font-size: 10px !important;
+    padding: 3px 6px !important;
+    font-size: 9px !important;
+    border-radius: 6px !important;
   }
 }
 
