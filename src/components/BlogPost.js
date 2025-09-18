@@ -114,8 +114,6 @@ function BlogPost() {
 
                 const gameInfo = findGameOrTool(part);
 
-
-
                 if (gameInfo && gameInfo.path) {
                     const GameComponent = React.lazy(gameInfo.path);
                     result.push(
@@ -156,7 +154,7 @@ function BlogPost() {
                 <div className="row justify-content-center">
                     <div className="col-12 col-md-10 col-lg-8">
                         <article className="blog-post">
-                            <h1 className="mb-3 mb-md-4">{post.title}</h1>
+                            <h1 className="blog-title mb-3 mb-md-4">{post.title}</h1>
                             {post.imageUrl && (
                                 <img
                                     src={post.imageUrl}
@@ -164,7 +162,7 @@ function BlogPost() {
                                     className="img-fluid rounded mb-3 mb-md-4"
                                 />
                             )}
-                            <p className="text-muted small">
+                            <p className="blog-meta">
                                 <span className="d-block d-md-inline">Autor: {post.author}</span>
                                 <span className="d-none d-md-inline"> | </span>
                                 <span className="d-block d-md-inline">

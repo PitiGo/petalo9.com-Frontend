@@ -1,8 +1,16 @@
 /* App.css */
 .main-content {
-  padding-top: 80px; /* Solo mantenemos el padding superior para el header */
+  padding-top: 80px;
+  /* Solo mantenemos el padding superior para el header */
   width: 100%;
   overflow-x: hidden;
+  background-color: #0a192f;
+  min-height: 100vh;
+}
+
+/* Excepción para la página de inicio - no necesita padding-top */
+.home-container {
+  padding-top: 0 !important;
 }
 
 /* Ajustes para páginas específicas */
@@ -12,10 +20,13 @@
   padding-top: 20px;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   margin: 0;
   padding: 0;
   max-width: 100%;
   overflow-x: hidden;
+  background-color: #0a192f;
 }

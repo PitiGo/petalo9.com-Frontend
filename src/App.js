@@ -10,6 +10,7 @@ import Login from './components/Login';
 import BlogPost from './components/BlogPost';
 import GamePage from './components/GamePage';
 import ProtectedRoute from './components/ProtectedRoute';
+import AdminRoute from './components/AdminRoute';
 import ErrorComponent from './components/ErrorComponent';
 import TextEditor from './components/TextEditor';
 import EditPost from './components/EditPost';
@@ -42,15 +43,16 @@ function App() {
 
               <Route path="/error" element={<ErrorComponent />} />
               <Route path="/contact" element={<Contact />} />
+              {/* Rutas protegidas solo para Administradores */}
               <Route path="/new-post" element={
-                <ProtectedRoute>
+                <AdminRoute>
                   <TextEditor />
-                </ProtectedRoute>
+                </AdminRoute>
               } />
               <Route path="/edit-post/:id" element={
-                <ProtectedRoute>
+                <AdminRoute>
                   <EditPost />
-                </ProtectedRoute>
+                </AdminRoute>
               } />
               {/* Aquí puedes añadir rutas para tus juegos individuales */}
             </Routes>

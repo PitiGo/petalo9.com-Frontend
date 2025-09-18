@@ -15,23 +15,66 @@ const GamePlayer = () => {
   }, [location]);
 
   // Solo maneja juegos
-const gameInfo = gameRegistry.games[gameId];
+  const gameInfo = gameRegistry.games[gameId];
 
   // Redireccionar si el juego no existe
-if (!gameInfo) {
-  return <Navigate to="/games" replace />;
-}
+  if (!gameInfo) {
+    return <Navigate to="/games" replace />;
+  }
 
-// Cargar el componente del juego de forma dinámica
-const GameComponent = lazy(gameInfo.path);
+  // Cargar el componente del juego de forma dinámica
+  const GameComponent = lazy(gameInfo.path);
 
   // Mostrar un estado de carga mientras se determina el roomId
-  if (!roomId) return <div>Loading...</div>;
+  if (!roomId) return (
+    <div style={{
+      padding: '20px',
+      backgroundColor: '#0a192f',
+      color: '#e6f1ff',
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif'
+    }}>
+      Loading...
+    </div>
+  );
 
   return (
-    <div className="game-player" style={{ padding: '20px' }}>
-      <h1 style={{ marginBottom: '20px' }}>{gameInfo.name}</h1>
-      <Suspense fallback={<div>Loading...</div>}>
+    <div className="game-player" style={{
+      padding: '20px',
+      backgroundColor: '#0a192f',
+      color: '#e6f1ff',
+      minHeight: '100vh',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif'
+    }}>
+      <h1 style={{
+        marginBottom: '20px',
+        color: '#ffffff',
+        fontSize: '2.5rem',
+        fontWeight: '700',
+        letterSpacing: '1px',
+        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',
+        textAlign: 'center',
+        position: 'relative',
+        paddingBottom: '1rem'
+      }}>
+        {gameInfo.name}
+        <span style={{
+          content: '""',
+          position: 'absolute',
+          bottom: '0',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '100px',
+          height: '4px',
+          background: 'linear-gradient(to right, #64ffda, #00bfa5)',
+          borderRadius: '2px',
+          boxShadow: '0 0 10px rgba(100, 255, 218, 0.6)'
+        }}></span>
+      </h1>
+      <Suspense fallback={<div style={{ color: '#e6f1ff', textAlign: 'center' }}>Loading...</div>}>
         <GameComponent roomId={roomId} />
       </Suspense>
     </div>

@@ -1,8 +1,39 @@
+/* Header Styles */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: #0a192f;
+  backdrop-filter: none;
+  transition: all 0.3s ease;
+  z-index: 1000;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  padding: 0;
+  border-bottom: 1px solid rgba(100, 255, 218, 0.15);
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
 .logo-link {
+  transition: transform 0.3s ease;
   display: flex;
   align-items: center;
   text-decoration: none;
-  margin-left: 15px;
+  flex-shrink: 0;
+  min-width: 0;
 }
 
 .logo-container {
@@ -10,106 +41,695 @@
   height: 60px;
   overflow: hidden;
   border-radius: 50%;
-  border: 2px solid #1a1a1a;
+  border: 3px solid transparent;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: white;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
   transition: all 0.3s ease;
+  position: relative;
 }
 
-.circular-logo {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.logo-container>div {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 }
 
 .nav-welcome-container {
   display: flex;
   align-items: center;
-  gap: 20px;
-  margin-left: auto;
-  padding-right: 20px;
+  gap: 12px;
+  flex-shrink: 1;
+  min-width: 0;
+  overflow: hidden;
 }
 
-nav {
+/* Mobile menu button - hidden by default */
+.mobile-menu-btn {
+  display: none;
+  position: relative;
+  z-index: 1001;
+}
+
+/* Mobile dropdown - hidden by default */
+.mobile-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #112240;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(100, 255, 218, 0.15);
+  z-index: 1000;
+  min-width: 200px;
+  padding: 8px 0;
+  margin-top: 8px;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+}
+
+/* Mobile dropdown when open */
+.mobile-dropdown-open {
+  display: block !important;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* Mobile dropdown links */
+.mobile-dropdown a {
   display: flex;
-  gap: 20px;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  color: #e6f1ff;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+
+.mobile-dropdown a:hover {
+  background: rgba(100, 255, 218, 0.08);
+  color: #64ffda;
+}
+
+.mobile-dropdown a:active {
+  background: rgba(100, 255, 218, 0.15);
+}
+
+/* Active state for mobile dropdown links */
+.mobile-dropdown-active {
+  background: rgba(100, 255, 218, 0.12) !important;
+  color: #64ffda !important;
+  font-weight: 600 !important;
+}
+
+/* Login link in mobile dropdown */
+.mobile-dropdown-login {
+  border-top: 1px solid rgba(100, 255, 218, 0.15) !important;
+  margin-top: 4px !important;
+}
+
+/* Desktop navigation - visible by default */
+.desktop-nav {
+  display: flex;
+  flex: 1;
+  min-width: 0;
 }
 
 .nav-link {
-  color: #1a1a1a;
+  color: #e6f1ff;
   text-decoration: none;
   font-size: 1rem;
+  font-weight: 500;
+  padding: 10px 14px;
+  border-radius: 8px;
   transition: all 0.3s ease;
-  padding: 10px 15px;
-  border-radius: 5px;
-  position: relative;
-}
-
-.nav-link::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 2px;
-  bottom: 0;
-  left: 0;
-  background-color: #1a1a1a;
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
-}
-
-.nav-link:hover::after,
-.nav-link.active::after {
-  transform: scaleX(1);
-}
-
-.nav-link:hover,
-.nav-link:focus {
-  background-color: rgba(26, 26, 26, 0.1);
-}
-
-.nav-link.active {
-  font-weight: bold;
-}
-
-.welcome-message {
-  font-size: 0.9rem;
-  color: #1a1a1a;
+  background: transparent;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 200px;
 }
 
-@media (max-width: 768px) {
-  .logo-link {
-    margin-left: 10px;  /* Margen más pequeño en móvil */
+.nav-link:hover {
+  background: rgba(100, 255, 218, 0.1);
+  color: #64ffda;
+  transform: translateY(-1px);
+}
+
+/* Icon and label handling for better space usage */
+.nav-icon {
+  flex: 0 0 auto;
+}
+
+.nav-label {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Hide icons on medium screens to give more space to labels */
+@media (max-width: 900px) {
+  .nav-icon {
+    display: none;
   }
 
-  header {
-    height: auto;
-    padding: 10px;
+  .nav-link {
+    gap: 6px;
+    padding: 6px 8px;
   }
+}
 
-  .container {
-    flex-direction: column;
-    align-items: flex-start;
+/* Tighten even more just before mobile */
+@media (max-width: 750px) {
+  .nav-link {
+    gap: 4px;
+    padding: 4px 6px;
   }
+}
 
+/* User area styles */
+.user-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  background: #112240;
+  padding: 8px 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(100, 255, 218, 0.15);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #64ffda, #00bfa5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  color: #0a192f;
+  text-shadow: none;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.user-name {
+  color: #e6f1ff;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+.user-role {
+  background-color: rgba(100, 255, 218, 0.1);
+  color: #64ffda;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid rgba(100, 255, 218, 0.3);
+}
+
+.logout-btn {
+  background: transparent;
+  color: #64ffda;
+  border: 1px solid rgba(100, 255, 218, 0.4);
+  padding: 6px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.logout-btn:hover {
+  background: rgba(100, 255, 218, 0.1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.login-btn {
+  background: transparent;
+  color: #64ffda;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 16px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  box-shadow: none;
+  border: 1px solid rgba(100, 255, 218, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  background: rgba(100, 255, 218, 0.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+}
+
+/* Large screens - Full navigation */
+@media (max-width: 1024px) {
   .nav-welcome-container {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    margin-top: 10px;
-    padding-right: 10px;
+    gap: 8px;
+    padding-right: 8px;
   }
 
   nav {
-    flex-wrap: wrap;
+    gap: 2px;
   }
 
-  .welcome-message {
-    margin-top: 5px;
+  .nav-link {
+    padding: 6px 8px;
+    font-size: 13px;
+  }
+
+  .logo-container {
+    width: 55px;
+    height: 55px;
+  }
+
+  .logo-container>div {
+    width: 49px !important;
+    height: 49px !important;
+  }
+}
+
+/* Medium screens - More shrinking */
+@media (max-width: 900px) {
+  .nav-welcome-container {
+    gap: 4px;
+    padding-right: 8px;
+  }
+
+  nav {
+    gap: 1px;
+  }
+
+  .nav-link {
+    padding: 4px 4px;
+    font-size: 12px;
+  }
+
+  /* Start preparing for mobile menu */
+  .user-area {
+    flex-shrink: 0 !important;
+  }
+
+  .logo-container {
+    width: 50px;
+    height: 50px;
+  }
+
+  .logo-container>div {
+    width: 44px !important;
+    height: 44px !important;
+  }
+}
+
+/* Medium screens - Keep all links visible; balance spacing */
+@media (max-width: 700px) {
+  .desktop-nav {
+    flex: 1;
+    justify-content: space-between;
+    margin-right: 8px;
+  }
+
+  .nav-link {
+    flex: 1 1 auto;
+    text-align: center;
+    min-width: 0;
+    padding: 8px 10px;
+  }
+
+  .user-area {
+    flex-shrink: 0;
+    min-width: fit-content;
+  }
+
+  .login-btn {
+    flex-shrink: 0;
+    min-width: fit-content;
+  }
+}
+
+/* Medium-small screens - Give more space to nav items before hiding some */
+@media (max-width: 750px) {
+  .nav-welcome-container {
+    gap: 4px;
+    padding-right: 4px;
+  }
+
+  .desktop-nav {
+    margin-right: 4px;
+  }
+
+  .nav-link {
+    padding: 4px 4px;
+    font-size: 11px;
+  }
+
+  /* Ensure user area doesn't take too much space */
+  .user-area {
+    flex-shrink: 0;
+    min-width: fit-content;
+  }
+
+  .login-btn {
+    flex-shrink: 0;
+    min-width: fit-content;
+  }
+}
+
+/* Medium-large screens - Give more space to nav items */
+@media (max-width: 800px) {
+  .nav-welcome-container {
+    gap: 6px;
+    padding-right: 6px;
+  }
+
+  .desktop-nav {
+    margin-right: 6px;
+  }
+
+  .nav-link {
+    padding: 5px 6px;
+    font-size: 12px;
+  }
+
+  /* Ensure user area doesn't take too much space */
+  .user-area {
+    flex-shrink: 0;
+    min-width: fit-content;
+  }
+
+  .login-btn {
+    flex-shrink: 0;
+    min-width: fit-content;
+  }
+}
+
+/* Small screens - Even more compact */
+@media (max-width: 768px) {
+  header {
+    height: 70px;
+    padding: 5px 0;
+  }
+
+  .container {
+    padding: 0 5px;
+  }
+
+  .nav-welcome-container {
+    gap: 2px;
+    padding-right: 4px;
+  }
+
+  nav {
+    gap: 0px;
+  }
+
+  .nav-link {
+    padding: 3px 3px;
+    font-size: 11px;
+  }
+
+  /* Ensure user area doesn't get squished */
+  .user-area {
+    flex-shrink: 0 !important;
+    min-width: fit-content !important;
+  }
+
+  .logo-container {
+    width: 45px;
+    height: 45px;
+  }
+
+  .logo-container>div {
+    width: 39px !important;
+    height: 39px !important;
+  }
+
+  /* User area compact */
+  .user-area {
+    padding: 6px 12px !important;
+    gap: 8px !important;
+  }
+
+  .user-avatar {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 12px !important;
+  }
+
+  .user-name {
+    font-size: 12px !important;
+  }
+
+  .user-role {
+    font-size: 9px !important;
+    padding: 1px 4px !important;
+  }
+
+  .logout-btn {
+    padding: 4px 8px !important;
+    font-size: 11px !important;
+  }
+
+  .login-btn {
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+  }
+}
+
+/* Very small screens - Switch to mobile menu */
+@media (max-width: 600px) {
+  header {
+    height: 60px;
+  }
+
+  .nav-welcome-container {
+    gap: 8px;
+    padding-right: 8px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1;
+  }
+
+  /* Hide desktop navigation completely */
+  .desktop-nav {
+    display: none !important;
+  }
+
+  /* Show mobile menu button */
+  .mobile-menu-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    order: 1;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 8px 12px !important;
+    cursor: pointer !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3) !important;
+    gap: 4px !important;
+  }
+
+  /* Show mobile dropdown when open */
+  .mobile-dropdown-open {
+    display: block !important;
+  }
+
+  /* Ensure user area doesn't overlap */
+  .user-area {
+    flex-shrink: 0 !important;
+    margin-left: 8px !important;
+    order: 2;
+  }
+
+  .login-btn {
+    flex-shrink: 0 !important;
+    margin-left: 8px !important;
+    order: 2;
+  }
+
+  /* Adjust dropdown for very small screens */
+  .mobile-dropdown {
+    min-width: 180px !important;
+    right: 0 !important;
+  }
+
+  .logo-container {
+    width: 40px;
+    height: 40px;
+  }
+
+  .logo-container>div {
+    width: 34px !important;
+    height: 34px !important;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  header {
+    height: 55px;
+  }
+
+  .container {
+    padding: 0 5px;
+  }
+
+  .nav-welcome-container {
+    gap: 4px;
+    padding-right: 4px;
+  }
+
+  .mobile-menu-btn {
+    padding: 6px 10px !important;
+    font-size: 12px !important;
+  }
+
+  .mobile-dropdown {
+    min-width: 160px !important;
+    padding: 6px 0 !important;
+  }
+
+  .mobile-dropdown a {
+    padding: 10px 12px !important;
+    font-size: 13px !important;
+  }
+
+  .logo-container {
+    width: 35px;
+    height: 35px;
+  }
+
+  .logo-container>div {
+    width: 29px !important;
+    height: 29px !important;
+  }
+}
+
+/* Tiny screens - Minimal with mobile menu */
+@media (max-width: 360px) {
+  header {
+    height: 50px;
+  }
+
+  .container {
+    padding: 0 2px;
+  }
+
+  .logo-link {
+    margin-left: 5px;
+  }
+
+  .logo-container {
+    width: 30px;
+    height: 30px;
+  }
+
+  .logo-container>div {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  .nav-welcome-container {
+    gap: 2px;
+    padding-right: 2px;
+  }
+
+  .mobile-menu-btn {
+    padding: 4px 6px !important;
+    font-size: 10px !important;
+  }
+
+  .mobile-dropdown {
+    min-width: 140px !important;
+    padding: 4px 0 !important;
+  }
+
+  .mobile-dropdown a {
+    padding: 8px 10px !important;
+    font-size: 12px !important;
+  }
+
+  /* User area ultra compact */
+  .user-area {
+    padding: 3px 6px !important;
+    gap: 4px !important;
+  }
+
+  .user-avatar {
+    width: 20px !important;
+    height: 20px !important;
+    font-size: 10px !important;
+  }
+
+  .user-name {
+    font-size: 10px !important;
+  }
+
+  .user-role {
+    font-size: 7px !important;
+    padding: 1px 3px !important;
+  }
+
+  .logout-btn {
+    padding: 2px 4px !important;
+    font-size: 9px !important;
+  }
+
+  .login-btn {
+    padding: 4px 8px !important;
+    font-size: 10px !important;
+  }
+}
+
+/* Ensure logo does not shrink on small screens */
+@media (max-width: 600px) {
+  .logo-link {
+    flex: 0 0 auto;
+  }
+
+  .logo-container {
+    width: 60px !important;
+    height: 60px !important;
+    flex: 0 0 auto;
+  }
+
+  .logo-container>div {
+    width: 54px !important;
+    height: 54px !important;
   }
 }

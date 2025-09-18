@@ -2,75 +2,99 @@
 .blog-post {
     max-width: 100%;
     word-wrap: break-word;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     font-size: 16px;
     line-height: 1.6;
-    color: #2d3748;
+    color: #e6f1ff;
+    background-color: #0a192f;
+    min-height: 100vh;
 }
 
 /* Estilos para títulos */
 .blog-title {
     font-size: 2.5em;
     font-weight: 800;
-    color: #1a202c;
+    color: #ffffff;
     margin-bottom: 0.5em;
     line-height: 1.2;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+.blog-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100px;
+    height: 4px;
+    background: linear-gradient(to right, #64ffda, #00bfa5);
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba(100, 255, 218, 0.6);
 }
 
 .blog-subtitle {
     font-size: 1.8em;
     font-weight: 700;
-    color: #2d3748;
+    color: #ffffff;
     margin: 1.5em 0 0.5em;
 }
 
 .blog-section {
     font-size: 1.4em;
     font-weight: 600;
-    color: #4a5568;
+    color: #ccd6f6;
     margin: 1.2em 0 0.4em;
 }
 
 /* Bloques especiales */
 .blog-quote {
-    border-left: 4px solid #4a5568;
+    border-left: 4px solid #64ffda;
     padding: 1em 2em;
     margin: 1.5em 0;
-    background: #f7fafc;
+    background: #112240;
     font-style: italic;
+    color: #e6f1ff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .blog-note {
-    background: #ebf8ff;
-    border: 1px solid #90cdf4;
+    background: rgba(100, 255, 218, 0.1);
+    border: 1px solid rgba(100, 255, 218, 0.3);
     border-radius: 8px;
     padding: 1em;
     margin: 1em 0;
+    color: #e6f1ff;
 }
 
 .blog-alert {
-    background: #fff5f5;
-    border: 1px solid #feb2b2;
+    background: rgba(255, 100, 100, 0.1);
+    border: 1px solid rgba(255, 100, 100, 0.3);
     border-radius: 8px;
     padding: 1em;
     margin: 1em 0;
-    color: #c53030;
+    color: #ff6464;
 }
 
 /* Elementos inline */
 .highlight {
-    background: #fef3c7;
+    background: rgba(100, 255, 218, 0.2);
+    color: #64ffda;
     padding: 0.2em 0.4em;
     border-radius: 4px;
+    border: 1px solid rgba(100, 255, 218, 0.3);
 }
 
 .underline-text {
-    border-bottom: 2px solid #4a5568;
+    border-bottom: 2px solid #64ffda;
+    color: #64ffda;
 }
 
 /* Meta información */
 .blog-meta {
-    color: #718096;
+    color: #ccd6f6;
     font-size: 0.9em;
     margin-bottom: 2em;
 }
@@ -79,6 +103,8 @@
 .blog-post img {
     max-width: 100%;
     height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 .featured-image {
@@ -86,23 +112,27 @@
     height: auto;
     border-radius: 8px;
     margin: 1em 0;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 /* Review específicos */
 .game-meta {
-    background: #f7fafc;
+    background: #112240;
     padding: 1em;
     border-radius: 8px;
     margin: 1em 0;
+    border: 1px solid rgba(100, 255, 218, 0.1);
+    color: #e6f1ff;
 }
 
 /* Tutorial específicos */
 .tutorial-meta {
-    background: #f0fff4;
+    background: #112240;
     padding: 1em;
     border-radius: 8px;
     margin: 1em 0;
+    border: 1px solid rgba(100, 255, 218, 0.1);
+    color: #e6f1ff;
 }
 
 /* Contenedores */
@@ -137,8 +167,9 @@
 .audio-container {
     margin: 1em 0;
     padding: 1em;
-    background: #f7fafc;
+    background: #112240;
     border-radius: 8px;
+    border: 1px solid rgba(100, 255, 218, 0.1);
 }
 
 .audio-header {
@@ -150,7 +181,7 @@
 
 .audio-title {
     font-weight: bold;
-    color: #2d3748;
+    color: #ffffff;
 }
 
 /* Estilos del bloque de código */
@@ -185,13 +216,14 @@
     top: 10px;
     right: 10px;
     padding: 8px 16px;
-    background-color: #0d6efd;
-    color: white;
-    border: none;
+    background: transparent;
+    color: #64ffda;
+    border: 2px solid #64ffda;
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.9rem;
-    transition: all 0.2s ease;
+    font-weight: 500;
+    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -205,9 +237,9 @@
 }
 
 .copy-button:hover {
-    background-color: #0b5ed7;
+    background: rgba(100, 255, 218, 0.1);
+    box-shadow: 0 0 15px rgba(100, 255, 218, 0.3);
     transform: translateY(-2px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     opacity: 1;
 }
 
@@ -217,7 +249,8 @@
 }
 
 .copy-button.copied {
-    background-color: #28a745;
+    background: rgba(100, 255, 218, 0.2);
+    border-color: #64ffda;
     animation: bounce 0.5s ease;
 }
 
@@ -232,9 +265,12 @@
 
 /* Animación para el botón de copiar */
 @keyframes bounce {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(0);
     }
+
     50% {
         transform: translateY(-5px);
     }
@@ -323,7 +359,7 @@
     .blog-quote {
         padding: 0.6em 1.2em;
     }
-    
+
     .copy-button {
         padding: 6px 12px;
         font-size: 0.8rem;
