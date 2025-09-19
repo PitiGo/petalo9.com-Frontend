@@ -31,3 +31,8 @@ deploy.sh
 
 # firebase config
 /src/config/firebase-config.js
+scripts/.env
+venv/
+scripts/client_secret.json
+scripts/venv/
+.deploy_docker.sh
