@@ -43,6 +43,8 @@ cd petalo9.com-Frontend
 npm install
 ```
 
+
+
 Environment variables:
 
 Create a `.env` in the project root and add your backend API URL:
