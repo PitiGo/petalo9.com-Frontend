@@ -28,6 +28,7 @@ yarn-error.log*
 
 # deployment
 deploy.sh
+deploy-frontend.sh
 
 # firebase config
 /src/config/firebase-config.js

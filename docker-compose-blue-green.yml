@@ -1,0 +1,18 @@
+services:
+  petalo9-frontend-blue:
+    build: .
+    container_name: petalo9-frontend-blue
+    ports:
+      - "3004:3000"  # Puerto para blue
+    environment:
+      - REACT_APP_API_URL=https://api.dantecollazzi.com
+    restart: unless-stopped
+
+  petalo9-frontend-green:
+    build: .
+    container_name: petalo9-frontend-green
+    ports:
+      - "3005:3000"  # Puerto para green
+    environment:
+      - REACT_APP_API_URL=https://api.dantecollazzi.com
+    restart: unless-stopped
