@@ -38,8 +38,8 @@ Prerequisites:
 Installation:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
-cd YOUR_REPO
+git clone https://github.com/YOUR_USERNAME/petalo9.com-Frontend.git
+cd petalo9.com-Frontend
 npm install
 ```
 
