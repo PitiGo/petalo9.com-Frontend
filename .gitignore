@@ -36,3 +36,5 @@ venv/
 scripts/client_secret.json
 scripts/venv/
 .deploy_docker.sh
+deploy_docker.sh
+politicas-privacidad/deploy-privacy-policy.sh
