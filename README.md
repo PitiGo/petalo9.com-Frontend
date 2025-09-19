@@ -4,6 +4,8 @@ This is the source code for my personal portfolio, a full-stack React applicatio
 
 Live Demo: https://dantecollazzi.com
 
+![Portfolio Demo](demo.gif)
+
 ## Core Features
 
 - Full-Featured Blog: Rich text editor (TinyMCE), protected admin routes for creating/editing posts, and dynamic SEO per article
