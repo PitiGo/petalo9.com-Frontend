@@ -1,56 +1,70 @@
-# petalo9.com-Frontend
+# Personal Portfolio – Frontend
 
-This is the source code for my personal website, **petalo9.com**, which features a blog, a selection of games, and more. The frontend is built using **React**, **CSS**, and other modern web technologies. The website is designed to showcase my projects, share insights through the blog, and provide interactive games.
+This is the source code for my personal portfolio, a full-stack React application that showcases my work and serves as a playground for various web technologies.
 
+Live Demo: https://dantecollazzi.com
 
-hola
+## Core Features
 
+- Full-Featured Blog: Rich text editor (TinyMCE), protected admin routes for creating/editing posts, and dynamic SEO per article
+- Interactive Games Collection: 2D/3D games built with Babylon.js, D3.js, and gesture-controlled demos with MediaPipe
+- Developer Tools & Demos: 3D model viewers (Three.js), web terminal (XTerm.js), shader experiments
+- User Authentication: Secure login/registration with Firebase Authentication and admin roles
 
-## Features
+## Tech Stack
 
-- **Blog**: A dynamic blog where I share articles on various topics related to technology and programming.
-- **Games**: Several games embedded into the site, developed using **React** and custom shaders.
-- **Responsive Design**: The site is fully responsive and optimized for both desktop and mobile devices.
-- **Tech Stack**: Built with **React**, **JavaScript**, **CSS**, and **Node.js**.
+- Frontend: React, JavaScript, HTML/CSS
+- 3D/Graphics: Three.js, Babylon.js, D3.js
+- Authentication: Firebase Authentication
+- Key Libraries: MediaPipe, XTerm.js, TinyMCE, Puppeteer
+
+## Project Structure
+
+Key folders under `src/`:
+
+- `components/juegos`: Individual game components
+- `components/tools`: Developer tools and demos
+- `components`: Core UI (Header, Blog, Home, etc.)
+- `css`: Global stylesheets
+
+## Getting Started
+
+Prerequisites:
+
+- Node.js v16+ and npm (or yarn)
+
+Installation:
+
+```bash
+git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
+cd YOUR_REPO
+npm install
+```
+
+Environment variables:
+
+Create a `.env` in the project root and add your backend API URL:
+
+```env
+REACT_APP_API_URL=http://localhost:5000/api
+```
+
+Also provide your Firebase credentials in `src/config/firebase-config.js`.
+
+Run the dev server:
+
+```bash
+npm start
+```
+
+The app will be available at http://localhost:3000
 
 ## Available Scripts
 
-In the project directory, you can run:
+- `npm start`: Run in development mode
+- `npm run build`: Build for production
+- `npm test`: Run tests
 
-### `npm start`
+## License
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-## Deployment
-
-The project is deployed using standard methods outlined in the [Create React App deployment guide](https://facebook.github.io/create-react-app/docs/deployment).
-
----
-
-**Check out the repository on GitHub**: [petalo9.com-Frontend](https://github.com/PitiGo/petalo9.com-Frontend)
+MIT – see `LICENSE` for details.
