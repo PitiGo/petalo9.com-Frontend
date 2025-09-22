@@ -120,7 +120,13 @@ function EditPost() {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/posts/${id}`);
+        const token = localStorage.getItem('auth-token');
+        const headers = {};
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const response = await fetch(`${apiUrl}/api/posts/${id}`, { headers });
         if (!response.ok) throw new Error('Error al cargar el post');
 
         const data = await response.json();
