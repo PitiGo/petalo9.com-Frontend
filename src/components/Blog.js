@@ -13,7 +13,13 @@ function Blog() {
   const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
-    fetch(`${apiUrl}/api/posts?page=${currentPage}`)
+    const token = localStorage.getItem('auth-token');
+    const headers = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    fetch(`${apiUrl}/api/posts?page=${currentPage}`, { headers })
       .then(response => response.json())
       .then(data => {
         setBlogPosts(data.posts || []);
@@ -91,6 +97,14 @@ function Blog() {
               <Link to={`/blog/${post.id}`} key={post.id} className="post-card">
                 <article>
                   <div className="post-image">
+                    {isAdmin && post.isTest && (
+                      <span style={{
+                        position: 'absolute', top: 10, right: 10, background: '#ef4444', color: 'white',
+                        padding: '4px 8px', borderRadius: '4px', fontSize: '12px', zIndex: 1
+                      }}>
+                        TEST
+                      </span>
+                    )}
                     {post.imageUrl && (
                       <img src={post.imageUrl} alt={`Featured image for article: ${post.title}`} />
                     )}

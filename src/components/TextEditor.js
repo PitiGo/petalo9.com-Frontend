@@ -125,6 +125,7 @@ function TextEditor() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [alert, setAlert] = useState(null);
   const [isCodeModalOpen, setIsCodeModalOpen] = useState(false);
+  const [isTest, setIsTest] = useState(false);
 
   const editorRef = useRef(null);
   const navigate = useNavigate();
@@ -279,6 +280,7 @@ function TextEditor() {
     if (image) formData.append('image', image);
     formData.append('author', author);
     if (juegoSeleccionado) formData.append('juego', juegoSeleccionado);
+    formData.append('isTest', isTest);
 
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/posts`, {
@@ -361,6 +363,20 @@ function TextEditor() {
             <option key={key} value={key}>{name}</option>
           ))}
         </select>
+
+        {/* Nuevo Checkbox para Test */}
+        <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <input
+            type="checkbox"
+            id="isTest"
+            checked={isTest}
+            onChange={(e) => setIsTest(e.target.checked)}
+            style={{ width: 'auto' }}
+          />
+          <label htmlFor="isTest" style={{ marginBottom: '0' }}>
+            Marcar como post de prueba (solo visible para administradores)
+          </label>
+        </div>
 
         <Editor
           apiKey='d2cmewtag6kjp2p8p17tsmvvvqjqxaqifks441d9txizwi3g'

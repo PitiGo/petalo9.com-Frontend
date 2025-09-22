@@ -115,6 +115,7 @@ function EditPost() {
   const [isCodeModalOpen, setIsCodeModalOpen] = useState(false);
   const [alert, setAlert] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isTest, setIsTest] = useState(false);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -127,6 +128,7 @@ function EditPost() {
         setTitle(data.title);
         setContent(data.content);
         if (data.imageUrl) setImagePreview(data.imageUrl);
+        setIsTest(data.isTest || false);
       } catch (error) {
         console.error('Error:', error);
         setAlert({
@@ -284,6 +286,7 @@ function EditPost() {
     formData.append('title', title);
     formData.append('content', editorRef.current.getContent());
     if (image) formData.append('image', image);
+    formData.append('isTest', isTest);
 
     try {
       const response = await fetch(`${apiUrl}/api/posts/${id}`, {
@@ -383,6 +386,20 @@ function EditPost() {
               )}
             </div>
           </div>
+        </div>
+
+        {/* Nuevo Checkbox para Test */}
+        <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '1rem', background: '#f9f9f9', borderRadius: '8px' }}>
+          <input
+            type="checkbox"
+            id="isTest"
+            checked={isTest}
+            onChange={(e) => setIsTest(e.target.checked)}
+            style={{ width: 'auto' }}
+          />
+          <label htmlFor="isTest" style={{ marginBottom: '0', fontWeight: '500' }}>
+            Marcar como post de prueba (solo visible para administradores)
+          </label>
         </div>
 
         <Editor

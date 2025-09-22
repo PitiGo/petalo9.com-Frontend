@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import SEO from './SEO';
 import gameRegistry from './GameRegistry';
 import Prism from 'prismjs';
@@ -21,11 +21,22 @@ import '../css/blogpost.css';
 function BlogPost() {
     const { id } = useParams();
     const [post, setPost] = useState(null);
+    const [error, setError] = useState(null);
     const apiUrl = process.env.REACT_APP_API_URL;
+    const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(`${apiUrl}/api/posts/${id}`)
+        const token = localStorage.getItem('auth-token');
+        const headers = {};
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        fetch(`${apiUrl}/api/posts/${id}`, { headers })
             .then(response => {
+                if (response.status === 403) {
+                    throw new Error('Forbidden');
+                }
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -33,13 +44,19 @@ function BlogPost() {
             })
             .then(data => {
                 setPost(data);
-                // Inicializar Prism después de que el contenido se cargue
                 setTimeout(() => {
                     Prism.highlightAll();
                 }, 0);
             })
-            .catch(error => console.error('Error fetching data:', error));
-    }, [id, apiUrl]);
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                if (error.message === 'Forbidden') {
+                    navigate('/blog');
+                } else {
+                    setError('Post no encontrado o error de red.');
+                }
+            });
+    }, [id, apiUrl, navigate]);
 
     // Efecto adicional para reinicializar Prism cuando el contenido cambie
     useEffect(() => {
@@ -131,6 +148,10 @@ function BlogPost() {
 
         return result;
     };
+
+    if (error) {
+        return <div className="text-center py-5 text-danger">{error}</div>;
+    }
 
     if (!post) {
         return <div className="text-center py-5">Cargando...</div>;

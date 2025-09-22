@@ -11,7 +11,7 @@ Live Demo: https://dantecollazzi.com
 - Full-Featured Blog: Rich text editor (TinyMCE), protected admin routes for creating/editing posts, and dynamic SEO per article
 - Interactive Games Collection: 2D/3D games built with Babylon.js, D3.js, and gesture-controlled demos with MediaPipe
 - Developer Tools & Demos: 3D model viewers (Three.js), web terminal (XTerm.js), shader experiments
-- User Authentication: Secure login/registration with Firebase Authentication and admin roles
+- User Authentication: Secure login/registration with Firebase Authentication and admin roles.
 
 ## Tech Stack
 
