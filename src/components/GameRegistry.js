@@ -5,6 +5,7 @@ import pongImage from '../images/pong-game.webp';
 import handInvadersImage from '../images/hand-invaders-preview.webp';
 import supermarcosImage from '../images/supermarcos.webp';
 import guessCountryImage from '../images/guess-country.webp';
+import robotViewerImage from '../images/robot-viewer.webp';
 
 const placeholder = 'https://via.placeholder.com/300x180?text=';
 
@@ -45,6 +46,12 @@ const gameRegistry = {
       name: 'Guess The Country',
       description: 'Test your geography knowledge! Click on the map to guess the 15 most populous countries.',
       image: guessCountryImage || `${placeholder}Guess+Country`
+    },
+    'robot-viewer': {
+      path: () => import('./juegos/RobotViewer'),
+      name: '3D Robot Viewer',
+      description: 'Un visor 3D interactivo para un modelo de robot. Puedes rotar, mover y hacer zoom.',
+      image: robotViewerImage || `${placeholder}Robot+Viewer`
     }
   },
   tools: {
