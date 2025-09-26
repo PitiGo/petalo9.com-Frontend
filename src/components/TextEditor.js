@@ -359,7 +359,7 @@ function TextEditor() {
           className="form-control"
         >
           <option value="">Selecciona un juego (opcional)</option>
-          {Object.entries(gameRegistry).map(([key, { name }]) => (
+          {Object.entries(gameRegistry.games).map(([key, { name }]) => (
             <option key={key} value={key}>{name}</option>
           ))}
         </select>
