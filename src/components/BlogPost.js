@@ -87,7 +87,7 @@ function BlogPost() {
     }, []);
 
     const renderPostContent = (content) => {
-        const contentParts = content.split(/\{\{\{Juego:(\w+)\}\}\}/g);
+        const contentParts = content.split(/\{\{\{Juego:([\w-]+)\}\}\}/g);
 
         const result = [];
         for (let i = 0; i < contentParts.length; i++) {

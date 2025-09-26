@@ -27,7 +27,7 @@ function RobotViewer() {
 
     const loader = new GLTFLoader();
 
-    setLoadingStatus('Cargando modelo de robot...');
+    setLoadingStatus('Loading robot model...');
     loader.load(
       '/robot.glb', // El modelo que pusiste en la carpeta public
       (gltf) => {
@@ -43,21 +43,32 @@ function RobotViewer() {
         camera.position.set(0, 1, 3);
         camera.lookAt(0, 0, 0);
         
-        setLoadingStatus('Modelo cargado con éxito');
+        setLoadingStatus('Model loaded successfully');
       },
       undefined,
       (error) => {
-        console.error('Error cargando el modelo:', error);
-        setError('Error al cargar el modelo robot.glb.');
+        console.error('Error loading model:', error);
+        setError('Error loading robot.glb model.');
       }
     );
     
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    // Improved lighting setup
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
     directionalLight.position.set(5, 5, 5);
+    directionalLight.castShadow = true;
     scene.add(directionalLight);
+
+    // Additional lights for better illumination
+    const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight2.position.set(-5, 3, -5);
+    scene.add(directionalLight2);
+
+    const pointLight = new THREE.PointLight(0xffffff, 0.6, 100);
+    pointLight.position.set(0, 5, 0);
+    scene.add(pointLight);
 
     const animate = () => {
       frameId.current = requestAnimationFrame(animate);
@@ -92,12 +103,12 @@ function RobotViewer() {
       {error && <div style={{ color: 'red', position: 'absolute', top: 10, left: 10 }}>{error}</div>}
       {loadingStatus && <div style={{ position: 'absolute', top: 10, left: 10 }}>{loadingStatus}</div>}
       <div style={{ position: 'absolute', bottom: 10, left: 10, background: 'rgba(0,0,0,0.5)', color: 'white', padding: '10px', borderRadius: '5px' }}>
-        <h3>Controles:</h3>
+        <h3>Controls:</h3>
         <ul>
-          <li>El modelo rota automáticamente.</li>
-          <li>Click izquierdo + arrastrar: Rotar la vista manualmente.</li>
-          <li>Click derecho + arrastrar: Mover la cámara.</li>
-          <li>Rueda del ratón: Zoom.</li>
+          <li>The model rotates automatically.</li>
+          <li>Left click + drag: Rotate view manually.</li>
+          <li>Right click + drag: Move camera.</li>
+          <li>Mouse wheel: Zoom.</li>
         </ul>
       </div>
     </div>

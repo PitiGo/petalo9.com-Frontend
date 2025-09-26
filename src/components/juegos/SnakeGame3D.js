@@ -23,22 +23,34 @@ const EnhancedSnakeGame3D = () => {
 
       const camera = new BABYLON.ArcRotateCamera(
         "camera",
-        -Math.PI / 2,
-        Math.PI / 3,
-        35,
-        new BABYLON.Vector3(0, 0, 0),
+        -Math.PI / 2, // Rotación horizontal (alfa)
+        Math.PI / 4,  // Rotación vertical (beta) para un ángulo isométrico
+        25,           // Distancia de la cámara al centro (radio) - más cerca
+        new BABYLON.Vector3(0, 0, 0), // Apuntar al centro del tablero
         scene
       );
-      camera.upperBetaLimit = Math.PI / 2.2;
-      camera.lowerRadiusLimit = 30;
-      camera.upperRadiusLimit = 50;
-      camera.attachControl(canvas, true);
 
-      new BABYLON.HemisphericLight('light', new BABYLON.Vector3(0, 1, 0), scene);
-      const dirLight = new BABYLON.DirectionalLight("dirLight", new BABYLON.Vector3(-1, -2, -1), scene);
-      dirLight.intensity = 0.6;
+      // Deshabilita el control del usuario sobre la cámara para que no se mueva
+      camera.detachControl(canvas);
 
-      const ground = BABYLON.MeshBuilder.CreateGround('ground', { width: 35, height: 18 }, scene);
+      // Improved lighting setup
+      const hemisphericLight = new BABYLON.HemisphericLight('hemisphericLight', new BABYLON.Vector3(0, 1, 0), scene);
+      hemisphericLight.intensity = 0.8;
+      hemisphericLight.diffuse = new BABYLON.Color3(1, 1, 1);
+      hemisphericLight.specular = new BABYLON.Color3(0.5, 0.5, 0.5);
+
+      const directionalLight = new BABYLON.DirectionalLight("directionalLight", new BABYLON.Vector3(-1, -2, -1), scene);
+      directionalLight.intensity = 1.2;
+      directionalLight.diffuse = new BABYLON.Color3(1, 1, 0.9);
+      directionalLight.specular = new BABYLON.Color3(1, 1, 1);
+
+      // Additional rim light for better depth
+      const rimLight = new BABYLON.DirectionalLight("rimLight", new BABYLON.Vector3(1, 0.5, 1), scene);
+      rimLight.intensity = 0.4;
+      rimLight.diffuse = new BABYLON.Color3(0.8, 0.9, 1);
+
+      // Enhanced ground with better materials
+      const ground = BABYLON.MeshBuilder.CreateGround('ground', { width: 35, height: 18, subdivisions: 32 }, scene);
       const groundMaterial = new BABYLON.StandardMaterial('groundMat', scene);
       
       const texture = new BABYLON.DynamicTexture('dynamic texture', { width: 1024, height: 512 }, scene);
@@ -54,16 +66,19 @@ const EnhancedSnakeGame3D = () => {
 
       for (let i = 0; i < numberOfSquaresX; i++) {
         for (let j = 0; j < numberOfSquaresY; j++) {
-          const baseColor = (i + j) % 2 === 0 ? '#8a8a8a' : '#4a4a4a';
+          // Enhanced checkerboard pattern with better colors
+          const baseColor = (i + j) % 2 === 0 ? '#2a4a3a' : '#1a3a2a';
           context.fillStyle = baseColor;
           context.fillRect(i * squareSizeX, j * squareSizeY, squareSizeX, squareSizeY);
 
+          // Enhanced gradient effect
           const gradient = context.createRadialGradient(
-            i * squareSizeX, j * squareSizeY, 0,
-            i * squareSizeX, j * squareSizeY, squareSizeX / 2
+            i * squareSizeX + squareSizeX/2, j * squareSizeY + squareSizeY/2, 0,
+            i * squareSizeX + squareSizeX/2, j * squareSizeY + squareSizeY/2, squareSizeX / 2
           );
-          gradient.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
-          gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+          gradient.addColorStop(0, 'rgba(100, 255, 150, 0.3)');
+          gradient.addColorStop(0.7, 'rgba(50, 200, 100, 0.1)');
+          gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
           context.fillStyle = gradient;
           context.fillRect(i * squareSizeX, j * squareSizeY, squareSizeX, squareSizeY);
         }
@@ -72,12 +87,19 @@ const EnhancedSnakeGame3D = () => {
       texture.update();
       ground.material = groundMaterial;
 
-      groundMaterial.specularColor = new BABYLON.Color3(0.2, 0.2, 0.2);
-      groundMaterial.specularPower = 64;
+      // Enhanced material properties
+      groundMaterial.specularColor = new BABYLON.Color3(0.3, 0.5, 0.3);
+      groundMaterial.specularPower = 128;
+      groundMaterial.ambientColor = new BABYLON.Color3(0.2, 0.3, 0.2);
+      groundMaterial.emissiveColor = new BABYLON.Color3(0.05, 0.1, 0.05);
 
+      // Enhanced border material with glow effect
       const borderMaterial = new BABYLON.StandardMaterial('borderMat', scene);
       borderMaterial.diffuseColor = new BABYLON.Color3.FromHexString('#ffd700');
-      borderMaterial.specularColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+      borderMaterial.specularColor = new BABYLON.Color3(1, 1, 0.8);
+      borderMaterial.specularPower = 256;
+      borderMaterial.emissiveColor = new BABYLON.Color3(0.2, 0.2, 0.1);
+      borderMaterial.ambientColor = new BABYLON.Color3(0.3, 0.3, 0.2);
 
       const createBorder = (name, dimensions, position) => {
         const border = BABYLON.MeshBuilder.CreateBox(name, dimensions, scene);
@@ -129,9 +151,14 @@ const EnhancedSnakeGame3D = () => {
     snakeRef.current = [];
     directionRef.current = new BABYLON.Vector3(1, 0, 0);
 
+    // Enhanced snake head with better material
     const snakeHead = BABYLON.MeshBuilder.CreateBox('snakeHead', { size: 1 }, scene);
     const snakeMaterial = new BABYLON.StandardMaterial('snakeMat', scene);
-    snakeMaterial.diffuseColor = BABYLON.Color3.Green();
+    snakeMaterial.diffuseColor = new BABYLON.Color3(0.2, 0.8, 0.2);
+    snakeMaterial.specularColor = new BABYLON.Color3(0.5, 1, 0.5);
+    snakeMaterial.specularPower = 128;
+    snakeMaterial.emissiveColor = new BABYLON.Color3(0.1, 0.3, 0.1);
+    snakeMaterial.ambientColor = new BABYLON.Color3(0.1, 0.4, 0.1);
     snakeHead.material = snakeMaterial;
     snakeHead.position = new BABYLON.Vector3(-15, 0.5, 0);
     snakeRef.current.push(snakeHead);
@@ -149,9 +176,14 @@ const EnhancedSnakeGame3D = () => {
 
   const createFood = () => {
     const scene = sceneRef.current;
-    const food = BABYLON.MeshBuilder.CreateSphere('food', { diameter: 1 }, scene);
+    // Enhanced food with sphere and glow effect
+    const food = BABYLON.MeshBuilder.CreateSphere('food', { diameter: 1, segments: 16 }, scene);
     const foodMaterial = new BABYLON.StandardMaterial('foodMat', scene);
-    foodMaterial.diffuseColor = BABYLON.Color3.Red();
+    foodMaterial.diffuseColor = new BABYLON.Color3(1, 0.2, 0.2);
+    foodMaterial.specularColor = new BABYLON.Color3(1, 0.8, 0.8);
+    foodMaterial.specularPower = 256;
+    foodMaterial.emissiveColor = new BABYLON.Color3(0.3, 0.1, 0.1);
+    foodMaterial.ambientColor = new BABYLON.Color3(0.4, 0.1, 0.1);
     food.material = foodMaterial;
     food.position = new BABYLON.Vector3(
       Math.floor(Math.random() * 33 - 16.5),
@@ -192,10 +224,15 @@ const EnhancedSnakeGame3D = () => {
         moveIntervalRef.current = setInterval(moveSnake, speedRef.current);
       }
 
+      // Enhanced snake segment with better material
       const newSegment = BABYLON.MeshBuilder.CreateBox('snakeSegment', { size: 1 }, scene);
-      const snakeMaterial = new BABYLON.StandardMaterial('snakeMat', scene);
-      snakeMaterial.diffuseColor = BABYLON.Color3.Green();
-      newSegment.material = snakeMaterial;
+      const segmentMaterial = new BABYLON.StandardMaterial('segmentMat', scene);
+      segmentMaterial.diffuseColor = new BABYLON.Color3(0.1, 0.6, 0.1);
+      segmentMaterial.specularColor = new BABYLON.Color3(0.3, 0.8, 0.3);
+      segmentMaterial.specularPower = 64;
+      segmentMaterial.emissiveColor = new BABYLON.Color3(0.05, 0.2, 0.05);
+      segmentMaterial.ambientColor = new BABYLON.Color3(0.08, 0.3, 0.08);
+      newSegment.material = segmentMaterial;
       newSegment.position = snake[snake.length - 1].position.clone();
       snake.push(newSegment);
     }
@@ -254,18 +291,35 @@ const EnhancedSnakeGame3D = () => {
       transform: 'translateX(-50%)',
       color: 'white',
       textAlign: 'center',
-      backgroundColor: 'rgba(0, 0, 0, 0.7)',
-      padding: '20px',
-      borderRadius: '10px',
+      background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(20, 40, 20, 0.8))',
+      padding: '25px',
+      borderRadius: '15px',
       zIndex: 2,
-      width: '80%',
-      maxWidth: '400px',
+      width: '85%',
+      maxWidth: '450px',
+      border: '2px solid rgba(100, 255, 150, 0.3)',
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(100, 255, 150, 0.2)',
+      backdropFilter: 'blur(10px)',
     }}>
-      <h2>Instructions</h2>
-      <p>Use arrow keys or WASD to move the snake</p>
-      <p>Left click + drag: Rotate camera</p>
-      <p>Right click + drag: Move camera</p>
-      <p>Mouse wheel: Zoom</p>
+      <h2 style={{
+        margin: '0 0 15px 0',
+        fontSize: '24px',
+        fontWeight: 'bold',
+        color: '#64ff96',
+        textShadow: '0 0 10px rgba(100, 255, 150, 0.5)',
+      }}>🐍 Snake 3D</h2>
+      <div style={{
+        margin: '15px 0',
+        padding: '10px',
+        background: 'rgba(100, 255, 150, 0.1)',
+        borderRadius: '8px',
+        border: '1px solid rgba(100, 255, 150, 0.3)',
+      }}>
+        <p style={{ margin: '5px 0', fontSize: '16px', fontWeight: 'bold', color: '#64ff96' }}>🎮 Controls:</p>
+        <p style={{ margin: '5px 0', fontSize: '14px' }}>• Arrow Keys: ↑ ↓ ← →</p>
+        <p style={{ margin: '5px 0', fontSize: '14px' }}>• WASD Keys: W A S D</p>
+      </div>
+      <p style={{ margin: '8px 0', fontSize: '14px', color: '#ccc' }}>Camera is fixed for optimal gameplay view</p>
     </div>
   );
 
@@ -279,18 +333,47 @@ const EnhancedSnakeGame3D = () => {
     >
       <canvas ref={canvasRef} style={{ width: '100%', height: '100%' }} />
       {gameStarted && (
-        <div
-          style={{
-            position: 'absolute',
-            top: 10,
-            left: 10,
-            color: 'white',
-            fontSize: '20px',
-            zIndex: 1,
-          }}
-        >
-          Score: {score} | Speed: {(1000 / speedRef.current).toFixed(1)} moves/sec
-        </div>
+        <>
+          <div
+            style={{
+              position: 'absolute',
+              top: 15,
+              left: 15,
+              color: 'white',
+              fontSize: '18px',
+              zIndex: 1,
+              background: 'rgba(0, 0, 0, 0.7)',
+              padding: '10px 15px',
+              borderRadius: '10px',
+              border: '1px solid rgba(100, 255, 150, 0.3)',
+              boxShadow: '0 4px 15px rgba(0, 0, 0, 0.3)',
+              backdropFilter: 'blur(5px)',
+            }}
+          >
+            <div style={{ color: '#64ff96', fontWeight: 'bold' }}>Score: {score}</div>
+            <div style={{ fontSize: '14px', color: '#ccc' }}>Speed: {(1000 / speedRef.current).toFixed(1)} moves/sec</div>
+          </div>
+          
+          {/* Controls indicator during game */}
+          <div
+            style={{
+              position: 'absolute',
+              top: 15,
+              right: 15,
+              color: 'white',
+              fontSize: '12px',
+              zIndex: 1,
+              background: 'rgba(0, 0, 0, 0.6)',
+              padding: '8px 12px',
+              borderRadius: '8px',
+              border: '1px solid rgba(100, 255, 150, 0.2)',
+              backdropFilter: 'blur(5px)',
+            }}
+          >
+            <div style={{ color: '#64ff96', fontWeight: 'bold', marginBottom: '4px' }}>🎮 Controls</div>
+            <div style={{ fontSize: '11px', color: '#ccc' }}>WASD or ↑↓←→</div>
+          </div>
+        </>
       )}
       {!gameStarted && !gameOver && (
         <>
@@ -303,16 +386,28 @@ const EnhancedSnakeGame3D = () => {
               bottom: '10%',
               left: '50%',
               transform: 'translateX(-50%)',
-              padding: '10px 20px',
-              fontSize: '24px',
+              padding: '15px 30px',
+              fontSize: '20px',
+              fontWeight: 'bold',
               cursor: 'pointer',
-              borderRadius: '5px',
-              backgroundColor: '#4CAF50',
+              borderRadius: '25px',
+              background: 'linear-gradient(135deg, #4CAF50, #45a049)',
               color: 'white',
               border: 'none',
+              boxShadow: '0 6px 20px rgba(76, 175, 80, 0.4), 0 0 15px rgba(76, 175, 80, 0.3)',
+              transition: 'all 0.3s ease',
+              textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
+            }}
+            onMouseOver={(e) => {
+              e.target.style.transform = 'translateX(-50%) scale(1.05)';
+              e.target.style.boxShadow = '0 8px 25px rgba(76, 175, 80, 0.5), 0 0 20px rgba(76, 175, 80, 0.4)';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.transform = 'translateX(-50%) scale(1)';
+              e.target.style.boxShadow = '0 6px 20px rgba(76, 175, 80, 0.4), 0 0 15px rgba(76, 175, 80, 0.3)';
             }}
           >
-            Start Game
+            🎮 Start Game
           </button>
         </>
       )}
@@ -326,26 +421,51 @@ const EnhancedSnakeGame3D = () => {
             transform: 'translate(-50%, -50%)',
             color: 'white',
             textAlign: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.7)',
-            padding: '20px',
-            borderRadius: '10px',
+            background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(40, 20, 20, 0.9))',
+            padding: '30px',
+            borderRadius: '20px',
+            border: '2px solid rgba(255, 100, 100, 0.3)',
+            boxShadow: '0 10px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(255, 100, 100, 0.2)',
+            backdropFilter: 'blur(10px)',
+            minWidth: '300px',
           }}
         >
-          <h1>Game Over!</h1>
-          <p>Your Score: {score}</p>
+          <h1 style={{
+            margin: '0 0 15px 0',
+            fontSize: '28px',
+            color: '#ff6464',
+            textShadow: '0 0 15px rgba(255, 100, 100, 0.5)',
+          }}>💀 Game Over!</h1>
+          <p style={{
+            fontSize: '18px',
+            margin: '10px 0 20px 0',
+            color: '#ffaa64',
+          }}>Your Score: <span style={{ color: '#64ff96', fontWeight: 'bold' }}>{score}</span></p>
           <button
             onClick={startGame}
             style={{
-              padding: '10px 20px',
-              fontSize: '24px',
+              padding: '12px 25px',
+              fontSize: '18px',
+              fontWeight: 'bold',
               cursor: 'pointer',
-              borderRadius: '5px',
-              backgroundColor: '#4CAF50',
+              borderRadius: '25px',
+              background: 'linear-gradient(135deg, #4CAF50, #45a049)',
               color: 'white',
               border: 'none',
+              boxShadow: '0 6px 20px rgba(76, 175, 80, 0.4), 0 0 15px rgba(76, 175, 80, 0.3)',
+              transition: 'all 0.3s ease',
+              textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
+            }}
+            onMouseOver={(e) => {
+              e.target.style.transform = 'scale(1.05)';
+              e.target.style.boxShadow = '0 8px 25px rgba(76, 175, 80, 0.5), 0 0 20px rgba(76, 175, 80, 0.4)';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.transform = 'scale(1)';
+              e.target.style.boxShadow = '0 6px 20px rgba(76, 175, 80, 0.4), 0 0 15px rgba(76, 175, 80, 0.3)';
             }}
           >
-            Restart
+            🔄 Restart
           </button>
         </div>
       )}

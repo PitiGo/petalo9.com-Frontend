@@ -50,7 +50,7 @@ const gameRegistry = {
     'robot-viewer': {
       path: () => import('./juegos/RobotViewer'),
       name: '3D Robot Viewer',
-      description: 'Un visor 3D interactivo para un modelo de robot. Puedes rotar, mover y hacer zoom.',
+      description: 'An interactive 3D viewer for a robot model. You can rotate, move and zoom.',
       image: robotViewerImage || `${placeholder}Robot+Viewer`
     }
   },
