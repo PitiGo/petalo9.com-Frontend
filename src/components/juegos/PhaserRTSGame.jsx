@@ -329,7 +329,7 @@ const PhaserRTSGame = () => {
     };
 
     function preload() {
-      this.load.atlas('player_run', 'assets/run.png', 'assets/run.json');
+      this.load.atlas('player_run', '/assets/run.png', '/assets/run.json');
     }
 
     function create() {
