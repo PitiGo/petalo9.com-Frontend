@@ -52,6 +52,12 @@ const gameRegistry = {
       name: '3D Robot Viewer',
       description: 'An interactive 3D viewer for a robot model. You can rotate, move and zoom.',
       image: robotViewerImage || `${placeholder}Robot+Viewer`
+    },
+    'phaser-rts': {
+      path: () => import('./juegos/PhaserRTSGame'),
+      name: 'Phaser RTS Game',
+      description: 'A real-time strategy game built with Phaser. Control units with mouse selection and movement.',
+      image: `${placeholder}Phaser+RTS`
     }
   },
   tools: {
