@@ -14,7 +14,8 @@ const styles = `
               radial-gradient(circle at 80% 0%, rgba(53, 120, 192, 0.25), transparent 60%),
               linear-gradient(135deg, #07121f 0%, #122c44 100%);
   font-family: 'Arial', sans-serif;
-  overflow: hidden;
+  overflow: visible;
+  pointer-events: auto;
 }
 
 .phaser-rts-wrapper canvas {
@@ -23,20 +24,25 @@ const styles = `
   border: 2px solid rgba(109, 203, 255, 0.25);
   border-radius: 10px;
   box-shadow: 0 25px 60px rgba(0, 12, 24, 0.45), 0 0 30px rgba(89, 181, 255, 0.12);
+  pointer-events: auto;
+  touch-action: manipulation;
 }
 
 .phaser-rts-wrapper .ui-panel {
   position: absolute;
   top: 20px;
   left: 20px;
-  background: rgba(10, 18, 30, 0.85);
+  background: rgba(10, 18, 30, 0.9);
   color: white;
-  padding: 15px;
-  border-radius: 10px;
-  border: 1px solid rgba(109, 203, 255, 0.35);
-  backdrop-filter: blur(10px);
-  min-width: 200px;
-  box-shadow: 0 18px 35px rgba(0, 10, 22, 0.55), inset 0 0 20px rgba(74, 144, 226, 0.05);
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(109, 203, 255, 0.4);
+  backdrop-filter: blur(15px);
+  min-width: 280px;
+  max-width: 320px;
+  box-shadow: 0 20px 40px rgba(0, 10, 22, 0.6), inset 0 0 25px rgba(74, 144, 226, 0.08);
+  font-size: 13px;
+  line-height: 1.4;
 }
 
 .phaser-rts-wrapper .ui-title {
@@ -56,22 +62,35 @@ const styles = `
 }
 
 .phaser-rts-wrapper .ui-controls {
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(74, 144, 226, 0.35);
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(74, 144, 226, 0.4);
 }
 
 .phaser-rts-wrapper .ui-controls h4 {
-  margin: 0 0 8px 0;
-  color: #4a90e2;
-  font-size: 14px;
+  margin: 0 0 10px 0;
+  color: #6bc1ff;
+  font-size: 15px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .phaser-rts-wrapper .ui-controls p {
-  margin: 3px 0;
-  font-size: 11px;
-  color: rgba(211, 225, 240, 0.7);
+  margin: 4px 0;
+  font-size: 12px;
+  color: rgba(211, 225, 240, 0.85);
   letter-spacing: 0.2px;
+}
+
+.phaser-rts-wrapper .ui-controls p strong {
+  color: #4a90e2;
+  font-weight: 600;
+}
+
+.phaser-rts-wrapper .ui-controls p:has(strong) {
+  margin: 6px 0;
+  font-size: 13px;
 }
 
 .phaser-rts-wrapper .selection-counter {
@@ -116,6 +135,11 @@ const PhaserRTSGame = () => {
     if (!containerRef.current) {
       return;
     }
+
+    // Configurar el contenedor para permitir scroll
+    const container = containerRef.current;
+    container.style.overflow = 'visible';
+    container.style.pointerEvents = 'auto';
 
     class Unit extends Phaser.GameObjects.Sprite {
       constructor(scene, x, y) {
@@ -321,6 +345,10 @@ const PhaserRTSGame = () => {
         default: 'arcade',
         arcade: { debug: false }
       },
+      input: {
+        activePointers: 3,
+        smoothFactor: 0.5
+      },
       scene: {
         preload,
         create,
@@ -334,6 +362,10 @@ const PhaserRTSGame = () => {
 
     function create() {
       this.input.mouse.disableContextMenu();
+      
+      // Configurar el input para que solo capture eventos dentro del canvas
+      this.input.setDefaultCursor('default');
+      this.input.mouse.capture = false;
 
       let isDragging = false;
       let startX = 0;
@@ -424,6 +456,7 @@ const PhaserRTSGame = () => {
       }
 
       createUI(this);
+      showWelcomeInstructions(this);
 
       graphics = this.add.graphics({ depth: 9999 });
       selectionRect = new Phaser.Geom.Rectangle(0, 0, 0, 0);
@@ -484,21 +517,79 @@ const PhaserRTSGame = () => {
         }
       });
 
+      function showWelcomeInstructions(scene) {
+        const welcomePanel = scene.add.dom(gameConfig.width / 2, gameConfig.height / 2).createFromHTML(`
+          <div style="
+            background: rgba(5, 15, 25, 0.95);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid rgba(109, 203, 255, 0.5);
+            backdrop-filter: blur(20px);
+            text-align: center;
+            min-width: 400px;
+            max-width: 500px;
+            box-shadow: 0 25px 50px rgba(0, 10, 22, 0.7), inset 0 0 30px rgba(74, 144, 226, 0.1);
+            font-family: Arial, sans-serif;
+          ">
+            <h2 style="
+              margin: 0 0 15px 0;
+              color: #6bc1ff;
+              font-size: 24px;
+              font-weight: bold;
+              text-transform: uppercase;
+              letter-spacing: 1px;
+            ">🎮 Welcome to RTS Game</h2>
+            <div style="
+              font-size: 14px;
+              line-height: 1.6;
+              color: rgba(211, 225, 240, 0.9);
+              margin-bottom: 20px;
+            ">
+              <p style="margin: 8px 0;"><strong style="color: #4a90e2;">Left Click + Drag:</strong> Select multiple units</p>
+              <p style="margin: 8px 0;"><strong style="color: #4a90e2;">Single Click:</strong> Select individual unit</p>
+              <p style="margin: 8px 0;"><strong style="color: #4a90e2;">Right Click:</strong> Move selected units</p>
+              <p style="margin: 8px 0;"><strong style="color: #4a90e2;">Scroll:</strong> Page scroll works outside the game area</p>
+            </div>
+            <div style="
+              font-size: 12px;
+              color: rgba(184, 198, 217, 0.7);
+              font-style: italic;
+            ">
+              Click anywhere to start playing!
+            </div>
+          </div>
+        `);
+
+        // Auto-hide after 5 seconds or on first click
+        const hideWelcome = () => {
+          welcomePanel.destroy();
+        };
+
+        // Hide on click
+        scene.input.once('pointerdown', hideWelcome);
+
+        // Auto-hide after 5 seconds
+        scene.time.delayedCall(5000, hideWelcome);
+      }
+
       function createUI(scene) {
         uiPanel = scene.add.dom(20, 20).createFromHTML(`
           <div class="ui-panel">
             <div class="ui-title">🎮 RTS Game (Top-Down)</div>
-            <div class="ui-info">Unidades: <span id="total-units">0</span></div>
-            <div class="ui-info">Seleccionadas: <span id="selected-count">0</span></div>
+            <div class="ui-info">Units: <span id="total-units">0</span></div>
+            <div class="ui-info">Selected: <span id="selected-count">0</span></div>
             <div class="ui-controls">
-              <h4>Controles:</h4>
-              <p>🖱️ Clic + Arrastrar: Seleccionar</p>
-              <p>🖱️ Clic Derecho: Mover</p>
-              <p>✨ Vista top-down pura</p>
-              <p>✨ Separación manual precisa</p>
-              <p>🗺️ Límites del mapa activos</p>
-              <p>🧭 Movimiento directo</p>
-              <p>🎯 Círculos de selección</p>
+              <h4>How to Play:</h4>
+              <p>🖱️ <strong>Left Click + Drag:</strong> Select units</p>
+              <p>🖱️ <strong>Right Click:</strong> Move selected units</p>
+              <p>🎯 <strong>Single Click:</strong> Select individual unit</p>
+              <p>✨ <strong>Features:</strong></p>
+              <p>• Top-down strategic view</p>
+              <p>• Smart unit separation</p>
+              <p>• Map boundary limits</p>
+              <p>• Direct movement paths</p>
+              <p>• Visual selection indicators</p>
             </div>
           </div>
         `);
@@ -568,6 +659,16 @@ const PhaserRTSGame = () => {
           onComplete: () => spark.destroy()
         });
       }
+
+      // Configurar eventos para permitir scroll de la página
+      this.input.on('wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
+        // Solo procesar el scroll si está dentro del área del juego
+        if (pointer.x >= 0 && pointer.x <= this.game.config.width && 
+            pointer.y >= 0 && pointer.y <= this.game.config.height) {
+          // Aquí podrías agregar funcionalidad de zoom si quisieras
+          // Por ahora, no hacemos nada para permitir que el scroll pase a la página
+        }
+      });
 
       this.events.on('shutdown', () => {
         selectedUnits.forEach(unit => {
