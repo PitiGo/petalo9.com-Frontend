@@ -323,13 +323,12 @@ html {
   padding: 60px 40px;
   width: 100%;
   background-color: #0a192f;
-  min-height: 100vh;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .latest-post-section-container {
-  max-width: 1400px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 40px;
   background-color: #0a192f;
@@ -345,35 +344,52 @@ html {
 
 .latest-post-card {
   width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
   background: #112240;
   border-radius: 15px;
   overflow: hidden;
   display: flex;
   transition: transform 0.3s ease;
   border: 1px solid rgba(100, 255, 218, 0.1);
+  max-height: 300px;
 }
 
 .latest-post-image {
   width: 300px;
-  height: 250px;
+  min-width: 300px;
+  height: 100%;
   object-fit: cover;
 }
 
 .post-content {
   padding: 2rem;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .post-content h3 {
   color: #e6f1ff;
   margin-bottom: 1rem;
   font-size: 1.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .latest-post-excerpt {
   color: #8892b0;
   margin-bottom: 1.5rem;
   line-height: 1.6;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 
 .read-more-link {

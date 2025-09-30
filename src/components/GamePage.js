@@ -4,9 +4,7 @@ import SEO from './SEO';
 
 import '../css/GamePage.css';
 import footballImage from '../images/mamvsreptiles.webp';
-import snakeImage from '../images/snake-game.webp';
 import snake3dImage from '../images/snake-3d.webp';
-import pongImage from '../images/pong-game.webp';
 import handInvadersImage from '../images/hand-invaders-preview.webp';
 import supermarcosImage from '../images/supermarcos.webp';
 import guessCountryImage from '../images/guess-country.webp';
@@ -81,22 +79,10 @@ const GamesPage = () => {
     // Lista de juegos hardcodeada para simplificar
     const gamesList = [
         {
-            id: 'snake',
-            name: 'Snake Classic',
-            description: 'The classic Snake game. Guide the snake, collect food, and try not to hit the walls!',
-            image: snakeImage
-        },
-        {
             id: 'SnakeGame3D',
             name: 'Snake 3D',
             description: 'A modern 3D twist on the classic Snake game. Experience snake-gaming in a whole new dimension!',
             image: snake3dImage
-        },
-        {
-            id: 'pong',
-            name: 'Pong',
-            description: 'Classic arcade game. Challenge yourself against the AI in this timeless tennis-style game.',
-            image: pongImage
         },
         {
             id: 'hand-invaders',

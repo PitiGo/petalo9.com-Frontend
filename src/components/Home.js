@@ -10,7 +10,6 @@ import ThreeJSCSS3DSprites from './juegos/ThreeJSCSS3DSprites'; // <--- Importa 
 import developerIllustration from '../images/developer-illustration.webp'; // <-- Import the image
 
 function Home() {
-  const technologies = ['Java', 'Python', 'React', 'Node.js', 'SQL', 'Git', 'AI-assisted development', 'Flutter'];
   const [latestPost, setLatestPost] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -91,40 +90,27 @@ function Home() {
 
         <section id="about" className="about-section">
           <div className="about-section-container">
-            <h2 className="section-title">About Me</h2>
+            <h2 className="section-title">Welcome</h2>
             <div className="about-content">
               <div className="about-text">
                 <p>
-                  Hello! I'm Dante, a passionate developer with years of experience in creating elegant solutions
-                  to complex problems. My journey in tech has been driven by curiosity and a desire to make a positive impact.
+                  This is my personal corner on the web—a space to create, experiment with new technologies, and share my ideas.
                 </p>
                 <p>
-                  With a strong foundation in Java and Python, I've honed my skills across various aspects of software development.
-                  From building robust backend systems to crafting intuitive user interfaces, I approach each project with
-                  enthusiasm and attention to detail.
+                  I'm a software developer with a passion for building things that matter. My journey has taken me through 
+                  backend systems, frontend interfaces, and everything in between. I've also spent time as a programming 
+                  instructor, which taught me the value of clear communication and thoughtful design.
                 </p>
                 <p>
-                  My experience includes a rewarding period as a programming instructor, which broadened my perspective
-                  and enhanced my ability to communicate complex concepts effectively.
+                  Here you'll find projects I'm working on, experiments with new tech, and articles about topics that 
+                  interest me. This site is both a portfolio and a lab—a place where I can try new ideas and share 
+                  what I learn along the way.
                 </p>
-                <p>
-                  Recently, I've been exploring AI-assisted development tools, integrating them into my workflow
-                  to enhance productivity and push the boundaries of what's possible in software development.
-                </p>
-              </div>
-              <div className="skills-container">
-                <h3>Tech Stack</h3>
-                <div className="technologies">
-                  {technologies.map((tech, index) => (
-                    <span key={index} className="tech-item">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
               </div>
             </div>
           </div>
         </section>
+
 
         <section id="latest-post" className="latest-post-section">
           <div className="latest-post-section-container">
