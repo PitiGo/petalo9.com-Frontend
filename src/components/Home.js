@@ -82,12 +82,6 @@ function Home() {
           </div>
         </header>
 
-        {/* === Coloca el componente Three.js aquí === */}
-        <div className="threejs-section-wrapper"> {/* Opcional: para centrar o limitar ancho */}
-          <ThreeJSCSS3DSprites />
-        </div>
-        {/* ========================================== */}
-
         <section id="about" className="about-section">
           <div className="about-section-container">
             <h2 className="section-title">Welcome</h2>
@@ -106,6 +100,9 @@ function Home() {
                   interest me. This site is both a portfolio and a lab—a place where I can try new ideas and share 
                   what I learn along the way.
                 </p>
+              </div>
+              <div className="threejs-container">
+                <ThreeJSCSS3DSprites />
               </div>
             </div>
           </div>
