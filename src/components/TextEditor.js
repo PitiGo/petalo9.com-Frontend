@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import gameRegistry from './GameRegistry';
 import Prism from 'prismjs';
 
+
 import 'prismjs/plugins/toolbar/prism-toolbar';
 import 'prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard';
 
