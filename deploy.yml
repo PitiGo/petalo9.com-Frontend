@@ -4,19 +4,22 @@
   gather_facts: yes
 
   vars:
+    # Project Configuration
     project_name: "petalo9-frontend"
-    local_project_path: ""
+    local_project_path: "/Users/dantecollazzi/Desktop/petalo9.com/Frontend-petalo9/petalo9.com-Frontend/"
     production_path: "/opt/petalo9-frontend"
     backup_path: "/opt/backups/petalo9-frontend"
+
+    # Blue/Green Container Names
     container_name_blue: "{{ project_name }}-blue"
     container_name_green: "{{ project_name }}-green"
 
   tasks:
-    - name: "Paso 1: Verificaciones previas (conectividad y Docker)"
+    - name: "Step 1: Pre-flight checks (connectivity and Docker)"
       block:
-        - name: "Verificando conexión..."
+        - name: "Checking connection..."
           ping:
-        - name: "Verificando que Docker y Docker Compose existen"
+        - name: "Checking if Docker and Docker Compose exist"
           command: "{{ item }} --version"
           register: docker_check
           changed_when: false
@@ -24,21 +27,21 @@
             - docker
             - docker-compose
 
-    - name: "Paso 2: Crear backup del build actual (si existe)"
+    - name: "Step 2: Backup current build (if it exists)"
       block:
-        - name: "Verificar si el directorio 'build' existe"
+        - name: "Check if 'build' directory exists"
           stat:
             path: "{{ production_path }}/build"
           register: build_dir
-        - name: "Creando backup..."
+        - name: "Creating backup..."
           community.general.archive:
             path: "{{ production_path }}/build"
             dest: "{{ backup_path }}/build_backup_{{ ansible_date_time.iso8601_basic_short }}.tar.gz"
           when: build_dir.stat.exists
 
-    - name: "Paso 3: Sincronizar archivos del proyecto al servidor"
+    - name: "Step 3: Synchronize project files to the server"
       block:
-        - name: "Asegurar que los directorios de producción y backup existen"
+        - name: "Ensure production and backup directories exist"
           file:
             path: "{{ item }}"
             state: directory
@@ -46,7 +49,7 @@
           with_items:
             - "{{ production_path }}"
             - "{{ backup_path }}"
-        - name: "Copiando archivos del proyecto con rsync"
+        - name: "Copying project files with rsync"
           ansible.posix.synchronize:
             src: "{{ local_project_path }}"
             dest: "{{ production_path }}"
@@ -58,9 +61,9 @@
               - "--exclude=build"
               - "--exclude=.idea"
 
-    - name: "Paso 4: Determinar entorno Blue/Green activo e inactivo"
+    - name: "Step 4: Determine active and inactive Blue/Green environment"
       block:
-        - name: "Revisando qué contenedor está activo"
+        - name: "Checking which container is active"
           shell: |
             set -e
             if docker ps --format '{% raw %}{{.Names}}{% endraw %}' | grep -q '^{{ container_name_blue }}$'; then
@@ -74,15 +77,15 @@
             executable: /bin/bash
           register: active_container_result
           changed_when: false
-        - name: "Definiendo colores para el despliegue"
+        - name: "Defining colors for the deployment"
           set_fact:
             active_color: "{{ active_container_result.stdout }}"
             inactive_color: "{{ 'green' if active_container_result.stdout == 'blue' else 'blue' }}"
-        - name: "Mostrando entorno detectado"
+        - name: "Displaying detected environment"
           debug:
-            msg: "Activo: {{ active_color }}, Desplegando en: {{ inactive_color }}"
+            msg: "Active: {{ active_color }}, Deploying to: {{ inactive_color }}"
 
-    - name: "Paso 5: Construir y levantar el nuevo contenedor ({{ inactive_color }})"
+    - name: "Step 5: Build and start the new container ({{ inactive_color }})"
       community.docker.docker_compose_v2:
         project_src: "{{ production_path }}"
         files:
@@ -92,7 +95,7 @@
         state: present
         build: always
 
-    - name: "Paso 6: Verificar que el nuevo contenedor responde correctamente"
+    - name: "Step 6: Verify that the new container is responding correctly"
       uri:
         url: "http://127.0.0.1:{{ '3004' if inactive_color == 'blue' else '3005' }}"
         status_code: 200
@@ -101,22 +104,22 @@
       retries: 5
       delay: 5
 
-    - name: "Paso 7: Actualizar Nginx con el nuevo build"
+    - name: "Step 7: Update Nginx with the new build"
       block:
-        - name: "Copiando archivos del build desde el contenedor '{{ inactive_color }}' a Nginx"
+        - name: "Copying build files from the '{{ inactive_color }}' container to Nginx"
           command: "docker cp {{ project_name }}-{{ inactive_color }}:/usr/src/app/build/. {{ production_path }}/build/"
           changed_when: true
-        - name: "Recargando Nginx para servir el nuevo contenido"
+        - name: "Reloading Nginx to serve the new content"
           systemd:
             name: nginx
             state: reloaded
 
-    - name: "Paso 8: Limpieza - Detener y eliminar el contenedor antiguo ({{ active_color }})"
+    - name: "Step 8: Cleanup - Stop and remove the old container ({{ active_color }})"
       community.docker.docker_container:
         name: "{{ project_name }}-{{ active_color }}"
         state: absent
       when: active_color != "none"
 
-    - name: "¡Despliegue finalizado!"
+    - name: "Deployment finished!"
       debug:
-        msg: "✅ ¡Éxito! El entorno '{{ inactive_color }}' está activo en producción."
+        msg: "✅ Success! The '{{ inactive_color }}' environment is now live."

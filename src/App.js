@@ -22,6 +22,7 @@ import ToolPlayer from './components/ToolPlayer';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import 'prismjs/themes/prism-okaidia.css';
 
 function App() {
   return (

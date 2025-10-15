@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import SEO from './SEO';
 import gameRegistry from './GameRegistry';
 import Prism from 'prismjs';
-import 'prismjs/themes/prism-okaidia.css';
 
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-python';
@@ -16,6 +15,10 @@ import 'prismjs/components/prism-tsx';
 import 'prismjs/components/prism-sql';
 import 'prismjs/components/prism-json';
 import 'prismjs/components/prism-bash';
+import 'prismjs/components/prism-yaml';
+import 'prismjs/plugins/toolbar/prism-toolbar';
+import 'prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard';
+import 'prismjs/plugins/show-language/prism-show-language';
 import '../css/blogpost.css';
 
 function BlogPost() {
@@ -24,6 +27,87 @@ function BlogPost() {
     const [error, setError] = useState(null);
     const apiUrl = process.env.REACT_APP_API_URL;
     const navigate = useNavigate();
+
+    const detectLanguage = (text) => {
+        const sample = text.trim();
+        if (!sample) return 'plaintext';
+        // JSON
+        if (/^\s*\{[\s\S]*\}\s*$/.test(sample) && /"[^"]+"\s*:/.test(sample)) return 'json';
+        // HTML/Markup
+        if (/^\s*</.test(sample) && /<\/?[a-zA-Z]/.test(sample)) return 'markup';
+        // Bash/Shell (prioritize before YAML)
+        const isBash = (
+            /^\s*\$\s+/.test(sample) ||
+            /^\s*#\!\/(bin\/bash|usr\/bin\/env\s+bash)/.test(sample) ||
+            /(^|\n)\s*(curl|wget|ls|cat|grep|echo|chmod|chown|mkdir|rm|cp|mv|tar|ssh|scp|docker|kubectl|systemctl|service|apt|yum|brew|npm|yarn|pnpm)\b/.test(sample) ||
+            /(^|\n)\s*([A-Z_][A-Z0-9_]*=|export\s+[A-Z_][A-Z0-9_]*=)/.test(sample) ||
+            /\$\{?[A-Za-z_][A-Za-z0-9_]*\}?/.test(sample) ||
+            /(^|\n)\s*(if|then|fi|elif|for|while)\b/.test(sample) ||
+            /\$\(.*\)/.test(sample) ||
+            /`[^`]+`/.test(sample)
+        );
+        if (isBash) return 'bash';
+        // SQL
+        if (/\b(SELECT|INSERT|UPDATE|DELETE|FROM|WHERE|JOIN|GROUP BY|ORDER BY)\b/i.test(sample)) return 'sql';
+        // JavaScript/TypeScript
+        if (/\b(async function|function\s+\w+\s*\(|const |let |=>|fetch\s*\(|console\.log)\b/.test(sample)) return 'javascript';
+        // Python
+        if (/\b(def\s+\w+\s*\(|class\s+\w+\s*:|import\s+\w+|from\s+\w+\s+import|print\s*\()/.test(sample) || /__name__\s*==\s*["']__main__["']/.test(sample)) return 'python';
+        // CSS
+        if (/^[\s\S]*\{[\s\S]*:[\s\S]*;[\s\S]*\}$/.test(sample) && /(^|\n)\s*[.#]?[a-zA-Z0-9_-]+\s*\{/.test(sample)) return 'css';
+        // YAML/Ansible (stricter)
+        const isYaml = (
+            /(^|\n)\s*-\s+name\s*:\s+/.test(sample) ||
+            (/(^|\n)\s*[a-zA-Z0-9_.-]+\s*:\s*(>|\||\[|\{|"|\'|\d|\w|\s)/.test(sample) && !/https?:\/\//.test(sample))
+        );
+        if (isYaml) return 'yaml';
+        return 'plaintext';
+    };
+
+    const transformHtmlForPrism = (html) => {
+        try {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
+            // Unwrap legacy codehilite wrappers
+            doc.querySelectorAll('div.codehilite').forEach((div) => {
+                const parent = div.parentNode;
+                while (div.firstChild) parent.insertBefore(div.firstChild, div);
+                parent.removeChild(div);
+            });
+
+            // Normalize each pre > code
+            doc.querySelectorAll('pre code').forEach((codeEl) => {
+                const pre = codeEl.parentElement;
+
+                // Extract language from existing classes
+                let langClass = Array.from(codeEl.classList).find((c) => c.startsWith('language-'))
+                    || Array.from(pre.classList).find((c) => c.startsWith('language-'));
+
+                // Keep original text before stripping spans
+                const originalText = codeEl.textContent;
+
+                // Remove inner span markup from Pygments
+                codeEl.textContent = originalText;
+
+                // Auto-detect when missing
+                if (!langClass) {
+                    const lang = detectLanguage(originalText);
+                    langClass = `language-${lang}`;
+                }
+
+                // Ensure both <code> and <pre> carry the language class
+                if (langClass) {
+                    if (!codeEl.classList.contains(langClass)) codeEl.classList.add(langClass);
+                    if (!pre.classList.contains(langClass)) pre.classList.add(langClass);
+                }
+            });
+
+            return doc.body.innerHTML;
+        } catch (e) {
+            return html;
+        }
+    };
 
     useEffect(() => {
         const token = localStorage.getItem('auth-token');
@@ -45,6 +129,14 @@ function BlogPost() {
             .then(data => {
                 setPost(data);
                 setTimeout(() => {
+                    // Ensure <pre> gets language-* from child <code>
+                    document.querySelectorAll('pre > code[class^="language-"]').forEach(codeEl => {
+                        const pre = codeEl.parentElement;
+                        const langClass = Array.from(codeEl.classList).find(c => c.startsWith('language-'));
+                        if (pre && langClass && !pre.classList.contains(langClass)) {
+                            pre.classList.add(langClass);
+                        }
+                    });
                     Prism.highlightAll();
                 }, 0);
             })
@@ -61,6 +153,14 @@ function BlogPost() {
     // Efecto adicional para reinicializar Prism cuando el contenido cambie
     useEffect(() => {
         if (post) {
+            // Ensure <pre> gets language-* from child <code>
+            document.querySelectorAll('pre > code[class^="language-"]').forEach(codeEl => {
+                const pre = codeEl.parentElement;
+                const langClass = Array.from(codeEl.classList).find(c => c.startsWith('language-'));
+                if (pre && langClass && !pre.classList.contains(langClass)) {
+                    pre.classList.add(langClass);
+                }
+            });
             Prism.highlightAll();
         }
     }, [post]);
@@ -96,12 +196,13 @@ function BlogPost() {
             // Si es un índice par, es contenido normal
             if (i % 2 === 0) {
                 if (part) { // Solo renderizar si no está vacío
+                    const processedHtml = transformHtmlForPrism(part).replace(/<img /g, '<img class="img-fluid" ');
                     result.push(
                         <div
                             key={i}
                             className="content-part"
                             dangerouslySetInnerHTML={{
-                                __html: part.replace(/<img /g, '<img class="img-fluid" ')
+                                __html: processedHtml
                             }}
                         />
                     );
