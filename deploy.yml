@@ -1,0 +1,122 @@
+---
+- hosts: all
+  become: yes
+  gather_facts: yes
+
+  vars:
+    project_name: "petalo9-frontend"
+    local_project_path: ""
+    production_path: "/opt/petalo9-frontend"
+    backup_path: "/opt/backups/petalo9-frontend"
+    container_name_blue: "{{ project_name }}-blue"
+    container_name_green: "{{ project_name }}-green"
+
+  tasks:
+    - name: "Paso 1: Verificaciones previas (conectividad y Docker)"
+      block:
+        - name: "Verificando conexión..."
+          ping:
+        - name: "Verificando que Docker y Docker Compose existen"
+          command: "{{ item }} --version"
+          register: docker_check
+          changed_when: false
+          with_items:
+            - docker
+            - docker-compose
+
+    - name: "Paso 2: Crear backup del build actual (si existe)"
+      block:
+        - name: "Verificar si el directorio 'build' existe"
+          stat:
+            path: "{{ production_path }}/build"
+          register: build_dir
+        - name: "Creando backup..."
+          community.general.archive:
+            path: "{{ production_path }}/build"
+            dest: "{{ backup_path }}/build_backup_{{ ansible_date_time.iso8601_basic_short }}.tar.gz"
+          when: build_dir.stat.exists
+
+    - name: "Paso 3: Sincronizar archivos del proyecto al servidor"
+      block:
+        - name: "Asegurar que los directorios de producción y backup existen"
+          file:
+            path: "{{ item }}"
+            state: directory
+            mode: '0755'
+          with_items:
+            - "{{ production_path }}"
+            - "{{ backup_path }}"
+        - name: "Copiando archivos del proyecto con rsync"
+          ansible.posix.synchronize:
+            src: "{{ local_project_path }}"
+            dest: "{{ production_path }}"
+            delete: yes
+            recursive: yes
+            rsync_opts:
+              - "--exclude=node_modules"
+              - "--exclude=.git"
+              - "--exclude=build"
+              - "--exclude=.idea"
+
+    - name: "Paso 4: Determinar entorno Blue/Green activo e inactivo"
+      block:
+        - name: "Revisando qué contenedor está activo"
+          shell: |
+            set -e
+            if docker ps --format '{% raw %}{{.Names}}{% endraw %}' | grep -q '^{{ container_name_blue }}$'; then
+              echo "blue"
+            elif docker ps --format '{% raw %}{{.Names}}{% endraw %}' | grep -q '^{{ container_name_green }}$'; then
+              echo "green"
+            else
+              echo "none"
+            fi
+          args:
+            executable: /bin/bash
+          register: active_container_result
+          changed_when: false
+        - name: "Definiendo colores para el despliegue"
+          set_fact:
+            active_color: "{{ active_container_result.stdout }}"
+            inactive_color: "{{ 'green' if active_container_result.stdout == 'blue' else 'blue' }}"
+        - name: "Mostrando entorno detectado"
+          debug:
+            msg: "Activo: {{ active_color }}, Desplegando en: {{ inactive_color }}"
+
+    - name: "Paso 5: Construir y levantar el nuevo contenedor ({{ inactive_color }})"
+      community.docker.docker_compose_v2:
+        project_src: "{{ production_path }}"
+        files:
+          - docker-compose-blue-green.yml
+        services:
+          - "{{ project_name }}-{{ inactive_color }}"
+        state: present
+        build: always
+
+    - name: "Paso 6: Verificar que el nuevo contenedor responde correctamente"
+      uri:
+        url: "http://127.0.0.1:{{ '3004' if inactive_color == 'blue' else '3005' }}"
+        status_code: 200
+      register: health_check
+      until: health_check.status == 200
+      retries: 5
+      delay: 5
+
+    - name: "Paso 7: Actualizar Nginx con el nuevo build"
+      block:
+        - name: "Copiando archivos del build desde el contenedor '{{ inactive_color }}' a Nginx"
+          command: "docker cp {{ project_name }}-{{ inactive_color }}:/usr/src/app/build/. {{ production_path }}/build/"
+          changed_when: true
+        - name: "Recargando Nginx para servir el nuevo contenido"
+          systemd:
+            name: nginx
+            state: reloaded
+
+    - name: "Paso 8: Limpieza - Detener y eliminar el contenedor antiguo ({{ active_color }})"
+      community.docker.docker_container:
+        name: "{{ project_name }}-{{ active_color }}"
+        state: absent
+      when: active_color != "none"
+
+    - name: "¡Despliegue finalizado!"
+      debug:
+        msg: "✅ ¡Éxito! El entorno '{{ inactive_color }}' está activo en producción."

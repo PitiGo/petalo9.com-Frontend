@@ -39,3 +39,6 @@ scripts/venv/
 .deploy_docker.sh
 deploy_docker.sh
 politicas-privacidad/deploy-privacy-policy.sh
+
+
+inventory.ini
