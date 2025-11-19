@@ -2,17 +2,18 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import SEO from './SEO';
 import '../css/tools.css';
-import boxRotationImage from '../images/box-rotation-thumbnail.webp';
+import gameRegistry from './GameRegistry';
 
 const Tools = () => {
-  const toolsList = [
-    {
-      id: 'learn-perspective',
-      name: 'Interactive 3D Box Rotation Tool for Artists',
-      description: 'A simple, browser-based tool designed to help artists practice and visualize 3D perspective. This tool simplifies the complex task of drawing a cube from any angle by restricting rotations to the key increments (0°, 22.5°, 45°, 67.5°, and 90°) commonly used in foundational drawing exercises. Use the directional buttons to cycle through horizontal (yaw) and vertical (pitch) angles. Toggle the "Solid View" checkbox to switch between an opaque cube for studying form and a transparent "x-ray" view for understanding the complete underlying structure. Perfect for daily warm-ups or for checking the accuracy of your own perspective drawings.',
-      image: boxRotationImage
-    }
-  ];
+  // Convertir el objeto de tools del registro a un array
+  const toolsList = Object.keys(gameRegistry.tools).map(key => ({
+    id: key,
+    ...gameRegistry.tools[key]
+  }));
+
+  // Si quieres mantener la herramienta hardcodeada anterior (learn-perspective) si no está en el registro,
+  // puedes agregarla manualmente o asegurarte de que esté en GameRegistry.js.
+  // Por ahora, usaremos las del registro que es la fuente de verdad.
 
   const ToolCard = ({ tool }) => (
     <Link to={`/tools/${tool.id}`} className="tool-card">

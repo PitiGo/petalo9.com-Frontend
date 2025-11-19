@@ -1,208 +1,163 @@
 import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 const ThreeJSCSS3DSprites = () => {
   const mountRef = useRef(null);
-  const rendererRef = useRef(null);
+  // Refs para mantener estado sin re-renderizar React
   const sceneRef = useRef(null);
+  const cameraRef = useRef(null);
+  const rendererRef = useRef(null);
   const frameIdRef = useRef(null);
-  const controlsRef = useRef(null);
-  const textureRef = useRef(null);
-  const emissiveTextureRef = useRef(null);
-  const geoRef = useRef(null);
-  const matRef = useRef(null);
+  const mouseRef = useRef(new THREE.Vector2(0, 0));
+  const targetRotationRef = useRef(new THREE.Vector2(0, 0));
+
+  // Referencias a los objetos 3D para animarlos
+  const coreMeshRef = useRef(null);
+  const wireframeMeshRef = useRef(null);
 
   useEffect(() => {
-    if (!mountRef.current) return;
+    const mount = mountRef.current;
+    if (!mount) return;
 
-    let width = mountRef.current.clientWidth;
-    let height = mountRef.current.clientHeight;
+    let width = mount.clientWidth;
+    let height = mount.clientHeight;
 
-    const renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      alpha: true,
-      premultipliedAlpha: false
-    });
-    renderer.setClearColor(0x000000, 0); // Set clear color to transparent
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-    mountRef.current.appendChild(renderer.domElement);
-    rendererRef.current = renderer;
-
+    // 1. SETUP BÁSICO
     const scene = new THREE.Scene();
     sceneRef.current = scene;
 
+    // Cámara un poco más alejada para ver mejor los efectos
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-    camera.position.z = 2.5;
+    camera.position.z = 3;
+    cameraRef.current = camera;
 
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.25;
-    controls.screenSpacePanning = false;
-    controls.maxPolarAngle = Math.PI / 2;
-    controls.enableZoom = false;
-    controls.enabled = false;
-    controlsRef.current = controls;
-
-    // Texture: Restore size and fixed font
-    const canvasSize = 256;
-
-    // Base texture
-    const textCanvas = document.createElement('canvas');
-    textCanvas.width = canvasSize;
-    textCanvas.height = canvasSize;
-    const ctx = textCanvas.getContext('2d');
-    ctx.fillStyle = '#0A192F';
-    ctx.fillRect(0, 0, canvasSize, canvasSize);
-    ctx.font = 'bold 48px Arial';
-    ctx.fillStyle = '#64FFDA';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('Dante', canvasSize / 2, canvasSize / 2);
-    const texture = new THREE.CanvasTexture(textCanvas);
-    texture.needsUpdate = true;
-    textureRef.current = texture;
-
-    // Emissive texture
-    const emissiveCanvas = document.createElement('canvas');
-    emissiveCanvas.width = canvasSize;
-    emissiveCanvas.height = canvasSize;
-    const emissiveCtx = emissiveCanvas.getContext('2d');
-    emissiveCtx.fillStyle = '#000000';
-    emissiveCtx.fillRect(0, 0, canvasSize, canvasSize);
-    emissiveCtx.font = 'bold 48px Arial';
-    emissiveCtx.fillStyle = '#FFFFFF';
-    emissiveCtx.textAlign = 'center';
-    emissiveCtx.textBaseline = 'middle';
-    emissiveCtx.fillText('Dante', canvasSize / 2, canvasSize / 2);
-    const emissiveTexture = new THREE.CanvasTexture(emissiveCanvas);
-    emissiveTexture.needsUpdate = true;
-    emissiveTextureRef.current = emissiveTexture;
-
-    // Geometría más detallada
-    const geo = new THREE.IcosahedronGeometry(1.0, 4); // Aumentado de 3 a 4 para más detalle
-    geoRef.current = geo;
-
-    const mat = new THREE.MeshPhongMaterial({
-      map: texture,
-      emissive: new THREE.Color(0x64ffda), // Verde azulado para el brillo
-      emissiveMap: emissiveTexture,
-      emissiveIntensity: 0.7, // Aumentado de 0.6 a 0.7 para más brillo
-      shininess: 80, // Aumentado de 15 a 80 para reflejos más nítidos
-      specular: new THREE.Color(0xeeeeee), // Color del reflejo (gris claro)
-      flatShading: false,
-      transparent: false,
-      opacity: 1.0
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true // Fondo transparente
     });
-    matRef.current = mat;
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Mejor resolución en pantallas retina
+    mount.appendChild(renderer.domElement);
+    rendererRef.current = renderer;
 
-    const mesh = new THREE.Mesh(geo, mat);
-    scene.add(mesh);
+    // 2. ILUMINACIÓN MEJORADA
+    // Luz ambiental suave
+    const ambientLight = new THREE.AmbientLight(0x404040, 2);
+    scene.add(ambientLight);
 
-    // --- ILUMINACIÓN MEJORADA ---
+    // Luz direccional principal (Azulada/Cyan)
+    const dirLight1 = new THREE.DirectionalLight(0x64ffda, 3);
+    dirLight1.position.set(5, 5, 5);
+    scene.add(dirLight1);
 
-    // Luz Hemisférica (color cielo, color suelo, intensidad)
-    const hemisphereLight = new THREE.HemisphereLight(0xadc4ff, 0x4a4d4e, 0.8); // Tonos azulados/grisáceos
-    scene.add(hemisphereLight);
+    // Luz de contra (Magenta/Morado) para dar profundidad
+    const dirLight2 = new THREE.DirectionalLight(0xbd34fe, 2);
+    dirLight2.position.set(-5, -5, -2);
+    scene.add(dirLight2);
 
-    // Luz Direccional Principal (más intensa)
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8); // Aumentada intensidad
-    directionalLight.position.set(5, 5, 5); // Posición ajustada
-    scene.add(directionalLight);
+    // 3. CREACIÓN DE OBJETOS (El "Núcleo")
 
-    // Luz Direccional Secundaria (de relleno o contra, color sutil)
-    const directionalLight2 = new THREE.DirectionalLight(0x88aaff, 0.3); // Luz azulada suave
-    directionalLight2.position.set(-5, 3, -5); // Desde dirección opuesta/lateral
-    scene.add(directionalLight2);
+    // A. Esfera interior sólida (Low Poly)
+    const geometry = new THREE.IcosahedronGeometry(1.2, 1); // Radio 1.2, Detalle 1 (pocas caras)
+    const material = new THREE.MeshStandardMaterial({
+      color: 0x112240,      // Azul muy oscuro (Navy)
+      roughness: 0.3,
+      metalness: 0.8,
+      flatShading: true,    // CLAVE: Hace que se vean los triángulos
+    });
+    const coreMesh = new THREE.Mesh(geometry, material);
+    scene.add(coreMesh);
+    coreMeshRef.current = coreMesh;
 
-    // --- FIN ILUMINACIÓN ---
+    // B. Capa Wireframe (Alambre exterior)
+    const wireGeo = new THREE.IcosahedronGeometry(1.4, 1); // Un poco más grande que el núcleo
+    const wireMat = new THREE.MeshBasicMaterial({
+      color: 0x64ffda,      // Color Cyan (Tu color de acento)
+      wireframe: true,
+      transparent: true,
+      opacity: 0.3
+    });
+    const wireMesh = new THREE.Mesh(wireGeo, wireMat);
+    scene.add(wireMesh);
+    wireframeMeshRef.current = wireMesh;
 
-    let lastTime = 0;
-    const rotationSpeed = 0.05;
+    // 4. MANEJO DEL MOUSE
+    const handleMouseMove = (event) => {
+      // Normalizar coordenadas del mouse de -1 a 1
+      const rect = mount.getBoundingClientRect();
+      const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-    let isVisible = true;
-    const handleVisibilityChange = () => {
-      isVisible = !document.hidden;
-      if (!isVisible && frameIdRef.current) {
-        cancelAnimationFrame(frameIdRef.current);
-        frameIdRef.current = null;
-      } else if (isVisible && !frameIdRef.current) {
-        lastTime = performance.now();
-        animate(lastTime);
-      }
+      // Guardamos el objetivo de rotación
+      mouseRef.current.set(x, y);
     };
-    document.addEventListener("visibilitychange", handleVisibilityChange);
 
-    function animate(time) {
+    // 5. ANIMACIÓN
+    const clock = new THREE.Clock();
+
+    const animate = () => {
+      const elapsedTime = clock.getElapsedTime();
+
+      if (coreMeshRef.current && wireframeMeshRef.current) {
+        // A. Rotación automática constante
+        coreMeshRef.current.rotation.y += 0.005;
+        coreMeshRef.current.rotation.x += 0.002;
+
+        wireframeMeshRef.current.rotation.y -= 0.005; // Gira al lado contrario
+        wireframeMeshRef.current.rotation.x -= 0.002;
+
+        // B. Efecto de "respiración" (Pulsar)
+        const scale = 1 + Math.sin(elapsedTime * 1.5) * 0.05;
+        wireframeMeshRef.current.scale.set(scale, scale, scale);
+
+        // C. Interactividad suave con el mouse (Lerp)
+        // Interpolamos la rotación actual hacia la posición del mouse
+        targetRotationRef.current.x = mouseRef.current.y * 0.5; // Mouse Y afecta rotación X
+        targetRotationRef.current.y = mouseRef.current.x * 0.5; // Mouse X afecta rotación Y
+
+        // Aplicar rotación extra basada en el mouse (suavizada)
+        coreMeshRef.current.rotation.x += (targetRotationRef.current.x - coreMeshRef.current.rotation.x * 0.1) * 0.05;
+        coreMeshRef.current.rotation.y += (targetRotationRef.current.y - coreMeshRef.current.rotation.y * 0.1) * 0.05;
+      }
+
+      renderer.render(scene, camera);
       frameIdRef.current = requestAnimationFrame(animate);
-
-      if (!isVisible) return;
-
-      const deltaTime = (time - lastTime) * 0.001;
-      lastTime = time;
-
-      if (sceneRef.current && rendererRef.current && controlsRef.current) {
-        mesh.rotation.y += rotationSpeed * deltaTime;
-        controlsRef.current.update();
-        rendererRef.current.render(sceneRef.current, camera);
-      }
-    }
-    animate(0);
-
-    const handleResize = () => {
-      if (mountRef.current && rendererRef.current && camera) {
-        width = mountRef.current.clientWidth;
-        height = mountRef.current.clientHeight;
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
-        rendererRef.current.setSize(width, height);
-      }
     };
 
-    const handleMouseEnter = () => {
-      if (controlsRef.current) {
-        controlsRef.current.enabled = true;
-      }
-    };
-
-    const handleMouseLeave = () => {
-      if (controlsRef.current) {
-        controlsRef.current.enabled = false;
-      }
-    };
-
+    // Listeners
+    mount.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('resize', handleResize);
-    mountRef.current.addEventListener('mouseenter', handleMouseEnter);
-    mountRef.current.addEventListener('mouseleave', handleMouseLeave);
 
+    // Iniciar loop
+    animate();
+
+    // 6. RESIZE HANDLER
+    function handleResize() {
+      if (!mount) return;
+      const newWidth = mount.clientWidth;
+      const newHeight = mount.clientHeight;
+
+      camera.aspect = newWidth / newHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(newWidth, newHeight);
+    }
+
+    // 7. CLEANUP
     return () => {
+      cancelAnimationFrame(frameIdRef.current);
       window.removeEventListener('resize', handleResize);
-      if (mountRef.current) {
-        mountRef.current.removeEventListener('mouseenter', handleMouseEnter);
-        mountRef.current.removeEventListener('mouseleave', handleMouseLeave);
+      if (mount) mount.removeEventListener('mousemove', handleMouseMove);
+
+      if (mount && renderer.domElement) {
+        mount.removeChild(renderer.domElement);
       }
-      if (frameIdRef.current) {
-        cancelAnimationFrame(frameIdRef.current);
-      }
-      if (mountRef.current && rendererRef.current) {
-        mountRef.current.removeChild(rendererRef.current.domElement);
-      }
-      if (rendererRef.current) {
-        rendererRef.current.dispose();
-      }
-      if (controlsRef.current) {
-        controlsRef.current.dispose();
-      }
-      if (textureRef.current) textureRef.current.dispose();
-      if (emissiveTextureRef.current) emissiveTextureRef.current.dispose();
-      if (geoRef.current) geoRef.current.dispose();
-      if (matRef.current) matRef.current.dispose();
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-      [rendererRef, sceneRef, controlsRef, textureRef,
-        emissiveTextureRef, geoRef, matRef, frameIdRef].forEach(ref => {
-          ref.current = null;
-        });
+
+      // Limpiar memoria de Three.js
+      geometry.dispose();
+      material.dispose();
+      wireGeo.dispose();
+      wireMat.dispose();
+      renderer.dispose();
     };
   }, []);
 
@@ -211,10 +166,10 @@ const ThreeJSCSS3DSprites = () => {
       ref={mountRef}
       style={{
         width: '100%',
-        height: '300px',
-        marginTop: '2rem',
-        cursor: 'grab',
-        background: 'transparent'
+        height: '400px', // Altura fija o ajusta según necesites
+        background: 'transparent',
+        cursor: 'pointer',
+        overflow: 'hidden'
       }}
     />
   );

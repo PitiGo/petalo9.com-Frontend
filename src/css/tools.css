@@ -34,7 +34,7 @@
   box-shadow: 0 0 10px rgba(100, 255, 218, 0.6);
 }
 
-.tools-page > p {
+.tools-page>p {
   text-align: center;
   margin-bottom: 40px;
   color: #ccd6f6;
@@ -195,7 +195,8 @@
   margin-bottom: 30px;
 }
 
-.test-button, .clear-button {
+.test-button,
+.clear-button {
   padding: 12px 24px;
   border: none;
   border-radius: 5px;
@@ -287,6 +288,7 @@
   background: #ddd;
   outline: none;
   -webkit-appearance: none;
+  appearance: none;
 }
 
 .slider::-webkit-slider-thumb {
@@ -370,30 +372,39 @@
   .tools-page {
     padding: 80px 15px 30px;
   }
-  
+
   .tools-grid {
     grid-template-columns: 1fr;
     gap: 20px;
   }
-  
+
   .button-section {
     flex-direction: column;
   }
-  
+
   .test-tool-container {
     padding: 15px;
   }
-  
+
   .tool-content {
     padding: 20px;
   }
-  
+
   .learn-perspective-container .tool-content {
     grid-template-columns: 1fr;
     gap: 20px;
   }
-  
+
   .three-canvas {
     height: 400px;
+  }
+
+  /* Bloom Tool Responsive */
+  .tool-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .canvas-wrapper {
+    height: 350px !important;
   }
 }

@@ -1,20 +1,12 @@
 import React, { Suspense, lazy } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import '../css/tools.css';
+import gameRegistry from './GameRegistry';
 
 const ToolPlayer = () => {
   const { toolId } = useParams();
 
-  // Registry de herramientas
-  const toolsRegistry = {
-    'learn-perspective': {
-      path: () => import('./tools/LearnPerspective'),
-      name: 'Interactive 3D Box Rotation Tool for Artists',
-      description: 'A simple, browser-based tool designed to help artists practice and visualize 3D perspective.'
-    }
-  };
-
-  const toolInfo = toolsRegistry[toolId];
+  const toolInfo = gameRegistry.tools[toolId];
 
   // Redireccionar si la herramienta no existe
   if (!toolInfo) {
