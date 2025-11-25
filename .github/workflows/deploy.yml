@@ -1,0 +1,87 @@
+name: Deploy Frontend (Blue/Green)
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 1. Copiar archivos al servidor
+      - name: Copy files to VPS
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "."
+          target: "/opt/petalo9-frontend"
+          rm: false # No borramos todo para mantener configs existentes si las hay
+          exclude: "node_modules, .git, .github, build"
+
+      # 2. Ejecutar lógica Blue/Green vía SSH
+      - name: Execute Blue/Green Deployment
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /opt/petalo9-frontend
+            
+            # Definir nombres
+            BLUE_CONTAINER="petalo9-frontend-blue"
+            GREEN_CONTAINER="petalo9-frontend-green"
+            
+            # 1. Detectar contenedor activo
+            if docker ps --format '{{.Names}}' | grep -q "^$BLUE_CONTAINER$"; then
+              ACTIVE="blue"
+              INACTIVE="green"
+              TARGET_PORT="3005"
+            elif docker ps --format '{{.Names}}' | grep -q "^$GREEN_CONTAINER$"; then
+              ACTIVE="green"
+              INACTIVE="blue"
+              TARGET_PORT="3004"
+            else
+              # Si ninguno corre, empezamos con blue
+              ACTIVE="none"
+              INACTIVE="blue"
+              TARGET_PORT="3004"
+            fi
+            
+            echo "🔵 Activo: $ACTIVE | 🟢 Desplegando en: $INACTIVE (Puerto $TARGET_PORT)"
+            
+            # 2. Levantar el contenedor inactivo (nuevo código)
+            # Usamos -f explícito porque tu archivo se llama docker-compose-blue-green.yml
+            docker-compose -f docker-compose-blue-green.yml build --no-cache petalo9-frontend-$INACTIVE
+            docker-compose -f docker-compose-blue-green.yml up -d petalo9-frontend-$INACTIVE
+            
+            # 3. Esperar a que arranque (Health Check básico)
+            echo "⏳ Esperando a que el contenedor inicie..."
+            sleep 10
+            
+            # 4. Copiar el build generado al directorio que sirve Nginx
+            # Asumimos que Nginx lee de /opt/petalo9-frontend/build o donde apunte tu nginx.conf
+            echo "📂 Actualizando archivos estáticos..."
+            # Limpiar build anterior en host
+            rm -rf build/*
+            # Copiar desde dentro del contenedor nuevo hacia el host
+            docker cp petalo9-frontend-$INACTIVE:/usr/src/app/build/. ./build/
+            
+            # 5. Recargar Nginx (si sirve los estáticos)
+            echo "🔄 Recargando Nginx..."
+            systemctl reload nginx
+            
+            # 6. Limpieza: Detener el contenedor viejo
+            if [ "$ACTIVE" != "none" ]; then
+              echo "🛑 Deteniendo contenedor anterior ($ACTIVE)..."
+              docker stop petalo9-frontend-$ACTIVE || true
+              docker rm petalo9-frontend-$ACTIVE || true
+            fi
+            
+            echo "✅ Despliegue completado exitosamente en $INACTIVE."
+
