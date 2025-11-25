@@ -13,7 +13,59 @@ import bloomToolImage from '../images/bloom-tool-thumbnail-v2.png';
 const placeholder = 'https://via.placeholder.com/300x180?text=';
 
 const gameRegistry = {
-  // ... (resto del código igual)
+  // DEFINICIÓN DE JUEGOS
+  games: {
+    'SnakeGame3D': {
+      path: () => import('./juegos/SnakeGame3D'),
+      name: 'Snake 3D',
+      description: 'A modern 3D twist on the classic Snake game.',
+      image: snake3dImage || `${placeholder}Snake3D`
+    },
+    'hand-invaders': {
+      path: () => import('./juegos/HandInvadersGame'),
+      name: 'Hand Invaders',
+      description: 'Defend against invaders using your hand gestures recognized by your camera!',
+      image: handInvadersImage || `${placeholder}HandInvaders`
+    },
+    'supermarcos': {
+      path: () => import('./juegos/SuperMarcos'),
+      name: 'Super Marcos',
+      description: 'A 2D platformer adventure game.',
+      image: supermarcosImage || `${placeholder}SuperMarcos`
+    },
+    'guess-the-country': {
+      path: () => import('./juegos/GuessTheCountry'),
+      name: 'Guess The Country',
+      description: 'Test your geography knowledge!',
+      image: guessCountryImage || `${placeholder}GuessCountry`
+    },
+    'snake': {
+      path: () => import('./juegos/SnakeGame'),
+      name: 'Classic Snake',
+      description: 'The classic snake game.',
+      image: snakeImage || `${placeholder}Snake`
+    },
+    'pong': {
+      path: () => import('./juegos/PongGame'),
+      name: 'Pong',
+      description: 'Classic Pong game.',
+      image: pongImage || `${placeholder}Pong`
+    },
+    'phaser-rts': {
+      path: () => import('./juegos/PhaserRTSGame'),
+      name: 'Phaser RTS',
+      description: 'A real-time strategy game built with Phaser.',
+      image: `${placeholder}Phaser+RTS`
+    },
+    'threejs-sprites': {
+      path: () => import('./juegos/ThreeJSCSS3DSprites'),
+      name: 'Three.js 3D Sprites',
+      description: 'Interactive 3D sprite demonstration with Three.js.',
+      image: `${placeholder}3D+Sprites`
+    }
+  },
+
+  // DEFINICIÓN DE HERRAMIENTAS
   tools: {
     'learn-perspective': {
       path: () => import('./tools/LearnPerspective'),
@@ -26,6 +78,12 @@ const gameRegistry = {
       name: 'Image Glow Generator',
       description: 'Upload your own images and apply a stunning post-processing Bloom/Glow effect using Three.js shaders.',
       image: bloomToolImage || `${placeholder}Bloom+Tool`
+    },
+    'robot-viewer': {
+      path: () => import('./juegos/RobotViewer'),
+      name: 'Robot Viewer',
+      description: 'View and interact with a 3D robot model.',
+      image: robotViewerImage || `${placeholder}Robot+Viewer`
     }
   }
 };
