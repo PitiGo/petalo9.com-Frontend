@@ -1,14 +1,5 @@
 // GameRegistry.js
-import snakeImage from '../images/snake-game.webp';
-import snake3dImage from '../images/snake-3d.webp';
-import pongImage from '../images/pong-game.webp';
-import handInvadersImage from '../images/hand-invaders-preview.webp';
-import supermarcosImage from '../images/supermarcos.webp';
-import guessCountryImage from '../images/guess-country.webp';
-import robotViewerImage from '../images/robot-viewer.webp';
-
-import boxRotationImage from '../images/box-rotation-thumbnail.webp';
-import bloomToolImage from '../images/bloom-tool-thumbnail-v2.png';
+import { SITE_IMAGES } from '../config/images';
 
 const placeholder = 'https://via.placeholder.com/300x180?text=';
 
@@ -19,37 +10,37 @@ const gameRegistry = {
       path: () => import('./juegos/SnakeGame3D'),
       name: 'Snake 3D',
       description: 'A modern 3D twist on the classic Snake game.',
-      image: snake3dImage || `${placeholder}Snake3D`
+      image: SITE_IMAGES.snake3d || `${placeholder}Snake3D`
     },
     'hand-invaders': {
       path: () => import('./juegos/HandInvadersGame'),
       name: 'Hand Invaders',
       description: 'Defend against invaders using your hand gestures recognized by your camera!',
-      image: handInvadersImage || `${placeholder}HandInvaders`
+      image: SITE_IMAGES.handInvaders || `${placeholder}HandInvaders`
     },
     'supermarcos': {
       path: () => import('./juegos/SuperMarcos'),
       name: 'Super Marcos',
       description: 'A 2D platformer adventure game.',
-      image: supermarcosImage || `${placeholder}SuperMarcos`
+      image: SITE_IMAGES.supermarcos || `${placeholder}SuperMarcos`
     },
     'guess-the-country': {
       path: () => import('./juegos/GuessTheCountry'),
       name: 'Guess The Country',
       description: 'Test your geography knowledge!',
-      image: guessCountryImage || `${placeholder}GuessCountry`
+      image: SITE_IMAGES.guessCountry || `${placeholder}GuessCountry`
     },
     'snake': {
       path: () => import('./juegos/SnakeGame'),
       name: 'Classic Snake',
       description: 'The classic snake game.',
-      image: snakeImage || `${placeholder}Snake`
+      image: SITE_IMAGES.snakeGame || `${placeholder}Snake`
     },
     'pong': {
       path: () => import('./juegos/PongGame'),
       name: 'Pong',
       description: 'Classic Pong game.',
-      image: pongImage || `${placeholder}Pong`
+      image: SITE_IMAGES.pong || `${placeholder}Pong`
     },
     'phaser-rts': {
       path: () => import('./juegos/PhaserRTSGame'),
@@ -71,19 +62,19 @@ const gameRegistry = {
       path: () => import('./tools/LearnPerspective'),
       name: 'Interactive 3D Box Rotation Tool for Artists',
       description: 'A simple, browser-based tool designed to help artists practice and visualize 3D perspective. This tool simplifies the complex task of drawing a cube from any angle by restricting rotations to the key increments (0°, 22.5°, 45°, 67.5°, and 90°) commonly used in foundational drawing exercises.',
-      image: boxRotationImage || `${placeholder}Perspective+Tool`
+      image: SITE_IMAGES.boxRotation || `${placeholder}Perspective+Tool`
     },
     'bloom-effect': {
       path: () => import('./tools/BloomTool'),
       name: 'Image Glow Generator',
       description: 'Upload your own images and apply a stunning post-processing Bloom/Glow effect using Three.js shaders.',
-      image: bloomToolImage || `${placeholder}Bloom+Tool`
+      image: SITE_IMAGES.bloomTool || `${placeholder}Bloom+Tool`
     },
     'robot-viewer': {
       path: () => import('./juegos/RobotViewer'),
       name: 'Robot Viewer',
       description: 'View and interact with a 3D robot model.',
-      image: robotViewerImage || `${placeholder}Robot+Viewer`
+      image: SITE_IMAGES.robotViewer || `${placeholder}Robot+Viewer`
     }
   }
 };
@@ -108,4 +99,3 @@ const validateRegistry = (registry) => {
 validateRegistry(gameRegistry);
 
 export default gameRegistry;
-

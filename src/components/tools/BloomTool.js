@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import BloomImage from './BloomImage';
-import placeholderImg from '../../images/logo.webp';
+import { SITE_IMAGES } from '../../config/images';
 
 const BloomTool = () => {
-    const [image, setImage] = useState(placeholderImg);
+    const [image, setImage] = useState(SITE_IMAGES.logo);
     const [params, setParams] = useState({
         strength: 1.5,
         radius: 0.4,

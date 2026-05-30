@@ -7,7 +7,7 @@ import '../css/home.css';
 // Remove the ThreeJS import if you're not using it elsewhere
 // import ThreeJSCSS3DSprites from './juegos/ThreeJSCSS3DSprites';
 import ThreeJSCSS3DSprites from './juegos/ThreeJSCSS3DSprites'; // <--- Importa el componente 3D
-import developerIllustration from '../images/developer-illustration.webp'; // <-- Import the image
+import { SITE_IMAGES } from '../config/images';
 
 function Home() {
   const [latestPost, setLatestPost] = useState(null);
@@ -68,7 +68,7 @@ function Home() {
               <div className="hero-visual">
                 {/* Replace ThreeJS component with the image */}
                 <img
-                  src={developerIllustration}
+                  src={SITE_IMAGES.developerIllustration}
                   alt="Software developer programming illustration"
                   className="hero-illustration" // Add a class for styling
                 />

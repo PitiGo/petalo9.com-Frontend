@@ -3,11 +3,7 @@ import { Link } from 'react-router-dom';
 import SEO from './SEO';
 
 import '../css/GamePage.css';
-import footballImage from '../images/mamvsreptiles.webp';
-import snake3dImage from '../images/snake-3d.webp';
-import handInvadersImage from '../images/hand-invaders-preview.webp';
-import supermarcosImage from '../images/supermarcos.webp';
-import guessCountryImage from '../images/guess-country.webp';
+import { SITE_IMAGES } from '../config/images';
 
 const GamesPage = () => {
     const [selectedGame, setSelectedGame] = useState(null);
@@ -82,25 +78,25 @@ const GamesPage = () => {
             id: 'SnakeGame3D',
             name: 'Snake 3D',
             description: 'A modern 3D twist on the classic Snake game. Experience snake-gaming in a whole new dimension!',
-            image: snake3dImage
+            image: SITE_IMAGES.snake3d
         },
         {
             id: 'hand-invaders',
             name: 'Hand Invaders',
             description: 'Defend against invaders using your hand gestures recognized by your camera!',
-            image: handInvadersImage
+            image: SITE_IMAGES.handInvaders
         },
         {
             id: 'supermarcos',
             name: 'SuperMarcos',
             description: 'A 2D platformer adventure game with levels, enemies, and power-ups.',
-            image: supermarcosImage
+            image: SITE_IMAGES.supermarcos
         },
         {
             id: 'guess-the-country',
             name: 'Guess The Country',
             description: 'Test your geography knowledge! Click on the map to guess the 15 most populous countries.',
-            image: guessCountryImage
+            image: SITE_IMAGES.guessCountry
         }
     ];
 
@@ -110,7 +106,7 @@ const GamesPage = () => {
         id: 'mammals-vs-reptiles',
         name: 'Mammals vs Reptiles',
         description: 'An exciting 3D football game where mammals compete against reptiles in epic matches!',
-        image: footballImage,
+        image: SITE_IMAGES.mamvsreptiles,
         rooms: [
             { id: 'room1', name: 'Room 1', description: 'Main game room', roomIdNumber: 1 },
             { id: 'room2', name: 'Room 2', description: 'Secondary game room', roomIdNumber: 2 }

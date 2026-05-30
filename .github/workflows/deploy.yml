@@ -85,7 +85,13 @@ jobs:
             echo "Actualizando archivos estaticos..."
             mkdir -p build
             rm -rf build/*
+            # Eliminar restos del build antiguo de CRA (/static/js, /static/media)
+            rm -rf static 2>/dev/null || true
             docker cp petalo9-frontend-$INACTIVE:/usr/src/app/build/. ./build/
+            if ! grep -q '/assets/' build/index.html 2>/dev/null; then
+              echo "ADVERTENCIA: index.html no parece ser un build de Vite"
+              exit 1
+            fi
 
             # 5. Recargar Nginx
             echo "Recargando Nginx..."

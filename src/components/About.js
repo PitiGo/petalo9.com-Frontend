@@ -1,7 +1,7 @@
 import React from 'react';
 import SEO from './SEO';
 import '../css/about.css';
-import profileImage from '../images/yo.webp';
+import { SITE_IMAGES } from '../config/images';
 
 function About() {
   return (
@@ -74,7 +74,7 @@ function About() {
           {/* Barra lateral (derecha en escritorio) */}
           <div className="about-sidebar">
             <div className="profile-section">
-              <img src={profileImage} alt="Dante Collazzi software developer profile photo" className="profile-image" />
+              <img src={SITE_IMAGES.profile} alt="Dante Collazzi software developer profile photo" className="profile-image" />
             </div>
             <h3>Key Skills</h3>
             <ul className="skills-list">
