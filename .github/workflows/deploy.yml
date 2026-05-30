@@ -11,32 +11,50 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 1. Copiar archivos al servidor
-      - name: Copy files to VPS
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "."
-          target: "/opt/petalo9-frontend"
-          rm: false # No borramos todo para mantener configs existentes si las hay
-          exclude: "node_modules, .git, .github, build"
+      # Empaquetar solo lo necesario para el build Docker (exclude no es válido
+      # en appleboy/scp-action; sin esto se intenta subir todo el workspace).
+      - name: Create deployment package
+        run: |
+          tar -czf deploy.tar.gz \
+            --exclude=node_modules \
+            --exclude=.git \
+            --exclude=.github \
+            --exclude=build \
+            --exclude='*.icloud' \
+            -C . .
 
-      # 2. Ejecutar lógica Blue/Green vía SSH
-      - name: Execute Blue/Green Deployment
-        uses: appleboy/ssh-action@master
+      - name: Copy files to VPS
+        uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          timeout: 60s
+          command_timeout: 15m
+          source: deploy.tar.gz
+          target: /opt/petalo9-frontend
+
+      - name: Execute Blue/Green Deployment
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          timeout: 60s
+          command_timeout: 30m
           script: |
             cd /opt/petalo9-frontend
-            
+
+            # Extraer el paquete de despliegue (preserva ./build/ para nginx hasta el swap)
+            tar -xzf deploy.tar.gz
+            rm -f deploy.tar.gz
+
             # Definir nombres
             BLUE_CONTAINER="petalo9-frontend-blue"
             GREEN_CONTAINER="petalo9-frontend-green"
-            
+
             # 1. Detectar contenedor activo
             if docker ps --format '{{.Names}}' | grep -q "^$BLUE_CONTAINER$"; then
               ACTIVE="blue"
@@ -47,41 +65,36 @@ jobs:
               INACTIVE="blue"
               TARGET_PORT="3004"
             else
-              # Si ninguno corre, empezamos con blue
               ACTIVE="none"
               INACTIVE="blue"
               TARGET_PORT="3004"
             fi
-            
-            echo "🔵 Activo: $ACTIVE | 🟢 Desplegando en: $INACTIVE (Puerto $TARGET_PORT)"
-            
-            # 2. Levantar el contenedor inactivo (nuevo código)
-            # Usamos -f explícito porque tu archivo se llama docker-compose-blue-green.yml
+
+            echo "Activo: $ACTIVE | Desplegando en: $INACTIVE (Puerto $TARGET_PORT)"
+
+            # 2. Levantar el contenedor inactivo (nuevo codigo)
             docker-compose -f docker-compose-blue-green.yml build --no-cache petalo9-frontend-$INACTIVE
             docker-compose -f docker-compose-blue-green.yml up -d petalo9-frontend-$INACTIVE
-            
-            # 3. Esperar a que arranque (Health Check básico)
-            echo "⏳ Esperando a que el contenedor inicie..."
+
+            # 3. Esperar a que arranque
+            echo "Esperando a que el contenedor inicie..."
             sleep 10
-            
+
             # 4. Copiar el build generado al directorio que sirve Nginx
-            # Asumimos que Nginx lee de /opt/petalo9-frontend/build o donde apunte tu nginx.conf
-            echo "📂 Actualizando archivos estáticos..."
-            # Limpiar build anterior en host
+            echo "Actualizando archivos estaticos..."
+            mkdir -p build
             rm -rf build/*
-            # Copiar desde dentro del contenedor nuevo hacia el host
             docker cp petalo9-frontend-$INACTIVE:/usr/src/app/build/. ./build/
-            
-            # 5. Recargar Nginx (si sirve los estáticos)
-            echo "🔄 Recargando Nginx..."
+
+            # 5. Recargar Nginx
+            echo "Recargando Nginx..."
             systemctl reload nginx
-            
-            # 6. Limpieza: Detener el contenedor viejo
+
+            # 6. Detener el contenedor viejo
             if [ "$ACTIVE" != "none" ]; then
-              echo "🛑 Deteniendo contenedor anterior ($ACTIVE)..."
+              echo "Deteniendo contenedor anterior ($ACTIVE)..."
               docker stop petalo9-frontend-$ACTIVE || true
               docker rm petalo9-frontend-$ACTIVE || true
             fi
-            
-            echo "✅ Despliegue completado exitosamente en $INACTIVE."
 
+            echo "Despliegue completado en $INACTIVE."
