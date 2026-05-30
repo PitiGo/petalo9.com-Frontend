@@ -8,7 +8,7 @@ function About() {
     <>
       <SEO
         title="About Me - Dante Collazzi | Fullstack Developer"
-        description="Meet Dante Collazzi, a fullstack software developer with expertise in backend development using Python and Java, frontend with React, PostgreSQL databases, and experience in teaching and freelance projects."
+        description="Meet Dante Collazzi, a fullstack software developer and ICT teacher at the European School of Munich, with expertise in backend development using Python and Java, frontend with React, PostgreSQL databases, and experience in teaching and freelance projects."
         name="Dante Collazzi"
         type="website"
       />
@@ -24,7 +24,7 @@ function About() {
             </p>
 
             <p className="about-paragraph">
-              After concluding my role as a <span className="highlight">Backend Developer</span> at <span className="highlight">Adstella.ai</span> in July, where I specialized in Python and PostgreSQL, I have now returned to full-time <span className="highlight">freelancing</span>. I am currently focused on developing personal projects and taking on new client work, providing technical solutions that range from web applications to automation systems.
+              Since February 2026, I have been working as an <span className="highlight">ICT Teacher</span> at the <span className="highlight">European School of Munich</span>, where I teach information and communication technology and share my passion for software development with the next generation. Previously, after my role as a <span className="highlight">Backend Developer</span> at <span className="highlight">Adstella.ai</span> specializing in Python and PostgreSQL, I worked as a full-time <span className="highlight">freelancer</span> on web applications and automation systems. I continue to develop personal projects and take on selected client work alongside my teaching.
             </p>
 
             <p className="about-paragraph">
@@ -39,7 +39,13 @@ function About() {
             <div className="experience-section">
               <h3>Professional Journey</h3>
               <div className="timeline-item">
-                <div className="timeline-date">July 2024 - Present</div>
+                <div className="timeline-date">February 2026 - Present</div>
+                <div className="timeline-role">ICT Teacher</div>
+                <div className="timeline-company">European School of Munich</div>
+                <p>Teaching information and communication technology, guiding students through programming and digital skills while staying current with the latest developments in software and AI.</p>
+              </div>
+              <div className="timeline-item">
+                <div className="timeline-date">July 2024 - January 2026</div>
                 <div className="timeline-role">Independent Developer & Freelancer</div>
                 <div className="timeline-company">Personal Projects & Client Work</div>
                 <p>Developing personal projects showcased on this website while taking on freelance assignments for various clients, focusing on web application development, automation solutions, and technical consulting.</p>
