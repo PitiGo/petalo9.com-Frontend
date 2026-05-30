@@ -15,13 +15,14 @@ jobs:
       # en appleboy/scp-action; sin esto se intenta subir todo el workspace).
       - name: Create deployment package
         run: |
-          tar -czf deploy.tar.gz \
+          tar -czf /tmp/deploy.tar.gz \
             --exclude=node_modules \
             --exclude=.git \
             --exclude=.github \
             --exclude=build \
             --exclude='*.icloud' \
             -C . .
+          mv /tmp/deploy.tar.gz deploy.tar.gz
 
       - name: Copy files to VPS
         uses: appleboy/scp-action@v1
