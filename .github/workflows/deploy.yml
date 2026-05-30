@@ -11,8 +11,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Empaquetar solo lo necesario para el build Docker (exclude no es válido
-      # en appleboy/scp-action; sin esto se intenta subir todo el workspace).
       - name: Create deployment package
         run: |
           tar -czf /tmp/deploy.tar.gz \
@@ -46,22 +44,21 @@ jobs:
           timeout: 60s
           command_timeout: 30m
           script: |
+            set -euo pipefail
             cd /opt/petalo9-frontend
 
-            # Extraer el paquete de despliegue (preserva ./build/ para nginx hasta el swap)
             tar -xzf deploy.tar.gz
             rm -f deploy.tar.gz
 
-            # Definir nombres
             BLUE_CONTAINER="petalo9-frontend-blue"
             GREEN_CONTAINER="petalo9-frontend-green"
+            COMPOSE_FILE="docker-compose-blue-green.yml"
 
-            # 1. Detectar contenedor activo
-            if docker ps --format '{{.Names}}' | grep -q "^$BLUE_CONTAINER$"; then
+            if docker ps --format '{{.Names}}' | grep -q "^${BLUE_CONTAINER}$"; then
               ACTIVE="blue"
               INACTIVE="green"
               TARGET_PORT="3005"
-            elif docker ps --format '{{.Names}}' | grep -q "^$GREEN_CONTAINER$"; then
+            elif docker ps --format '{{.Names}}' | grep -q "^${GREEN_CONTAINER}$"; then
               ACTIVE="green"
               INACTIVE="blue"
               TARGET_PORT="3004"
@@ -71,37 +68,60 @@ jobs:
               TARGET_PORT="3004"
             fi
 
-            echo "Activo: $ACTIVE | Desplegando en: $INACTIVE (Puerto $TARGET_PORT)"
+            SERVICE="petalo9-frontend-${INACTIVE}"
+            CONTAINER="petalo9-frontend-${INACTIVE}"
+            IMAGE="petalo9-frontend_${SERVICE}"
 
-            # 2. Levantar el contenedor inactivo (nuevo codigo)
-            docker-compose -f docker-compose-blue-green.yml build --no-cache petalo9-frontend-$INACTIVE
-            docker-compose -f docker-compose-blue-green.yml up -d petalo9-frontend-$INACTIVE
+            echo "Activo: ${ACTIVE} | Desplegando en: ${INACTIVE} (puerto ${TARGET_PORT})"
 
-            # 3. Esperar a que arranque
-            echo "Esperando a que el contenedor inicie..."
-            sleep 10
+            # Limpiar contenedores viejos (evita KeyError ContainerConfig en docker-compose 1.29)
+            docker stop "${BLUE_CONTAINER}" "${GREEN_CONTAINER}" 2>/dev/null || true
+            docker rm -f "${BLUE_CONTAINER}" "${GREEN_CONTAINER}" 2>/dev/null || true
+            docker ps -a --filter "name=petalo9-frontend" -q | xargs -r docker rm -f 2>/dev/null || true
 
-            # 4. Copiar el build generado al directorio que sirve Nginx
-            echo "Actualizando archivos estaticos..."
-            mkdir -p build
-            rm -rf build/*
-            # Eliminar restos del build antiguo de CRA (/static/js, /static/media)
-            rm -rf static 2>/dev/null || true
-            docker cp petalo9-frontend-$INACTIVE:/usr/src/app/build/. ./build/
-            if ! grep -q '/assets/' build/index.html 2>/dev/null; then
-              echo "ADVERTENCIA: index.html no parece ser un build de Vite"
+            echo "Construyendo imagen Docker..."
+            docker-compose -f "${COMPOSE_FILE}" build --no-cache "${SERVICE}"
+
+            IMAGE_ID="$(docker images -q "${IMAGE}" | head -1)"
+            if [ -z "${IMAGE_ID}" ]; then
+              echo "No se encontro la imagen ${IMAGE}"
+              docker images
               exit 1
             fi
 
-            # 5. Recargar Nginx
+            # Extraer build sin docker-compose up (mas fiable que recreate)
+            echo "Extrayendo build de Vite desde la imagen..."
+            TMP_CID="$(docker create "${IMAGE_ID}")"
+            mkdir -p build
+            rm -rf build/*
+            rm -rf static 2>/dev/null || true
+            docker cp "${TMP_CID}:/usr/src/app/build/." ./build/
+            docker rm "${TMP_CID}"
+
+            if ! grep -q '/assets/' build/index.html; then
+              echo "ERROR: build/index.html no es un build de Vite"
+              head -20 build/index.html || true
+              exit 1
+            fi
+            echo "Build de Vite verificado (index.html referencia /assets/)"
+
+            # Levantar contenedor inactivo con docker run (evita bug de compose up)
+            echo "Iniciando contenedor ${CONTAINER}..."
+            docker run -d \
+              --name "${CONTAINER}" \
+              -p "${TARGET_PORT}:3000" \
+              -e REACT_APP_API_URL=https://api.dantecollazzi.com \
+              --restart unless-stopped \
+              "${IMAGE_ID}"
+
             echo "Recargando Nginx..."
             systemctl reload nginx
 
-            # 6. Detener el contenedor viejo
-            if [ "$ACTIVE" != "none" ]; then
-              echo "Deteniendo contenedor anterior ($ACTIVE)..."
-              docker stop petalo9-frontend-$ACTIVE || true
-              docker rm petalo9-frontend-$ACTIVE || true
+            if [ "${ACTIVE}" != "none" ]; then
+              OLD_CONTAINER="petalo9-frontend-${ACTIVE}"
+              echo "Deteniendo contenedor anterior (${OLD_CONTAINER})..."
+              docker stop "${OLD_CONTAINER}" 2>/dev/null || true
+              docker rm -f "${OLD_CONTAINER}" 2>/dev/null || true
             fi
 
-            echo "Despliegue completado en $INACTIVE."
+            echo "Despliegue completado en ${INACTIVE}."
