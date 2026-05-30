@@ -27,9 +27,9 @@
     "react-helmet-async": "^2.0.5",
     "react-icon": "^1.0.0",
     "react-icons": "^5.3.0",
-    "react-router-dom": "^6.21.3",
+    "react-router-dom": "^6.30.4",
     "react-scripts": "^5.0.1",
-    "socket.io-client": "^4.7.4",
+    "socket.io-client": "^4.8.3",
     "styled-components": "^6.1.13",
     "tailwindcss": "^3.4.1",
     "three": "^0.160.1",
@@ -67,7 +67,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "axios": "^1.11.0",
+    "axios": "^1.16.1",
     "puppeteer": "^24.17.0",
     "sitemap": "^8.0.0"
   }
