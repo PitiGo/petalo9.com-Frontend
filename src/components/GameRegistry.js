@@ -75,6 +75,12 @@ const gameRegistry = {
       name: 'Robot Viewer',
       description: 'View and interact with a 3D robot model.',
       image: SITE_IMAGES.robotViewer || `${placeholder}Robot+Viewer`
+    },
+    'terminal': {
+      path: () => import('./tools/Terminal'),
+      name: 'Terminal',
+      description: 'Interactive terminal emulator in the browser.',
+      image: `${placeholder}Terminal`
     }
   }
 };

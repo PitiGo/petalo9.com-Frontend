@@ -115,6 +115,22 @@ jobs:
             fi
             echo "Build de Vite verificado (index.html referencia /assets/)"
 
+            # Manifest de despliegue (debug)
+            echo "{\"build\":\"vite\",\"deployedAt\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" > build/version.json
+
+            # Instalar snippet nginx para migracion CRA -> Vite
+            NGINX_SNIPPET="/etc/nginx/snippets/petalo9-frontend.conf"
+            if [ -w /etc/nginx/snippets ] || command -v sudo >/dev/null 2>&1; then
+              SUDO=""
+              [ "$(id -u)" -ne 0 ] && SUDO="sudo"
+              $SUDO cp deploy/nginx-petalo9-frontend.conf "${NGINX_SNIPPET}" 2>/dev/null || true
+              SITE_CFG="$($SUDO grep -rl 'dantecollazzi' /etc/nginx/sites-enabled/ 2>/dev/null | head -1 || true)"
+              if [ -n "${SITE_CFG}" ] && ! $SUDO grep -q 'petalo9-frontend.conf' "${SITE_CFG}" 2>/dev/null; then
+                echo "Anadiendo include nginx para migracion CRA..."
+                $SUDO sed -i '/server_name.*dantecollazzi/a \    include /etc/nginx/snippets/petalo9-frontend.conf;' "${SITE_CFG}"
+              fi
+            fi
+
             # Levantar contenedor inactivo con docker run (evita bug de compose up)
             echo "Iniciando contenedor ${CONTAINER}..."
             docker run -d \
@@ -125,7 +141,14 @@ jobs:
               "${IMAGE_ID}"
 
             echo "Recargando Nginx..."
-            systemctl reload nginx
+            if command -v sudo >/dev/null 2>&1 && [ "$(id -u)" -ne 0 ]; then
+              sudo nginx -t && sudo systemctl reload nginx
+            else
+              nginx -t && systemctl reload nginx
+            fi
+
+            echo "index.html servido:"
+            grep -oE 'src="[^"]+"' build/index.html | head -3 || true
 
             if [ "${ACTIVE}" != "none" ]; then
               OLD_CONTAINER="petalo9-frontend-${ACTIVE}"
