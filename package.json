@@ -43,7 +43,7 @@
     "start": "vite",
     "dev": "vite",
     "build": "vite build",
-    "postbuild": "node ./sitemap-generator.js",
+    "postbuild": "node ./sitemap-generator.js && node ./scripts/copy-cra-media-shims.js",
     "preview": "vite preview"
   },
   "browserslist": {

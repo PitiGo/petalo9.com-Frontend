@@ -98,6 +98,16 @@ jobs:
             docker cp "${TMP_CID}:/usr/src/app/build/." ./build/
             docker rm "${TMP_CID}"
 
+            # Shims CRA: bundles cacheados piden /static/media/<hash>.webp
+            echo "Creando shims CRA en build/static/media..."
+            mkdir -p build/static/media
+            cp build/images/developer-illustration.webp build/static/media/developer-illustration.5e85ae9a863c51258f9c.webp
+            cp build/images/snake-3d.webp build/static/media/snake-3d.1f31ed237d0d3126094b.webp
+            cp build/images/hand-invaders-preview.webp build/static/media/hand-invaders-preview.f15ca3227766ce80077d.webp
+            cp build/images/supermarcos.webp build/static/media/supermarcos.9b678f9f1e0aa63eeb02.webp
+            cp build/images/guess-country.webp build/static/media/guess-country.0596661b0241c3584da5.webp
+            cp build/images/mamvsreptiles.webp build/static/media/mamvsreptiles.f72e3f7b8f0e549dacfa.webp
+
             if ! grep -q '/assets/' build/index.html; then
               echo "ERROR: build/index.html no es un build de Vite"
               head -20 build/index.html || true
