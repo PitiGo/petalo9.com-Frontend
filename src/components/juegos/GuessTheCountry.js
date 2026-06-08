@@ -31,23 +31,14 @@ const GAME_MODES = {
     },
     english: {
         title: 'Guess Every English-Speaking Country',
-        label: 'English-speaking',
-        targetDescription: 'countries where English is an official or widely used national language',
-        successMessage: (countryName) => `${countryName} is an English-speaking country.`,
-        missMessage: (countryName) => `${countryName} is not in this English-speaking countries list.`,
+        label: 'Native English-speaking',
+        targetDescription: 'countries where English is the predominant native language and that are available on this map',
+        successMessage: (countryName) => `${countryName} is in the native English-speaking countries list.`,
+        missMessage: (countryName) => `${countryName} is not in this native English-speaking countries list.`,
         countries: [
-            "Antigua and Barbuda", "Australia", "Bahamas", "Barbados", "Belize",
-            "Botswana", "Cameroon", "Canada", "Dominica", "Fiji",
-            "Gambia", "Ghana", "Grenada", "Guyana", "India",
-            "Ireland", "Jamaica", "Kenya", "Kiribati", "Lesotho",
-            "Liberia", "Malawi", "Malaysia", "Malta", "Mauritius",
-            "Micronesia", "Namibia", "Nauru", "New Zealand", "Nigeria",
-            "Pakistan", "Palau", "Papua New Guinea", "Philippines", "Rwanda",
-            "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines",
-            "Samoa", "Seychelles", "Sierra Leone", "Singapore", "Solomon Islands",
-            "South Africa", "South Sudan", "Tanzania", "Tonga", "Trinidad and Tobago",
-            "Tuvalu", "Uganda", "United Kingdom", "United States of America",
-            "Vanuatu", "Zambia", "Zimbabwe"
+            "United States of America", "United Kingdom", "Australia", "Canada",
+            "New Zealand", "Ireland", "Jamaica", "Bahamas", "Trinidad and Tobago",
+            "Guyana", "Belize"
         ]
     }
 };
