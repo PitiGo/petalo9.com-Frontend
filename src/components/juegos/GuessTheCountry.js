@@ -24,9 +24,9 @@ const GAME_MODES = {
         missMessage: (countryName) => `${countryName} is not in this Spanish-speaking countries list.`,
         countries: [
             "Spain", "Mexico", "Guatemala", "Honduras", "El Salvador",
-            "Nicaragua", "Costa Rica", "Panama", "Cuba", "Dominican Republic",
+            "Nicaragua", "Costa Rica", "Panama", "Cuba", "Dominican Rep.",
             "Colombia", "Venezuela", "Ecuador", "Peru", "Bolivia",
-            "Chile", "Argentina", "Paraguay", "Uruguay", "Equatorial Guinea"
+            "Chile", "Argentina", "Paraguay", "Uruguay", "Eq. Guinea"
         ]
     },
     english: {
