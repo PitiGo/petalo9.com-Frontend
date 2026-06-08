@@ -1,9 +1,70 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
 import './GuessTheCountry.css';
 
+const GAME_MODES = {
+    populous: {
+        title: 'Guess the 15 Most Populous Countries',
+        label: 'Most Populous',
+        targetDescription: "the world's 15 most populous countries",
+        successMessage: (countryName) => `${countryName} is one of the top 15 most populous countries.`,
+        missMessage: (countryName) => `${countryName} is not in the top 15. Keep trying!`,
+        countries: [
+            "India", "China", "United States of America", "Indonesia", "Pakistan",
+            "Nigeria", "Brazil", "Bangladesh", "Russia", "Mexico",
+            "Japan", "Ethiopia", "Philippines", "Egypt", "Vietnam"
+        ]
+    },
+    spanish: {
+        title: 'Guess Every Spanish-Speaking Country',
+        label: 'Spanish-speaking',
+        targetDescription: 'all countries where Spanish is an official language',
+        successMessage: (countryName) => `${countryName} is a Spanish-speaking country.`,
+        missMessage: (countryName) => `${countryName} is not in this Spanish-speaking countries list.`,
+        countries: [
+            "Spain", "Mexico", "Guatemala", "Honduras", "El Salvador",
+            "Nicaragua", "Costa Rica", "Panama", "Cuba", "Dominican Republic",
+            "Colombia", "Venezuela", "Ecuador", "Peru", "Bolivia",
+            "Chile", "Argentina", "Paraguay", "Uruguay", "Equatorial Guinea"
+        ]
+    },
+    english: {
+        title: 'Guess Every English-Speaking Country',
+        label: 'English-speaking',
+        targetDescription: 'countries where English is an official or widely used national language',
+        successMessage: (countryName) => `${countryName} is an English-speaking country.`,
+        missMessage: (countryName) => `${countryName} is not in this English-speaking countries list.`,
+        countries: [
+            "Antigua and Barbuda", "Australia", "Bahamas", "Barbados", "Belize",
+            "Botswana", "Cameroon", "Canada", "Dominica", "Fiji",
+            "Gambia", "Ghana", "Grenada", "Guyana", "India",
+            "Ireland", "Jamaica", "Kenya", "Kiribati", "Lesotho",
+            "Liberia", "Malawi", "Malaysia", "Malta", "Mauritius",
+            "Micronesia", "Namibia", "Nauru", "New Zealand", "Nigeria",
+            "Pakistan", "Palau", "Papua New Guinea", "Philippines", "Rwanda",
+            "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines",
+            "Samoa", "Seychelles", "Sierra Leone", "Singapore", "Solomon Islands",
+            "South Africa", "South Sudan", "Tanzania", "Tonga", "Trinidad and Tobago",
+            "Tuvalu", "Uganda", "United Kingdom", "United States of America",
+            "Vanuatu", "Zambia", "Zimbabwe"
+        ]
+    }
+};
+
+const populationData = {
+    "India": 1428627663, "China": 1425671352, "United States of America": 339996563,
+    "Indonesia": 277534122, "Pakistan": 240485658, "Nigeria": 223804632,
+    "Brazil": 216422446, "Bangladesh": 172954319, "Russia": 144444359,
+    "Mexico": 128455567, "Japan": 123294513, "Ethiopia": 126527060,
+    "Philippines": 117337368, "Egypt": 112716598, "Vietnam": 98858950,
+    "Germany": 83294633, "United Kingdom": 67736802, "France": 64756584,
+    "Canada": 38781291, "Argentina": 45773884, "Australia": 26439111,
+};
+
 const GuessTheCountry = () => {
+    const [selectedMode, setSelectedMode] = useState('populous');
+    const currentMode = GAME_MODES[selectedMode];
     // Refs para acceder a los elementos del DOM de forma segura en React
     const svgRef = useRef(null);
     const tooltipRef = useRef(null);
@@ -13,24 +74,9 @@ const GuessTheCountry = () => {
     const gameLogicRef = useRef({}); // Para almacenar variables del juego
 
     useEffect(() => {
-        // --- DATA DEL JUEGO ---
-        const TOP_15_COUNTRIES = [
-            "India", "China", "United States of America", "Indonesia", "Pakistan",
-            "Nigeria", "Brazil", "Bangladesh", "Russia", "Mexico",
-            "Japan", "Ethiopia", "Philippines", "Egypt", "Vietnam"
-        ];
-
-        const populationData = {
-            "India": 1428627663, "China": 1425671352, "United States of America": 339996563,
-            "Indonesia": 277534122, "Pakistan": 240485658, "Nigeria": 223804632,
-            "Brazil": 216422446, "Bangladesh": 172954319, "Russia": 144444359,
-            "Mexico": 128455567, "Japan": 123294513, "Ethiopia": 126527060,
-            "Philippines": 117337368, "Egypt": 112716598, "Vietnam": 98858950,
-            "Germany": 83294633, "United Kingdom": 67736802, "France": 64756584,
-            "Canada": 38781291, "Argentina": 45773884, "Australia": 26439111,
-        };
-
         // --- VARIABLES DEL JUEGO Y MAPA ---
+        const activeMode = GAME_MODES[selectedMode];
+        const targetCountries = activeMode.countries;
         const logic = gameLogicRef.current;
         logic.score = 0;
         logic.foundCountries = new Set();
@@ -39,6 +85,10 @@ const GuessTheCountry = () => {
 
         let svg, g, path, countries, tooltip;
         const loadingDiv = document.getElementById('loading-game');
+        if (loadingDiv) {
+            loadingDiv.style.display = "block";
+            loadingDiv.textContent = "🌍 Loading world map...";
+        }
 
         async function initMap() {
             try {
@@ -86,7 +136,7 @@ const GuessTheCountry = () => {
             if (infoPanelRef.current) {
                 infoPanelRef.current.innerHTML = `
                     <h3>📜 Instructions</h3>
-                    <p>Click on the map to guess the world's <strong>15 most populous countries</strong>.</p>
+                    <p>Click on the map to guess <strong>${activeMode.targetDescription}</strong>.</p>
                     <p>A correct guess will turn the country <strong>green</strong>. An incorrect guess will turn it <strong>red</strong>. Good luck!</p>
                 `;
             }
@@ -102,7 +152,7 @@ const GuessTheCountry = () => {
                 return;
             }
 
-            const isCorrect = TOP_15_COUNTRIES.includes(countryName);
+            const isCorrect = targetCountries.includes(countryName);
 
             if (isCorrect) {
                 if (!logic.foundCountries.has(countryName)) {
@@ -111,7 +161,7 @@ const GuessTheCountry = () => {
                     countryElement.classed("country-correct", true);
                     updateInfoPanel(countryName, true);
 
-                    if (logic.foundCountries.size === TOP_15_COUNTRIES.length) {
+                    if (logic.foundCountries.size === targetCountries.length) {
                         endGame();
                     }
                 }
@@ -128,7 +178,7 @@ const GuessTheCountry = () => {
             if (infoPanelRef.current) {
                 infoPanelRef.current.innerHTML = `
                     <h3>🏆 Congratulations! 🏆</h3>
-                    <p>You've found all 15 most populous countries! Your final score is <strong>${logic.score}</strong>.</p>
+                    <p>You've found all ${targetCountries.length} countries in <strong>${activeMode.label}</strong> mode! Your final score is <strong>${logic.score}</strong>.</p>
                     <p>Press the restart button to play again.</p>
                 `;
             }
@@ -136,7 +186,7 @@ const GuessTheCountry = () => {
 
         function updateUI() {
             if (scoreRef.current) scoreRef.current.textContent = logic.score;
-            if (remainingRef.current) remainingRef.current.textContent = TOP_15_COUNTRIES.length - logic.foundCountries.size;
+            if (remainingRef.current) remainingRef.current.textContent = targetCountries.length - logic.foundCountries.size;
         }
 
         function updateInfoPanel(countryName, isCorrect) {
@@ -147,8 +197,8 @@ const GuessTheCountry = () => {
 
             const title = isCorrect ? `<h3>Correct! ✅ ${countryName}</h3>` : `<h3>Incorrect ❌ ${countryName}</h3>`;
             const message = isCorrect
-                ? `<p>Excellent! ${countryName} is one of the top 15 most populous countries.</p>`
-                : `<p>Oops, ${countryName} is not in the top 15. Keep trying!</p>`;
+                ? `<p>Excellent! ${activeMode.successMessage(countryName)}</p>`
+                : `<p>Oops, ${activeMode.missMessage(countryName)}</p>`;
 
             if (infoPanelRef.current) {
                 infoPanelRef.current.innerHTML = `${title}${message}<p><strong>Estimated Population:</strong> ${formattedPopulation}</p>`;
@@ -183,11 +233,24 @@ const GuessTheCountry = () => {
             d3.select(svgRef.current).selectAll("*").remove(); // Limpia el SVG
         };
 
-    }, []); // El array vacío asegura que este efecto se ejecute solo una vez
+    }, [selectedMode]);
 
     return (
         <div className="guess-the-country-container">
-            <h1>🗺️ Guess the 15 Most Populous Countries</h1>
+            <h1>🗺️ {currentMode.title}</h1>
+
+            <div className="mode-selector" aria-label="Game modes">
+                {Object.entries(GAME_MODES).map(([modeKey, mode]) => (
+                    <button
+                        key={modeKey}
+                        type="button"
+                        className={`mode-button ${selectedMode === modeKey ? 'active' : ''}`}
+                        onClick={() => setSelectedMode(modeKey)}
+                    >
+                        {mode.label}
+                    </button>
+                ))}
+            </div>
 
             <div className="game-ui">
                 <div className="game-stat">
@@ -196,7 +259,7 @@ const GuessTheCountry = () => {
                 </div>
                 <div className="game-stat">
                     <div className="game-stat-label">Countries Left</div>
-                    <div ref={remainingRef} className="game-stat-value">15</div>
+                    <div ref={remainingRef} className="game-stat-value">{currentMode.countries.length}</div>
                 </div>
                 <button className="btn" id="restartBtn-game">🔄 Restart Game</button>
             </div>
