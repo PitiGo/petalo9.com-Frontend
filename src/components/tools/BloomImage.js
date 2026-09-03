@@ -13,6 +13,7 @@ const BloomImage = ({ imageUrl, strength, radius, threshold, exposure }) => {
     const composerRef = useRef(null);
     const bloomPassRef = useRef(null);
     const meshRef = useRef(null);
+    const textureRef = useRef(null);
     const frameIdRef = useRef(null);
 
     // 1. Inicialización
@@ -90,7 +91,19 @@ const BloomImage = ({ imageUrl, strength, radius, threshold, exposure }) => {
         return () => {
             cancelAnimationFrame(frameIdRef.current);
             window.removeEventListener('resize', handleResize);
-            if (mount && renderer.domElement) mount.removeChild(renderer.domElement);
+            if (meshRef.current) {
+                scene.remove(meshRef.current);
+                meshRef.current.geometry.dispose();
+                meshRef.current.material.dispose();
+                meshRef.current = null;
+            }
+            if (textureRef.current) {
+                textureRef.current.dispose();
+                textureRef.current = null;
+            }
+            if (mount && renderer.domElement && mount.contains(renderer.domElement)) {
+                mount.removeChild(renderer.domElement);
+            }
             renderer.dispose();
             composer.dispose();
         };
@@ -114,34 +127,53 @@ const BloomImage = ({ imageUrl, strength, radius, threshold, exposure }) => {
         if (!sceneRef.current || !imageUrl) return;
 
         const loader = new THREE.TextureLoader();
-        loader.load(imageUrl, (texture) => {
-            // Configurar espacio de color de la textura
-            texture.colorSpace = THREE.SRGBColorSpace;
+        let isCancelled = false;
 
-            if (meshRef.current) {
-                sceneRef.current.remove(meshRef.current);
-                meshRef.current.geometry.dispose();
-                meshRef.current.material.dispose();
+        loader.load(
+            imageUrl,
+            (texture) => {
+                if (isCancelled || !mountRef.current || !sceneRef.current) {
+                    texture.dispose();
+                    return;
+                }
+
+                texture.colorSpace = THREE.SRGBColorSpace;
+
+                if (meshRef.current) {
+                    sceneRef.current.remove(meshRef.current);
+                    meshRef.current.geometry.dispose();
+                    meshRef.current.material.dispose();
+                    meshRef.current = null;
+                }
+
+                if (textureRef.current) {
+                    textureRef.current.dispose();
+                }
+                textureRef.current = texture;
+
+                const imgWidth = texture.image.width;
+                const imgHeight = texture.image.height;
+                const canvasWidth = mountRef.current.clientWidth;
+                const canvasHeight = mountRef.current.clientHeight;
+                const scale = Math.min(canvasWidth / imgWidth, canvasHeight / imgHeight) * 0.9;
+
+                const planeGeo = new THREE.PlaneGeometry(imgWidth, imgHeight);
+                const planeMat = new THREE.MeshBasicMaterial({ map: texture });
+                const mesh = new THREE.Mesh(planeGeo, planeMat);
+                mesh.scale.set(scale, scale, 1);
+
+                sceneRef.current.add(mesh);
+                meshRef.current = mesh;
+            },
+            undefined,
+            (error) => {
+                console.error('Error loading bloom image texture:', error);
             }
+        );
 
-            const imgWidth = texture.image.width;
-            const imgHeight = texture.image.height;
-
-            const canvasWidth = mountRef.current.clientWidth;
-            const canvasHeight = mountRef.current.clientHeight;
-
-            const scale = Math.min(canvasWidth / imgWidth, canvasHeight / imgHeight) * 0.9;
-
-            const planeGeo = new THREE.PlaneGeometry(imgWidth, imgHeight);
-            // Usar MeshBasicMaterial es correcto para que el color base sea el de la imagen
-            const planeMat = new THREE.MeshBasicMaterial({ map: texture });
-
-            const mesh = new THREE.Mesh(planeGeo, planeMat);
-            mesh.scale.set(scale, scale, 1);
-
-            sceneRef.current.add(mesh);
-            meshRef.current = mesh;
-        });
+        return () => {
+            isCancelled = true;
+        };
     }, [imageUrl]);
 
     return <div ref={mountRef} style={{ width: '100%', height: '100%', background: '#000' }} />;

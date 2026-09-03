@@ -2,6 +2,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import SEO from './SEO';
 import gameRegistry from './GameRegistry';
+import { sanitizeHtml } from '../utils/sanitizeHtml';
 import Prism from 'prismjs';
 
 import 'prismjs/components/prism-javascript';
@@ -187,7 +188,7 @@ function BlogPost() {
     }, []);
 
     const renderPostContent = (content) => {
-        const contentParts = content.split(/\{\{\{Juego:([\w-]+)\}\}\}/g);
+        const contentParts = content.split(/\{\{\{\s*[Jj]uego\s*:([\w-]+)\}\}\}/g);
 
         const result = [];
         for (let i = 0; i < contentParts.length; i++) {
@@ -196,7 +197,9 @@ function BlogPost() {
             // Si es un índice par, es contenido normal
             if (i % 2 === 0) {
                 if (part) { // Solo renderizar si no está vacío
-                    const processedHtml = transformHtmlForPrism(part).replace(/<img /g, '<img class="img-fluid" ');
+                    const processedHtml = sanitizeHtml(
+                        transformHtmlForPrism(part).replace(/<img /g, '<img class="img-fluid" loading="lazy" decoding="async" ')
+                    );
                     result.push(
                         <div
                             key={i}

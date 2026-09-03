@@ -1,28 +1,88 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import BloomImage from './BloomImage';
 import { SITE_IMAGES } from '../../config/images';
 
+const DEFAULT_IMAGE = SITE_IMAGES.logo;
+const MAX_FILE_SIZE_BYTES = 8 * 1024 * 1024;
+const ALLOWED_IMAGE_TYPES = new Set([
+    'image/png',
+    'image/jpeg',
+    'image/webp',
+    'image/gif'
+]);
+
+const PARAM_LIMITS = {
+    exposure: { min: 0.1, max: 3 },
+    strength: { min: 0, max: 5 },
+    radius: { min: 0, max: 2 },
+    threshold: { min: 0, max: 1 }
+};
+
+const clampValue = (name, value) => {
+    const parsed = Number(value);
+    const limits = PARAM_LIMITS[name];
+
+    if (!limits || Number.isNaN(parsed)) {
+        return 0;
+    }
+
+    return Math.min(limits.max, Math.max(limits.min, parsed));
+};
+
 const BloomTool = () => {
-    const [image, setImage] = useState(SITE_IMAGES.logo);
+    const [image, setImage] = useState(DEFAULT_IMAGE);
+    const [error, setError] = useState('');
     const [params, setParams] = useState({
         strength: 1.5,
         radius: 0.4,
         threshold: 0.1,
         exposure: 1.0
     });
+    const currentObjectUrlRef = useRef(null);
+    const fileInputRef = useRef(null);
+
+    useEffect(() => {
+        return () => {
+            if (currentObjectUrlRef.current) {
+                URL.revokeObjectURL(currentObjectUrlRef.current);
+            }
+        };
+    }, []);
 
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
-        if (file) {
-            const url = URL.createObjectURL(file);
-            setImage(url);
+        if (!file) {
+            return;
         }
+
+        if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
+            setError('Unsupported file type. Please upload PNG, JPG, WEBP, or GIF images.');
+            e.target.value = '';
+            return;
+        }
+
+        if (file.size > MAX_FILE_SIZE_BYTES) {
+            setError('Image is too large. Please upload a file smaller than 8 MB.');
+            e.target.value = '';
+            return;
+        }
+
+        setError('');
+
+        if (currentObjectUrlRef.current) {
+            URL.revokeObjectURL(currentObjectUrlRef.current);
+        }
+
+        const url = URL.createObjectURL(file);
+        currentObjectUrlRef.current = url;
+        setImage(url);
     };
 
     const handleChange = (e) => {
+        const { name, value } = e.target;
         setParams({
             ...params,
-            [e.target.name]: parseFloat(e.target.value)
+            [name]: clampValue(name, value)
         });
     };
 
@@ -35,7 +95,22 @@ const BloomTool = () => {
     };
 
     const applyPreset = (presetName) => {
+        setError('');
         setParams(presets[presetName]);
+    };
+
+    const resetImage = () => {
+        if (currentObjectUrlRef.current) {
+            URL.revokeObjectURL(currentObjectUrlRef.current);
+            currentObjectUrlRef.current = null;
+        }
+
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+
+        setError('');
+        setImage(DEFAULT_IMAGE);
     };
 
     const labelStyle = {
@@ -106,8 +181,9 @@ const BloomTool = () => {
                             Upload Image
                         </label>
                         <input
+                            ref={fileInputRef}
                             type="file"
-                            accept="image/*"
+                            accept=".png,.jpg,.jpeg,.webp,.gif"
                             onChange={handleImageUpload}
                             style={{
                                 width: '100%',
@@ -118,6 +194,21 @@ const BloomTool = () => {
                                 border: '1px solid #233554'
                             }}
                         />
+                        <p style={{ fontSize: '0.85rem', color: '#a8b2d1', marginTop: '10px', lineHeight: '1.5' }}>
+                            Only local PNG, JPG, WEBP, and GIF images under 8 MB are accepted.
+                        </p>
+                        {error && (
+                            <p role="alert" style={{ fontSize: '0.9rem', color: '#fca5a5', marginTop: '10px', lineHeight: '1.5' }}>
+                                {error}
+                            </p>
+                        )}
+                        <button
+                            type="button"
+                            onClick={resetImage}
+                            style={{ ...buttonStyle, marginTop: '12px' }}
+                        >
+                            Reset Image
+                        </button>
                     </div>
 
                     {/* Presets */}

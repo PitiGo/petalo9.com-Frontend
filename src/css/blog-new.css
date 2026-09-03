@@ -252,3 +252,13 @@
     text-align: center;
   }
 }
+
+.blog-status-message {
+  text-align: center;
+  margin: 0 0 2rem;
+  color: #cbd5e1;
+}
+
+.blog-status-error {
+  color: #fca5a5;
+}

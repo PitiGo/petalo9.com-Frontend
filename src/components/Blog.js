@@ -1,35 +1,64 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import SEO from './SEO';
+import { sanitizeHtml } from '../utils/sanitizeHtml';
 import '../css/blog-new.css';
+
+const GAME_TAG_REGEX_GLOBAL = /\{\{\{\s*juego\s*:[^}]+\}\}\}/ig;
+const GAME_TAG_REGEX = /\{\{\{\s*juego\s*:[^}]+\}\}\}/i;
 
 function Blog() {
   const [blogPosts, setBlogPosts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [fetchError, setFetchError] = useState('');
   const isAdmin = localStorage.getItem('userRole') === 'admin';
   const navigate = useNavigate();
 
   const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
+    const controller = new AbortController();
     const token = localStorage.getItem('auth-token');
     const headers = {};
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
 
-    fetch(`${apiUrl}/api/posts?page=${currentPage}`, { headers })
-      .then(response => response.json())
-      .then(data => {
+    setIsLoading(true);
+    setFetchError('');
+
+    fetch(`${apiUrl}/api/posts?page=${currentPage}`, { headers, signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error('Could not load blog posts.');
+        }
+        return response.json();
+      })
+      .then((data) => {
         setBlogPosts(data.posts || []);
         setTotalPages(data.totalPages || 0);
       })
-      .catch(error => console.error('Error:', error));
+      .catch((error) => {
+        if (error.name === 'AbortError') {
+          return;
+        }
+        console.error('Error:', error);
+        setFetchError('Could not load posts. Please try again later.');
+        setBlogPosts([]);
+        setTotalPages(0);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+
+    return () => controller.abort();
   }, [currentPage, apiUrl]);
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDelete = (e, postId) => {
@@ -82,17 +111,27 @@ function Blog() {
           )}
         </div>
 
+        {isLoading && (
+          <p className="blog-status-message" role="status">Loading posts...</p>
+        )}
+
+        {fetchError && (
+          <p className="blog-status-message blog-status-error" role="alert">{fetchError}</p>
+        )}
+
+        {!isLoading && !fetchError && blogPosts.length === 0 && (
+          <p className="blog-status-message">No posts published yet.</p>
+        )}
+
         <div className="blog-posts-grid">
           {blogPosts.map(post => {
             const rawContent = post.content || '';
-            const GAME_TAG_REGEX_GLOBAL = /\{\{\{\s*juego\s*:[^}]+\}\}\}/ig;
-            const GAME_TAG_REGEX = /\{\{\{\s*juego\s*:[^}]+\}\}\}/i;
-
             const hasGameTag = GAME_TAG_REGEX.test(rawContent);
             const contentWithoutTag = rawContent.replace(GAME_TAG_REGEX_GLOBAL, '');
             const excerptBase = contentWithoutTag.substring(0, 150) + '...';
             const inlineIconHtml = '<span class="inline-game-icon" aria-label="Game" title="Game">🎮</span>';
-            const excerptHtml = hasGameTag ? `${inlineIconHtml} ${excerptBase}` : excerptBase;
+            const excerptHtml = sanitizeHtml(hasGameTag ? `${inlineIconHtml} ${excerptBase}` : excerptBase);
+
             return (
               <Link to={`/blog/${post.id}`} key={post.id} className="post-card">
                 <article>
@@ -106,7 +145,12 @@ function Blog() {
                       </span>
                     )}
                     {post.imageUrl && (
-                      <img src={post.imageUrl} alt={`Featured image for article: ${post.title}`} />
+                      <img
+                        src={post.imageUrl}
+                        alt={`Featured image for article: ${post.title}`}
+                        loading="lazy"
+                        decoding="async"
+                      />
                     )}
                   </div>
                   <div className="post-content">
@@ -117,11 +161,10 @@ function Blog() {
                         {new Date(post.fechaCreacion).toLocaleDateString()}
                       </span>
                     </div>
-                    <div className="post-excerpt"
-                      dangerouslySetInnerHTML={{
-                        __html: excerptHtml
-                      }}>
-                    </div>
+                    <div
+                      className="post-excerpt"
+                      dangerouslySetInnerHTML={{ __html: excerptHtml }}
+                    />
                     {isAdmin && (
                       <div className="post-actions">
                         <div className="admin-actions">
@@ -137,17 +180,19 @@ function Blog() {
           })}
         </div>
 
-        <div className="pagination">
-          {[...Array(totalPages)].map((_, index) => (
-            <button
-              key={index}
-              onClick={() => handlePageChange(index + 1)}
-              className={`page-button ${index + 1 === currentPage ? 'active' : ''}`}
-            >
-              {index + 1}
-            </button>
-          ))}
-        </div>
+        {totalPages > 1 && (
+          <div className="pagination">
+            {[...Array(totalPages)].map((_, index) => (
+              <button
+                key={index}
+                onClick={() => handlePageChange(index + 1)}
+                className={`page-button ${index + 1 === currentPage ? 'active' : ''}`}
+              >
+                {index + 1}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </>
   );

@@ -1,8 +1,9 @@
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import AdminRoute from './components/AdminRoute';
+import ErrorBoundary from './components/ErrorBoundary';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -47,34 +48,45 @@ function App() {
         <Header />
         <div className="d-flex flex-grow-1">
           <main className="flex-grow-1 main-content">
-            <Suspense fallback={<RouteFallback />}>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/blog" element={<Blog />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/blog/:id" element={<BlogPost />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/games" element={<GamePage />} />
-                <Route path="/games/:gameId" element={<GamePlayer />} />
-                <Route path="/tools" element={<Tools />} />
-                <Route path="/tools/:toolId" element={<ToolPlayer />} />
+            <ErrorBoundary>
+              <Suspense fallback={<RouteFallback />}>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/blog" element={<Blog />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/blog/:id" element={<BlogPost />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/games" element={<GamePage />} />
+                  <Route path="/games/:gameId" element={<GamePlayer />} />
+                  <Route path="/tools" element={<Tools />} />
+                  <Route path="/tools/:toolId" element={<ToolPlayer />} />
 
-                <Route path="/error" element={<ErrorComponent />} />
-                <Route path="/contact" element={<Contact />} />
-                {/* Rutas protegidas solo para Administradores */}
-                <Route path="/new-post" element={
-                  <AdminRoute>
-                    <TextEditor />
-                  </AdminRoute>
-                } />
-                <Route path="/edit-post/:id" element={
-                  <AdminRoute>
-                    <EditPost />
-                  </AdminRoute>
-                } />
-                {/* Aquí puedes añadir rutas para tus juegos individuales */}
-              </Routes>
-            </Suspense>
+                  <Route path="/error" element={<ErrorComponent />} />
+                  <Route path="/contact" element={<Contact />} />
+                  {/* Rutas protegidas solo para Administradores */}
+                  <Route path="/new-post" element={
+                    <AdminRoute>
+                      <TextEditor />
+                    </AdminRoute>
+                  } />
+                  <Route path="/edit-post/:id" element={
+                    <AdminRoute>
+                      <EditPost />
+                    </AdminRoute>
+                  } />
+                  <Route
+                    path="*"
+                    element={
+                      <Navigate
+                        to="/error"
+                        replace
+                        state={{ errorCode: '404', errorMessage: 'Page not found.' }}
+                      />
+                    }
+                  />
+                </Routes>
+              </Suspense>
+            </ErrorBoundary>
           </main>
           {/*  <SidebarMenu /> */}
         </div>

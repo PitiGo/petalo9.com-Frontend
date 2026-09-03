@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import DOMPurify from 'dompurify';
 import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
 import SEO from './SEO';
+import { sanitizeHtml } from '../utils/sanitizeHtml';
 import '../css/home.css';
 // Remove the ThreeJS import if you're not using it elsewhere
 // import ThreeJSCSS3DSprites from './juegos/ThreeJSCSS3DSprites';
@@ -32,7 +32,7 @@ function Home() {
   }, [apiUrl]);
 
   const createMarkup = (html) => {
-    return { __html: DOMPurify.sanitize(html) };
+    return { __html: sanitizeHtml(html) };
   };
 
   return (
